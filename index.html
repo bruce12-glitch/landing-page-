@@ -5,286 +5,82 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VendorChain - The Trust Network for Zero-Trust Supply Chains</title>
 <meta name="description" content="VendorChain is the verification network for zero-trust supply chains. Every vendor, every build, every deploy - proven, not presumed.">
+<meta name="theme-color" content="#050507">
+<meta property="og:title" content="VendorChain - Zero-Trust OS">
+<meta property="og:description" content="Every vendor, every build, every deploy — proven, not presumed.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="./assets/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VendorChain - Zero-Trust OS">
 <link rel="icon" type="image/png" href="./assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    /* The Perfect 3D Web3 Typography Stack */
-    --font-primary: 'Plus Jakarta Sans', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-    --bg:#050507;
-    --card:#0F1116;
-    --card2:#12141C;
-    --card3:#16181E;
-    --border:#1D222E;
-    --border2:#242A36;
-    --text:#F6F7FA;
-    --muted:#8B93A7;
-    --muted2:#6B728E;
-    --blue:#3B5BFF;
-    --purple:#7C3AED;
-    --radius:22px;
-    --radius-lg:28px;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth; scroll-padding-top:20px}
-  body{margin:0; font-family:var(--font-primary); background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased}
-  a{color:inherit; text-decoration:none}
-  img{display:block; max-width:100%}
-  .page{position:relative; background:radial-gradient(1100px 520px at 50% -6%, rgba(91,33,182,0.18) 0%, rgba(124,58,237,0.12) 22%, rgba(59,91,255,0.06) 36%, transparent 64%), linear-gradient(180deg,#02010A 0%, #050507 22%, #000000 100%)}
-  .wrap{max-width:1120px; margin:0 auto; padding:0 20px; position:relative}
-  .full{max-width:1200px; margin:0 auto; padding:0 20px}
-
-  /* NAV */
-  .hero-shell{margin:18px auto 0; max-width:1120px; background:linear-gradient(180deg,#0A0A1A 0%,#07080F 100%); border:1px solid var(--border); border-radius:28px; overflow:hidden; position:relative; box-shadow:0 24px 80px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.05)}
-  .hero-shell:before{content:""; position:absolute; inset:0; background:radial-gradient(860px 520px at 50% 74%, rgba(124,58,237,.10), transparent 68%); pointer-events:none; z-index:1}
-  .hero-shell:after{content:""; position:absolute; inset:0; background:radial-gradient(680px 380px at 30% 38%, rgba(59,91,255,.10), transparent 62%); pointer-events:none; z-index:1}
-
-  .horizon{position:absolute; left:50%; top:340px; width:184%; height:880px; transform:translateX(-50%); background:#000000; border-radius:50%; z-index:1; pointer-events:none; overflow:visible; box-shadow:inset 0 1px 0 rgba(124,58,237,0.18)}
-  .horizon:before{content:""; position:absolute; left:0; right:0; top:0; height:1.4px; background:linear-gradient(90deg, transparent 8%, rgba(255,255,255,0) 12%, #F5E6FF 28%, #FFFFFF 50%, #EDE9FE 72%, rgba(255,255,255,0) 88%, transparent 94%); box-shadow:0 0 10px rgba(255,255,255,1), 0 0 22px rgba(192,120,255,0.92), 0 0 48px rgba(139,92,246,0.58), 0 0 88px rgba(99,102,241,0.22); filter:blur(0.4px); opacity:1; z-index:3; pointer-events:none; animation:edgeGlow 3s ease-in-out infinite}
-  .horizon:after{content:""; position:absolute; left:0; right:0; top:1.4px; height:52px; background:linear-gradient(180deg, rgba(192,120,255,0.72) 0%, rgba(168,85,247,0.52) 22%, rgba(124,58,237,0.32) 42%, rgba(99,102,241,0.14) 68%, transparent 100%); filter:blur(16px); opacity:0.96; z-index:2; pointer-events:none; border-radius:50% 50% 0 0 / 100% 100% 0 0; animation:bloomPulse 4s ease-in-out infinite}.orbs{position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden; border-radius:28px}
-  .orb-3d{position:absolute; border-radius:50%; filter:blur(18px); opacity:0.62; will-change:transform; transform-style:preserve-3d}
-  .orb1{width:280px; height:280px; left:-6%; top:18%; background:radial-gradient(circle at 30% 30%, rgba(124,58,237,0.42) 0%, rgba(91,33,182,0.22) 38%, transparent 72%); animation:orbFloat1 9s ease-in-out infinite}
-  .orb2{width:220px; height:220px; right:-4%; top:32%; background:radial-gradient(circle at 30% 30%, rgba(59,91,255,0.32) 0%, rgba(99,102,241,0.16) 42%, transparent 74%); animation:orbFloat2 11s ease-in-out infinite}
-  .orb3{width:160px; height:160px; left:42%; top:68%; background:radial-gradient(circle at 30% 30%, rgba(168,85,247,0.22) 0%, transparent 68%); animation:orbFloat3 13s ease-in-out infinite; opacity:0.42}
-  @keyframes orbFloat1{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(12px,-14px,12px) scale(1.06)}}
-  @keyframes orbFloat2{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-10px,12px,8px) scale(1.05)}}
-  @keyframes orbFloat3{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(8px,-10px,10px) scale(1.08)}}
-  #particleCanvas{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1; opacity:0.38; border-radius:28px}
-  .halo{position:absolute; left:50%; bottom:88px; width:120%; height:220px; transform:translateX(-50%); background:radial-gradient(ellipse at 50% 100%, rgba(124,58,237,0.14) 0%, rgba(99,102,241,0.06) 42%, transparent 74%); filter:blur(28px); pointer-events:none; z-index:1; opacity:0.62}
-  .ambient{position:absolute; left:50%; top:36%; transform:translate(-50%,-50%); width:760px; height:420px; background:radial-gradient(ellipse at center, rgba(91,33,182,0.10) 0%, transparent 68%); filter:blur(28px); pointer-events:none; z-index:1; opacity:0.5}
-
-  .nav{position:relative; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:12px 14px 0; padding:8px 10px; background:rgba(10,12,18,.72); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,.06); border-radius:999px}
-  .nav-left{display:flex; align-items:center; gap:10px}
-  .mark img{width:100%; height:100%; object-fit:contain; display:block; border-radius:8px}
-  .mark{width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,#3B5BFF,#7C3AED); display:grid; place-items:center; color:#fff; font-weight:800; font-size:11px; box-shadow:0 4px 12px rgba(59,91,255,.3)}
-  .nav-links{display:flex; gap:18px; font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:#9AA0B5}
-  .nav-links a{opacity:.78} .nav-links a:hover{opacity:1; color:#fff} .nav-links a.active{color:#fff; opacity:1}
-  @media(max-width:860px){.nav-links{display:none}}
-
-  /* HERO */
-  .hero{position:relative; z-index:2; text-align:center; padding:36px 20px 0; min-height:680px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start}
-  .badge{display:inline-flex; align-items:center; gap:7px; font-size:9.5px; font-weight:600; letter-spacing:.10em; text-transform:uppercase; color:#A8A0FF; background:rgba(20,18,36,.72); border:1px solid rgba(168,160,255,.14); padding:5px 11px; border-radius:999px; backdrop-filter:blur(12px); box-shadow:0 2px 12px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04); margin-bottom:42px}
-  .badge i{width:14px; height:14px; border-radius:50%; background:rgba(124,58,237,.18); border:1px solid rgba(124,58,237,.28); display:grid; place-items:center}
-  .h1{font-family:var(--font-primary); font-size:clamp(32px,4.8vw,50px); line-height:1.06; letter-spacing:-.03em; font-weight:500; margin:16px auto 0; max-width:680px; color:#F5F7FA; text-wrap:balance}
-  /* 3D COINS - with motion */
-  .coins{margin:20px auto 0; display:flex; align-items:end; justify-content:center; gap:0; position:relative; z-index:4; perspective:800px; height:58px}
-  .coin{width:50px; height:50px; border-radius:50%; background:linear-gradient(180deg, #F0F3F8 0%, #DDE2EA 14%, #B8C2D6 28%, #E8ECF3 42%, #9AA9C2 58%, #D6DCE6 76%, #F8F9FB 100%); border:1px solid rgba(255,255,255,.96); box-shadow:0 8px 18px rgba(0,0,0,.46), 0 2px 6px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,1), inset 0 -4px 8px rgba(0,0,0,.10), inset 0 1px 3px rgba(255,255,255,.9); display:grid; place-items:center; position:relative; margin-left:-7px; transform-style:preserve-3d; transition:transform .35s cubic-bezier(.16,1,.3,1); cursor:pointer}
-  .coin:first-child{margin-left:0}
-  .coin:after{content:""; position:absolute; inset:3.5px; border-radius:50%; border:1px solid rgba(255,255,255,.72); box-shadow:inset 0 1px 1px rgba(255,255,255,.9)}
-  .coin:before{content:""; position:absolute; inset:0; border-radius:50%; background:radial-gradient(90px 60px at 26% 16%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.42) 22%, transparent 58%); opacity:.78}
-  .coin-inner{width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#0B0D14 0%,#151925 100%); border:1px solid rgba(255,255,255,.06); display:grid; place-items:center; position:relative; z-index:1; box-shadow:inset 0 1px 0 rgba(255,255,255,.06), inset 0 -2px 6px rgba(0,0,0,.4)}
-  .coin:hover{transform:translateY(-6px) rotateY(10deg) scale(1.05); box-shadow:0 14px 32px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,1)}
-  .coin:nth-child(1){transform:translateY(6px)} .coin:nth-child(2){transform:translateY(2px)} .coin:nth-child(3){transform:translateY(0px)} .coin:nth-child(4){transform:translateY(1px)} .coin:nth-child(5){transform:translateY(3px)} .coin:nth-child(6){transform:translateY(6px)}
-  .coin-label{margin-top:14px; margin-bottom:18px; font-size:8.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:#6B728E; text-align:center; opacity:.72}
-  .ctas{margin:20px auto 0; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; position:relative; z-index:2; margin-bottom:28px}
-  .btn{appearance:none; border:1px solid transparent; border-radius:999px; padding:9px 16px; font-size:13px; font-weight:600; line-height:1; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all .18s; letter-spacing:-.01em}
-  .btn-primary{background:#5A5FFF; color:#fff; box-shadow:0 6px 18px rgba(90,95,255,.34), inset 0 1px 0 rgba(255,255,255,.16); border-color:rgba(90,95,255,.5)}
-  .btn-primary:hover{transform:translateY(-1px); background:#6366FF; box-shadow:0 10px 26px rgba(90,95,255,.42)}
-  .btn-ghost{background:transparent; color:#E6E8F0; border-color:rgba(255,255,255,.14); backdrop-filter:blur(8px); box-shadow:0 2px 10px rgba(0,0,0,.18)}
-  .btn-ghost:hover{background:rgba(255,255,255,.06); color:#fff; border-color:rgba(255,255,255,.18)}
-
-  /* 3D GLASS STACK - vertical */
-
-  /* Trusted */
-  .trusted{position:relative; z-index:2; padding:18px 20px 24px; border-top:1px solid rgba(255,255,255,.05); background:linear-gradient(180deg, rgba(255,255,255,.005), rgba(255,255,255,0)); display:flex; flex-direction:column; gap:12px; align-items:center}
-  .trusted-label{font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#5B647A}
-  .trusted-logos{display:flex; gap:26px; flex-wrap:wrap; justify-content:center; align-items:center; opacity:.72}
-  .trusted-logos span{font-size:11px; font-weight:700; letter-spacing:.06em; color:#9AA0B5; display:inline-flex; align-items:center; gap:6px}
-  .trusted-logos i{width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.09); display:grid; place-items:center; font-size:8px}
-
-  /* SECTIONS generic */
-  .section{padding:80px 0; position:relative}
-  .h2{font-family:var(--font-primary); font-size:clamp(26px,4vw,40px); line-height:.95; letter-spacing:-.03em; font-weight:500; color:#F5F7FA; text-align:center; margin:0 auto; max-width:760px}
-  .sub{font-size:11px; line-height:1.6; color:#8B93A7; text-align:center; max-width:560px; margin:10px auto 0}
-
-  /* Horizontal stack */
-  .h-stack{margin:36px auto 0; max-width:760px; height:240px; position:relative; perspective:900px; perspective-origin:50% 50%}
-  .h-stack-inner{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:680px; height:140px; transform-style:preserve-3d; will-change:transform}
-  .h-layer{position:absolute; left:0; right:0; height:18px; border-radius:10px; background:linear-gradient(90deg,#E6EAF0 0%,#C9D1E0 20%,#A8B8D0 45%,#E6EAF0 70%,#DDE2EA 100%); border:1px solid rgba(255,255,255,.92); box-shadow:0 6px 16px rgba(0,0,0,.28); will-change:transform}
-  .h-layer:nth-child(1){transform:translateZ(0) translateY(0)}
-  .h-layer:nth-child(2){transform:translateZ(10px) translateY(9px); opacity:.88}
-  .h-layer:nth-child(3){transform:translateZ(20px) translateY(18px); opacity:.82}
-  .h-layer:nth-child(4){transform:translateZ(30px) translateY(27px); opacity:.76}
-  .h-layer:nth-child(5){transform:translateZ(40px) translateY(36px); opacity:.70}
-  .h-layer:nth-child(6){transform:translateZ(50px) translateY(45px); opacity:.92; background:linear-gradient(90deg,#DDE2EA 0%,#E6EAF0 50%,#C9D1E0 100%)}
-  .h-stack:before{content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:linear-gradient(90deg,transparent,rgba(124,58,237,.35),transparent); transform:translateY(-50%); opacity:.6}
-
-  /* Driving Growth bento - like 19 days grid */
-  .growth{max-width:760px; margin:0 auto; padding:0 20px}
-  .growth-head{font-size:16px; font-weight:600; color:#F5F7FA; text-align:center; letter-spacing:-.01em; margin:0}
-  .growth-grid{margin:18px auto 0; display:grid; grid-template-columns:1.05fr .95fr 1.15fr; grid-template-rows:150px 150px; gap:10px}
-  @media(max-width:860px){.growth-grid{grid-template-columns:1fr 1fr; grid-template-rows:auto}}
-  .g-card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transform-style:preserve-3d; transition:transform .3s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s}
-  .g-card:hover{transform:translateY(-3px) rotateX(2deg) rotateY(-2deg); border-color:#2A3042; box-shadow:0 12px 28px rgba(0,0,0,.35)}
-  .g-card.large{grid-row:span 2; background:linear-gradient(135deg,#1A1E2E 0%,#0F1116 55%,#0A0C14 100%); border-color:#242A36; padding:0; overflow:hidden}
-  .g-card.large .g-head{padding:14px 14px 0}
-  .g-num{font-size:26px; font-weight:700; letter-spacing:-.03em; line-height:1; color:#F5F7FA; font-family:var(--font-mono)}
-  .g-label{font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:#6B728E; margin-top:5px}
-  .g-sub{font-size:10px; color:#8B93A7; line-height:1.4; margin-top:6px}
-  .g-foot{font-size:9px; font-weight:700; color:#5B647A; margin-top:auto; padding-top:8px}
-  .g-visual{flex:1; position:relative; display:flex; align-items:end; justify-content:center; padding-bottom:8px; overflow:hidden}
-  .coins-mini{position:relative; width:100%; height:170px; display:flex; align-items:center; justify-content:center; transform:rotate(-7deg) scale(.92)}
-  .c2{position:absolute; width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg, #E8ECF3 0%, #C9D1E0 18%, #8B9AB5 38%, #E6EAF0 52%, #A8B4C9 72%, #DDE2EA 100%); border:1px solid rgba(255,255,255,.9); box-shadow:0 8px 20px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.9); display:grid; place-items:center}
-  .c2:after{content:""; position:absolute; inset:4px; border-radius:50%; border:1px solid rgba(255,255,255,.6)}
-  .c2 span{width:36px; height:36px; border-radius:50%; background:var(--card2); border:1px solid rgba(255,255,255,.06); display:grid; place-items:center; font-size:13px; font-weight:800; color:#C9D1E0; position:relative; z-index:1}
-  .c2:nth-child(1){transform:translate(-30px,14px) rotate(10deg); z-index:1}
-  .c2:nth-child(2){transform:translate(2px,-4px) rotate(-5deg); z-index:3}
-  .c2:nth-child(3){transform:translate(36px,-18px) rotate(7deg); z-index:2}
-  .c2:nth-child(4){transform:translate(68px,10px) rotate(-9deg); z-index:1; opacity:.88}
-  .c2:nth-child(5){transform:translate(-66px,-6px) rotate(-3deg); z-index:1; opacity:.88}
-
-  /* Quote */
-  .quote{margin:48px auto 0; max-width:620px; text-align:center; padding:0 20px}
-  .quote p{font-size:13px; line-height:1.65; color:#C9D1E0; max-width:620px; margin:0 auto}
-  .quote p:before{content:"\201C"; font-size:16px; color:#3B5BFF; margin-right:4px}
-  .quote-author{margin-top:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; color:#8B93A7}
-  .quote-author img{width:20px; height:20px; border-radius:50%}
-
-  /* Architecting */
-  .arch-head{margin:64px auto 0; text-align:center; max-width:720px; padding:0 20px}
-  .arch-head h3{font-family:var(--font-primary); font-size:clamp(22px,3.4vw,30px); line-height:1; letter-spacing:-.03em; font-weight:500; color:#F5F7FA; margin:0}
-  .arch-tabs{margin:14px auto 0; display:inline-flex; gap:4px; background:var(--card2); border:1px solid var(--border); border-radius:999px; padding:4px}
-  .arch-tab{padding:6px 12px; border-radius:999px; font-size:11px; font-weight:600; color:#8B93A7; cursor:pointer; transition:all .18s}
-  .arch-tab.active{background:#fff; color:#0A0C14; box-shadow:0 2px 8px rgba(0,0,0,.2)}
-  .testis{margin:20px auto 0; max-width:1120px; padding:0 20px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
-  @media(max-width:960px){.testis{grid-template-columns:1fr 1fr}}
-  @media(max-width:640px){.testis{grid-template-columns:1fr}}
-  .t-card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; min-height:170px; transform-style:preserve-3d; transition:transform .3s, border-color .3s}
-  .t-card:hover{transform:translateY(-4px) rotateX(1.5deg) rotateY(-1.5deg); border-color:#2A3042}
-  .t-card.hl{background:linear-gradient(135deg,#3B5BFF 0%,#7C3AED 100%); border-color:rgba(255,255,255,.10); color:#fff}
-  .t-card.hl .t-text{color:#E6E8FF} .t-card.hl .t-meta{color:#D6D9FF}
-  .t-text{font-size:11px; line-height:1.6; color:#9AA0B5}
-  .t-foot{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,.06)}
-  .t-name{font-size:11px; font-weight:700; color:#F5F7FA} .t-role{font-size:10px; color:#6B728E}
-  .t-logo{font-size:10px; font-weight:800; letter-spacing:.06em; color:#8B93A7; display:inline-flex; align-items:center; gap:6px}
-  .t-logo i{width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.08); display:grid; place-items:center; font-size:8px}
-
-  /* 6 layers as bento - now motion */
-  .layers{margin:28px auto 0; max-width:1120px; padding:0 20px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
-  @media(max-width:960px){.layers{grid-template-columns:1fr 1fr}}
-  @media(max-width:640px){.layers{grid-template-columns:1fr}}
-  .l-card{background:var(--card2); border:1px solid var(--border); border-radius:18px; padding:16px; position:relative; overflow:hidden; min-height:220px; display:flex; flex-direction:column; transform-style:preserve-3d; transition:transform .35s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s}
-  .l-card:hover{transform:translateY(-4px) rotateX(1.2deg) rotateY(-1.2deg); border-color:#2A3042; box-shadow:0 14px 32px rgba(0,0,0,.38)}
-  .l-icon{width:38px; height:38px; border-radius:12px; display:grid; place-items:center; color:#fff; box-shadow:0 8px 16px rgba(0,0,0,.26); margin-bottom:10px; transform:translateZ(18px)}
-  .l-card h4{font-size:13px; font-weight:700; letter-spacing:-.01em; margin:0 0 5px; color:#F5F7FA; line-height:1.2}
-  .l-card p{font-size:11px; line-height:1.6; color:#8B93A7; margin:0 0 8px}
-  .l-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:5px}
-  .l-list li{font-size:11px; line-height:1.5; color:#9AA0B5; display:flex; gap:7px}
-  .l-list i{width:14px; height:14px; border-radius:50%; background:rgba(59,91,255,.12); border:1px solid rgba(59,91,255,.18); display:grid; place-items:center; flex-shrink:0; margin-top:1px}
-  .l-foot{margin-top:auto; padding-top:9px; border-top:1px solid rgba(255,255,255,.06); display:flex; align-items:center; justify-content:space-between; font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#5B647A}
-
-  /* Embedded in Ecosystem - from reference */
-  .ecosystem{margin:64px auto 0; max-width:1120px; padding:0 20px; text-align:center}
-  .eco-head h3{font-family:var(--font-primary); font-size:24px; font-weight:500; letter-spacing:-.02em; color:#F5F7FA; margin:0}
-  .eco-sub{font-size:11px; color:#8B93A7; margin:6px auto 0; max-width:520px; line-height:1.5}
-  .eco-grid{margin:18px auto 0; display:grid; grid-template-columns:1fr 1.15fr 1fr; gap:10px; max-width:960px; align-items:stretch}
-  @media(max-width:860px){.eco-grid{grid-template-columns:1fr}}
-  .eco-card{position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--border); min-height:280px; background:var(--card); display:flex; flex-direction:column; transform-style:preserve-3d; transition:transform .4s cubic-bezier(.16,1,.3,1)}
-  .eco-card:hover{transform:translateY(-4px) scale(1.01)}
-  .eco-card img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0}
-  .eco-card:after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 36%, rgba(5,5,7,.72) 100%)}
-  .eco-card.mid{border-color:rgba(124,58,237,.35); box-shadow:0 16px 40px rgba(124,58,237,.18)}
-  .eco-card.mid:after{background:linear-gradient(180deg, rgba(124,58,237,.14) 0%, rgba(5,5,7,.82) 100%)}
-  .eco-content{position:relative; z-index:1; margin-top:auto; padding:14px; text-align:left}
-  .eco-content h4{font-size:13px; font-weight:700; margin:0; color:#fff; line-height:1.2}
-  .eco-content p{font-size:11px; line-height:1.5; color:#C9D1E0; margin:6px 0 0}
-  .eco-badge{position:absolute; top:10px; left:10px; z-index:2; font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; background:rgba(255,255,255,.08); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.12); color:#E6E8FF; padding:5px 8px; border-radius:999px}
-
-  /* Where Crypto Founders Connect - two cards */
-  .connect{margin:48px auto 0; max-width:1120px; padding:0 20px; text-align:center}
-  .connect h3{font-family:var(--font-primary); font-size:24px; font-weight:500; letter-spacing:-.02em; color:#F5F7FA; margin:0}
-  .connect-sub{font-size:11px; color:#8B93A7; margin:6px auto 0; max-width:520px}
-  .connect-grid{margin:18px auto 0; display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:860px}
-  @media(max-width:760px){.connect-grid{grid-template-columns:1fr}}
-  .co-card{position:relative; border-radius:18px; overflow:hidden; border:1px solid var(--border); background:linear-gradient(180deg,#0F1116 0%,#0A0C14 100%); min-height:240px; padding:18px; display:flex; flex-direction:column; text-align:left; transform-style:preserve-3d; transition:transform .4s, border-color .3s}
-  .co-card:hover{transform:translateY(-4px) rotateX(1deg); border-color:#2A3042}
-  .co-top{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#8B93A7; display:flex; align-items:center; justify-content:space-between}
-  .co-top a{font-size:11px; font-weight:700; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); padding:6px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:6px}
-  .co-visual{flex:1; position:relative; display:grid; place-items:center; margin:12px 0}
-  .co-stack{width:180px; height:140px; position:relative; perspective:800px; transform-style:preserve-3d}
-  .co-layer{position:absolute; inset:0; border-radius:14px; background:linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03)); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.10); box-shadow:0 12px 32px rgba(0,0,0,.4); display:grid; place-items:center}
-  .co-layer:nth-child(1){transform:translateZ(0) translateX(0); opacity:.5}
-  .co-layer:nth-child(2){transform:translateZ(12px) translateX(8px); opacity:.7}
-  .co-layer:nth-child(3){transform:translateZ(24px) translateX(16px); opacity:1}
-  .co-layer span{font-family:var(--font-primary); font-size:42px; font-weight:700; color:#fff; text-shadow:0 8px 18px rgba(0,0,0,.35)}
-  .co-card p{font-size:11px; line-height:1.5; color:#8B93A7; margin:0}
-
-  /* CTA */
-  .cta{margin:48px auto 0; max-width:1120px; background:linear-gradient(135deg,#0F1116 0%,#0A0C14 100%); border:1px solid var(--border); border-radius:22px; padding:32px 20px; text-align:center; position:relative; overflow:hidden}
-  .cta:before{content:""; position:absolute; inset:0; background:radial-gradient(600px 320px at 50% 0%, rgba(124,58,237,.13), transparent 62%); pointer-events:none}
-  .cta h3{font-family:var(--font-primary); font-size:26px; font-weight:600; letter-spacing:-.02em; margin:0; position:relative}
-  .cta p{font-size:11px; color:#8B93A7; margin:8px auto 0; max-width:520px; line-height:1.6; position:relative}
-
-  /* FAQ */
-  .faq{margin:28px auto 0; max-width:760px; text-align:left; padding:0 20px}
-  .faq-item{background:var(--card2); border:1px solid var(--border); border-radius:14px; margin-bottom:8px; overflow:hidden; transition:border-color .2s}
-  .faq-item.open{border-color:#2A3042}
-  .faq-q{width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; background:transparent; border:none; color:#F5F7FA; font-size:13px; font-weight:600; cursor:pointer; text-align:left}
-  .faq-q i{width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); display:grid; place-items:center; font-style:normal; transition:transform .2s, background .2s}
-  .faq-item.open .faq-q i{transform:rotate(45deg); background:#3B5BFF; color:#fff; border-color:#3B5BFF}
-  .faq-a{padding:0 16px 14px; font-size:11px; line-height:1.6; color:#8B93A7; display:none}
-  .faq-item.open .faq-a{display:block}
-
-  footer{margin-top:32px; border-top:1px solid var(--border); padding:20px 0; display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; font-size:11px; color:#5B647A}
-  .mono{font-family:var(--font-mono)}
-  .reveal{opacity:0; transform:translateY(14px); transition:all .7s cubic-bezier(.16,1,.3,1)}
-  .reveal.in{opacity:1; transform:translateY(0)}
-  /* Motion helpers */
-  .magnet{transition:transform .18s cubic-bezier(.16,1,.3,1)}
-</style>
-
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="page">
   <div class="wrap">
     <div class="hero-shell" id="heroShell">
-      <nav class="nav">
+      <nav class="nav" aria-label="Primary">
         <div class="nav-left">
-          <div class="mark" style="background:transparent; border:none; box-shadow:none; padding:0; overflow:hidden"><img src="./assets/logo.png" alt="VendorChain" style="width:28px; height:28px; object-fit:contain; display:block; border-radius:8px"></div>
+          <div class="mark" style="background:transparent; border:none; box-shadow:none; padding:0; overflow:hidden"><img src="./assets/logo.png" srcset="./assets/logo.png 1x, ./assets/logo@2x.png 2x" alt="VendorChain" width="28" height="28" style="width:28px; height:28px; object-fit:contain; display:block; border-radius:8px" decoding="async" fetchpriority="high"></div>
           <div style="font-size:13px; font-weight:700; letter-spacing:-.02em">VendorChain</div>
           <div style="font-size:11px; color:#6B728E; border-left:1px solid rgba(255,255,255,.07); padding-left:10px; margin-left:2px">Zero-Trust OS</div>
         </div>
-        <div class="nav-links">
-          <a class="active" href="#">Home</a>
+        <div class="nav-links" role="list">
+          <a class="active" href="#" aria-current="page">Home</a>
           <a href="#layers">Platform</a>
           <a href="#proof">Proof</a>
           <a href="#eco">Ecosystem</a>
           <a href="#faq">About</a>
         </div>
-        <div style="width:28px"></div>
-      </nav><section class="hero">
-        <div class="badge"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></i> BUILT WITH CRYPTO LED BY PROOF</div>
-        <h1 class="h1 reveal in">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
-
-        <div class="coins reveal in" style="transition-delay:.06s; margin-top:18px" id="coinsRow">
-          <div class="coin magnet" data-tilt><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M9 12l2 2 4-4"/></svg></div></div>
-          <div class="coin magnet" data-tilt><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></div>
-          <div class="coin magnet" data-tilt><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div></div>
-          <div class="coin magnet" data-tilt><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6"><path d="M12 2l-8 4v8c0 6 8 10 8 10s8-4 8-10V6z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
-          <div class="coin magnet" data-tilt><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div></div>
-          <div class="coin magnet" data-tilt><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div></div>
+        <div class="nav-actions">
+          <a href="#demoForm" class="nav-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer"><span></span></button>
         </div>
-        <div class="coin-label reveal in" style="transition-delay:.08s; margin-bottom:0">6 LAYERS - IDENTITY - INVENTORY - SEALING - RISK - POLICY - LEDGER</div>
-        <div class="horizon"></div>
-      <div class="orbs">
-        <div class="orb-3d orb1"></div>
-        <div class="orb-3d orb2"></div>
-        <div class="orb-3d orb3"></div>
-      </div>
-      <canvas id="particleCanvas"></canvas>
+        <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-label="Mobile menu">
+          <a href="#">Home <span>↗</span></a>
+          <a href="#layers">Platform <span>›</span></a>
+          <a href="#proof">Proof <span>›</span></a>
+          <a href="#eco">Ecosystem <span>›</span></a>
+          <a href="#faq">About <span>›</span></a>
+          <a href="#demoForm" class="mob-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+        </div>
+      </nav>
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="badge"><i aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></i> BUILT WITH CRYPTO LED BY PROOF</div>
+        <h1 class="h1 reveal in" id="heroTitle">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
+        <div class="coins reveal in" style="transition-delay:.06s; margin-top:18px" id="coinsRow" role="list" aria-label="6 layers of trust">
+          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Identity layer"><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M9 12l2 2 4-4"/></svg></div></div>
+          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Inventory layer"><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></div>
+          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Sealing layer"><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div></div>
+          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Risk layer"><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" aria-hidden="true"><path d="M12 2l-8 4v8c0 6 8 10 8 10s8-4 8-10V6z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Policy layer"><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div></div>
+          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Ledger layer"><div class="coin-inner"><svg viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div></div>
+        </div>
+        <div class="coin-label reveal in" style="transition-delay:.08s; margin-bottom:0" aria-hidden="true">6 LAYERS - IDENTITY - INVENTORY - SEALING - RISK - POLICY - LEDGER</div>
+        <div class="horizon" aria-hidden="true"></div>
+        <div class="orbs" aria-hidden="true">
+          <div class="orb-3d orb1"></div>
+          <div class="orb-3d orb2"></div>
+          <div class="orb-3d orb3"></div>
+        </div>
+        <canvas id="particleCanvas" aria-hidden="true" role="presentation"></canvas>
         <div class="ctas reveal in" style="margin:42px auto 0; position:relative; z-index:3">
-          <a href="#demo" class="btn btn-primary magnet" style="padding:11px 20px; font-size:13px; font-weight:600; letter-spacing:-0.01em; box-shadow:0 10px 28px rgba(90,95,255,0.42), 0 1px 0 rgba(255,255,255,0.14) inset">Start Verifying <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
-
+          <a href="#demoForm" class="btn btn-primary magnet" style="padding:11px 20px; font-size:13px; font-weight:600; letter-spacing:-0.01em; box-shadow:0 10px 28px rgba(90,95,255,0.42), 0 1px 0 rgba(255,255,255,0.14) inset">Start Verifying <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
         </div>
+      </section>
     </div>
   </div>
 
-  <div style="height:72px; background:#000000; width:100%"></div>
+  <div class="spacer" aria-hidden="true"></div>
+  <main id="main">
   <section class="section">
     <h2 class="h2 reveal">Vendor Verification With VendorChain Is Not<br>Transactional. It Is Transformational.</h2>
     <p class="sub reveal">Go-to-market, product and platform teams powering the next generation of verified supply chains - without the spreadsheet chaos.</p>
-    <div class="h-stack reveal" id="hStack">
+    <div class="h-stack reveal" id="hStack" aria-hidden="true">
       <div class="h-stack-inner" id="hStackInner">
         <div class="h-layer"></div>
         <div class="h-layer"></div>
@@ -320,12 +116,12 @@
           <div class="g-sub">Every build inventoried - no blind spots, no hidden deps.</div>
         </div>
         <div class="g-visual">
-          <div class="coins-mini" id="coinsMini">
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="V" style="width:22px; height:22px; object-fit:contain"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="V" style="width:22px; height:22px; object-fit:contain"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="V" style="width:22px; height:22px; object-fit:contain"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="V" style="width:22px; height:22px; object-fit:contain"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="V" style="width:22px; height:22px; object-fit:contain"></span></div>
+          <div class="coins-mini" id="coinsMini" aria-hidden="true">
+            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
+            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
+            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
+            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
+            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
           </div>
         </div>
       </div>
@@ -345,89 +141,89 @@
       </div>
     </div>
     <div style="text-align:center; margin-top:16px" class="reveal">
-      <a href="#demo" class="btn btn-primary magnet">Start Verifying <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+      <a href="#demoForm" class="btn btn-primary magnet">Start Verifying <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
     </div>
     <div class="quote reveal">
       <p>From vendor identity to deploy decision, we handle the intangibles that scripts cannot touch. This is human-led verification, supercharged by crypto, not replaced by it.</p>
-      <div class="quote-author"><img src="https://i.pravatar.cc/100?img=32" alt=""><span>VendorChain Team - Zero-Trust OS, Chennai</span></div>
+      <div class="quote-author"><img src="https://i.pravatar.cc/100?img=32" alt="Avatar of VendorChain team member" width="20" height="20" loading="lazy" decoding="async"><span>VendorChain Team - Zero-Trust OS, Chennai</span></div>
     </div>
   </section>
 
   <section class="arch-head reveal">
     <h3>We Are Architecting the Trust<br>Layer of the Digital Future</h3>
-    <div class="arch-tabs">
-      <div class="arch-tab active">Vendor View</div>
-      <div class="arch-tab">Auditor View</div>
+    <div class="arch-tabs" role="tablist" aria-label="View toggle">
+      <button class="arch-tab active" role="tab" aria-selected="true" data-tab="vendor">Vendor View</button>
+      <button class="arch-tab" role="tab" aria-selected="false" data-tab="auditor">Auditor View</button>
     </div>
   </section>
   <div class="testis reveal" id="testis">
     <div class="t-card magnet" data-tilt>
       <div class="t-text">VendorChain makes verification seamless. Highly professional, proactive, and deeply attuned to our needs. The inventory filter is unmatched.</div>
-      <div class="t-foot"><div><div class="t-name">Angelica Ortega</div><div class="t-role">Founder of Novify</div></div><div class="t-logo"><i>C</i> CIRCUIT</div></div>
+      <div class="t-foot"><div><div class="t-name">Angelica Ortega</div><div class="t-role">Founder of Novify</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
     </div>
     <div class="t-card hl magnet" data-tilt>
       <div class="t-text">What sets VendorChain apart is the time it takes to deeply understand our needs, then put that understanding into action by filtering with precision.</div>
-      <div class="t-foot"><div><div class="t-name">Jake Lewis</div><div class="t-role">Head of Strategy</div></div><div class="t-logo" style="color:#fff"><i>B</i> BYS</div></div>
+      <div class="t-foot"><div><div class="t-name">Jake Lewis</div><div class="t-role">Head of Strategy</div></div><div class="t-logo" style="color:#fff"><i aria-hidden="true">B</i> BYS</div></div>
     </div>
     <div class="t-card magnet" data-tilt>
       <div class="t-text">Highly professional, proactive. Every build she introduced was aligned - consistently goes above and beyond with sourcing support.</div>
-      <div class="t-foot"><div><div class="t-name">Cilim Stack</div><div class="t-role">Founder of Nefture</div></div><div class="t-logo"><i>N</i> Nefture</div></div>
+      <div class="t-foot"><div><div class="t-name">Cilim Stack</div><div class="t-role">Founder of Nefture</div></div><div class="t-logo"><i aria-hidden="true">N</i> Nefture</div></div>
     </div>
     <div class="t-card magnet" data-tilt>
       <div class="t-text">Proactive, and deeply attuned to our needs. She feels like part of the team. Consistently goes above and beyond with operational support.</div>
-      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i>C</i> CIRCUIT</div></div>
+      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
     </div>
     <div class="t-card magnet" data-tilt>
       <div class="t-text">I highly recommend VendorChain for expertise in verification. She is specialized in closing senior roles and has access to top-tier profiles.</div>
-      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i>C</i> CIRCUIT</div></div>
+      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
     </div>
     <div class="t-card magnet" data-tilt>
       <div class="t-text">VendorChain feels like part of the team. Every build introduced was technically outstanding and culturally aligned.</div>
-      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i>C</i> CIRCUIT</div></div>
+      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
     </div>
   </div>
 
   <section id="layers" class="layers reveal">
     <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#3B5BFF,#7C3AED)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg></div>
+      <div class="l-icon" style="background:linear-gradient(135deg,#3B5BFF,#7C3AED)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg></div>
       <h4>Identity that cannot be faked</h4>
       <p>Official GST, PAN and bank verification - and re-verification every time.</p>
-      <ul class="l-list"><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Cross-checked with official sources</li><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> No trust cached</li></ul>
+      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Cross-checked with official sources</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> No trust cached</li></ul>
       <div class="l-foot"><span>Layer 01 - Identity</span><span>Continuous</span></div>
     </div>
     <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#0EA5E9,#3B5BFF)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="l-icon" style="background:linear-gradient(135deg,#0EA5E9,#3B5BFF)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
       <h4>Know what is inside every build</h4>
       <p>Complete inventory of every library - versioned, diffed, no blind spots.</p>
-      <ul class="l-list"><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Full inventory</li><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Drift highlighted</li></ul>
+      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Full inventory</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Drift highlighted</li></ul>
       <div class="l-foot"><span>Layer 02 - Inventory</span><span>Transparent</span></div>
     </div>
     <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="l-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><circle cx="12" cy="12" r="3"/></svg></div>
       <h4>Sealed. Tamper shows instantly</h4>
       <p>Cryptographically sealed. One byte changes - verification fails before deploy.</p>
-      <ul class="l-list"><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Keyless or BYO-key</li><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Post-seal flagged</li></ul>
+      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Keyless or BYO-key</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Post-seal flagged</li></ul>
       <div class="l-foot"><span>Layer 03 - Sealing</span><span>Tamper-evident</span></div>
     </div>
     <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div class="l-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
       <h4>Risk you can actually read</h4>
       <p>Clear 1 to 10 score and plain-English summary - what, why, what to do.</p>
-      <ul class="l-list"><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> 1-10 score + why</li><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Re-scored on threats</li></ul>
+      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> 1-10 score + why</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Re-scored on threats</li></ul>
       <div class="l-foot"><span>Layer 04 - Risk</span><span>Explainable</span></div>
     </div>
     <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#7C3AED,#4F46E5)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div class="l-icon" style="background:linear-gradient(135deg,#7C3AED,#4F46E5)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M9 12l2 2 4-4"/></svg></div>
       <h4>Policy that enforces itself</h4>
       <p>Your rules auto-enforced. No manual gatekeeping, no exceptions by email.</p>
-      <ul class="l-list"><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Auto-allow / block</li><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Explainable</li></ul>
+      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Auto-allow / block</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Explainable</li></ul>
       <div class="l-foot"><span>Layer 05 - Policy</span><span>Automatic</span></div>
     </div>
     <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#06B6D4,#3B5BFF)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div>
+      <div class="l-icon" style="background:linear-gradient(135deg,#06B6D4,#3B5BFF)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div>
       <h4>Proof that cannot be rewritten</h4>
       <p>Every decision anchored to immutable ledger. Private - only hashes.</p>
-      <ul class="l-list"><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Private ledger</li><li><i><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> One-click verify</li></ul>
+      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Private ledger</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> One-click verify</li></ul>
       <div class="l-foot"><span>Layer 06 - Ledger</span><span>Immutable</span></div>
     </div>
   </section>
@@ -439,7 +235,7 @@
     </div>
     <div class="eco-grid" id="ecoGrid">
       <div class="eco-card magnet" data-tilt>
-        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f19d?w=800&q=80&auto=format&fit=crop" alt="Vendor onboarding">
+        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f19d?w=800&q=80&auto=format&fit=crop" alt="Team collaborating on vendor onboarding" width="800" height="600" loading="lazy" decoding="async" referrerpolicy="no-referrer">
         <span class="eco-badge">Onboarding</span>
         <div class="eco-content">
           <h4>Vendor Day Zero</h4>
@@ -447,7 +243,7 @@
         </div>
       </div>
       <div class="eco-card mid magnet" data-tilt>
-        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80&auto=format&fit=crop" alt="Verification hub">
+        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80&auto=format&fit=crop" alt="Verification hub dashboard" width="800" height="600" loading="lazy" decoding="async" referrerpolicy="no-referrer">
         <span class="eco-badge">Live Verification</span>
         <div class="eco-content">
           <h4>The Verification Hub</h4>
@@ -455,7 +251,7 @@
         </div>
       </div>
       <div class="eco-card magnet" data-tilt>
-        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80&auto=format&fit=crop" alt="Audit proof">
+        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80&auto=format&fit=crop" alt="Audit meeting with proof documents" width="800" height="600" loading="lazy" decoding="async" referrerpolicy="no-referrer">
         <span class="eco-badge">Proof Ready</span>
         <div class="eco-content">
           <h4>Audit Day - No Panic</h4>
@@ -470,23 +266,23 @@
     <p class="connect-sub">Two sides, one trust layer. Vendors prove once, enterprises verify everywhere.</p>
     <div class="connect-grid" id="connectGrid">
       <div class="co-card magnet" data-tilt>
-        <div class="co-top">For Vendors <a href="#demo">Get Verified <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></div>
+        <div class="co-top">For Vendors <a href="#demoForm">Get Verified <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></div>
         <div class="co-visual">
-          <div class="co-stack" id="coStack1">
+          <div class="co-stack" id="coStack1" aria-hidden="true">
             <div class="co-layer"></div>
             <div class="co-layer"></div>
-            <div class="co-layer" style="display:grid; place-items:center"><img src="./assets/logo.png" alt="VendorChain" style="width:64px; height:64px; object-fit:contain; filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))"></div>
+            <div class="co-layer" style="display:grid; place-items:center"><img src="./assets/logo.png" alt="" width="64" height="64" style="width:64px; height:64px; object-fit:contain; filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))" loading="lazy" decoding="async"></div>
           </div>
         </div>
         <p>Submit once, get sealed, get scored. Share proof with every customer without re-sending dumps.</p>
       </div>
       <div class="co-card magnet" data-tilt>
-        <div class="co-top">For Enterprises <a href="#demo">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></div>
+        <div class="co-top">For Enterprises <a href="#demoForm">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></div>
         <div class="co-visual">
-          <div class="co-stack" id="coStack2">
+          <div class="co-stack" id="coStack2" aria-hidden="true">
             <div class="co-layer" style="background:linear-gradient(135deg, rgba(59,91,255,.12), rgba(124,58,237,.08))"></div>
             <div class="co-layer" style="background:linear-gradient(135deg, rgba(59,91,255,.16), rgba(124,58,237,.12))"></div>
-            <div class="co-layer" style="display:grid; place-items:center; background:linear-gradient(135deg, rgba(59,91,255,.18), rgba(124,58,237,.14))"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></div>
+            <div class="co-layer" style="display:grid; place-items:center; background:linear-gradient(135deg, rgba(59,91,255,.18), rgba(124,58,237,.14))"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></div>
           </div>
         </div>
         <p>One policy, every vendor. Auto-block risky builds before they reach production.</p>
@@ -498,280 +294,51 @@
     <div class="cta reveal">
       <h3>Stop trusting. Start proving.</h3>
       <p>Join the private beta. Bring your riskiest vendor - we will show you what is inside and prove it.</p>
-      <form id="demo" onsubmit="event.preventDefault(); this.innerHTML='<div style=&quot;background:#fff; color:#0A0C14; border-radius:999px; padding:10px 16px; font-weight:700; display:inline-block&quot;>You are on the list - we will reach out within 24h.</div>'" style="margin-top:16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
-        <input type="email" placeholder="work@company.com" required style="background:#fff; border:1px solid #E5E7EB; border-radius:999px; padding:10px 16px; font-size:13px; min-width:240px; outline:none; color:#0A0C14">
-        <button type="submit" class="btn btn-primary">Join waitlist <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></button>
+      <form id="demoForm" class="cta-form" novalidate>
+        <label for="emailInput" class="sr-only" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0)">Work email</label>
+        <input id="emailInput" type="email" placeholder="work@company.com" required autocomplete="email" aria-describedby="formMsg" aria-label="Work email">
+        <button type="submit" class="btn btn-primary">Join waitlist <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></button>
+        <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
       </form>
     </div>
 
     <div id="faq" class="faq reveal">
-      <div style="text-align:center; margin-bottom:14px">
-        <div style="font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#3B5BFF; background:rgba(59,91,255,.08); border:1px solid rgba(59,91,255,.14); padding:5px 10px; border-radius:999px; display:inline-block">FAQ</div>
-        <h3 style="font-family:var(--font-primary); font-size:22px; font-weight:600; letter-spacing:-.02em; margin:10px 0 0">Totally fair to ask.</h3>
+      <div class="faq-head">
+        <div class="faq-badge">FAQ</div>
+        <h3 class="faq-title">Totally fair to ask.</h3>
       </div>
       <div class="faq-item open">
-        <button class="faq-q">How is this different from a one-time vendor check? <i>+</i></button>
+        <button class="faq-q" aria-expanded="true">How is this different from a one-time vendor check? <i aria-hidden="true">+</i></button>
         <div class="faq-a">We never cache trust. Identity, inventory, risk and policy are re-checked on every submission - and every new threat.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Do vendors need to change how they build? <i>+</i></button>
+        <button class="faq-q" aria-expanded="false">Do vendors need to change how they build? <i aria-hidden="true">+</i></button>
         <div class="faq-a">No. They send what they already build. We inventory it and seal it.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">What does the risk score actually mean? <i>+</i></button>
+        <button class="faq-q" aria-expanded="false">What does the risk score actually mean? <i aria-hidden="true">+</i></button>
         <div class="faq-a">A 1 to 10 score with a short explanation: what is risky, how it can be reached, and what to do.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Is our software inventory exposed? <i>+</i></button>
+        <button class="faq-q" aria-expanded="false">Is our software inventory exposed? <i aria-hidden="true">+</i></button>
         <div class="faq-a">Never. Only a cryptographic fingerprint is anchored. The inventory stays encrypted.</div>
       </div>
     </div>
 
     <footer>
       <div style="display:flex; gap:8px; align-items:center">
-        <div class="mark" style="width:26px; height:26px; border-radius:8px; background:transparent; border:none; box-shadow:none; padding:0; overflow:hidden"><img src="./assets/logo.png" alt="VendorChain" style="width:26px; height:26px; object-fit:contain; display:block"></div>
+        <div class="mark" style="width:26px; height:26px; border-radius:8px; background:transparent; border:none; box-shadow:none; padding:0; overflow:hidden"><img src="./assets/logo.png" alt="VendorChain" width="26" height="26" style="width:26px; height:26px; object-fit:contain; display:block" loading="lazy" decoding="async"></div>
         <div><div style="font-size:13px; font-weight:700; color:#F5F7FA">VendorChain</div><div style="font-size:11px; color:#6B728E">(c) 2026 VendorChain Labs - Chennai</div></div>
       </div>
-      <div style="display:flex; gap:16px; font-size:11px"><a href="#">Privacy</a><a href="#">Security</a><a href="#">Docs</a></div>
-      <div style="font-size:28px; font-weight:800; letter-spacing:-.04em; color:#0F1116; line-height:1; opacity:.9; font-family:var(--font-primary)">VENDORCHAIN</div>
+      <div style="display:flex; gap:16px; font-size:11px"><a href="#">Privacy</a><a href="#">Security</a><a href="https://github.com/bruce12-glitch/landing-page-" target="_blank" rel="noopener">Docs</a></div>
+      <div class="footer-word" aria-hidden="true">VENDORCHAIN</div>
     </footer>
   </section>
+  </main>
 </div>
 
-<script>
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.14});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-document.querySelectorAll('.faq-q').forEach(b=>b.addEventListener('click',()=>{
-  const it=b.parentElement; const open=it.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(x=>x.classList.remove('open'));
-  if(!open) it.classList.add('open');
-}));
-document.querySelectorAll('.arch-tab').forEach(t=>t.addEventListener('click',()=>{
-  document.querySelectorAll('.arch-tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-}));
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-// Horizontal stack scroll parallax
-const hInner=document.getElementById('hStackInner');
-const hStack=document.getElementById('hStack');
-if(hInner && hStack){
-  const onScroll=()=>{
-    const r=hStack.getBoundingClientRect();
-    const vh=window.innerHeight;
-    const progress=Math.min(1, Math.max(0, (vh - r.top)/(vh + r.height)));
-    const layers=hInner.querySelectorAll('.h-layer');
-    layers.forEach((l,i)=>{
-      const off=i*3;
-      l.style.transform=`translateZ(${i*10}px) translateY(${off + progress*10}px)`;
-    });
-  };
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-}
-
-// Coins mini float
-const coinsMini=document.getElementById('coinsMini');
-if(coinsMini){
-  let t=0;
-  function float(){
-    t+=0.016;
-    coinsMini.style.transform=`rotate(-7deg) translateY(${Math.sin(t)*4}px)`;
-    requestAnimationFrame(float);
-  }
-  float();
-}
-
-// Magnet tilt for cards
-const tiltEls=document.querySelectorAll('[data-tilt]');
-tiltEls.forEach(el=>{
-  el.addEventListener('mousemove', e=>{
-    const r=el.getBoundingClientRect();
-    const x=(e.clientX - r.left)/r.width - .5;
-    const y=(e.clientY - r.top)/r.height - .5;
-    el.style.transform=`perspective(1000px) rotateX(${-y*10}deg) rotateY(${x*14}deg) translateY(-7px) translateZ(18px)`;
-  });
-  el.addEventListener('mouseleave',()=>el.style.transform='');
-});
-
-// 3D motion for horizon - parallax and tilt on mouse
-const heroShell = document.getElementById('heroShell');
-const horizon = document.querySelector('.horizon');
-const halo = document.querySelector('.halo');
-if(heroShell && horizon){
-  heroShell.addEventListener('mousemove', e=>{
-    const r = heroShell.getBoundingClientRect();
-    const x = (e.clientX - r.left)/r.width - 0.5;
-    const y = (e.clientY - r.top)/r.height - 0.5;
-    horizon.style.transform = `translateX(-50%) perspective(1000px) rotateX(${y*2}deg) rotateY(${x*3}deg)`;
-    if(halo) halo.style.transform = `translateX(-50%) translateY(${y*6}px)`;
-    document.querySelectorAll('.coin').forEach((c,i)=>{
-      const offset = (i - 2.5) * 0.8;
-      c.style.transform = `translateY(${ -y*8 + Math.sin(Date.now()*0.001 + i)*2 }px) translateX(${x*6 + offset}px) rotateY(${x*8}deg) rotateX(${-y*4}deg)`;
-    });
-  });
-  heroShell.addEventListener('mouseleave', ()=>{
-    horizon.style.transform = 'translateX(-50%)';
-    if(halo) halo.style.transform = 'translateX(-50%)';
-    document.querySelectorAll('.coin').forEach((c,i)=>{
-      const baseY = [6,2,0,1,3,6][i] || 0;
-      c.style.transform = `translateY(${baseY}px)`;
-    });
-  });
-}
-
-// Orbs parallax
-const orbs = document.querySelectorAll('.orb-3d');
-if(heroShell && orbs.length){
-  heroShell.addEventListener('mousemove', e=>{
-    const r = heroShell.getBoundingClientRect();
-    const x = (e.clientX - r.left)/r.width - 0.5;
-    const y = (e.clientY - r.top)/r.height - 0.5;
-    orbs.forEach((orb,i)=>{
-      const depth = (i+1)*0.6;
-      orb.style.transform = `translate3d(${x*14*depth}px, ${y*10*depth}px, ${depth*8}px)`;
-    });
-  });
-}
-
-// Particle field - subtle 3D depth
-const pCanvas = document.getElementById('particleCanvas');
-if(pCanvas){
-  const ctx = pCanvas.getContext('2d');
-  let particles = [];
-  const DPR = Math.min(window.devicePixelRatio, 1.6);
-  function resizeP(){
-    const r = pCanvas.getBoundingClientRect();
-    pCanvas.width = r.width * DPR;
-    pCanvas.height = r.height * DPR;
-    ctx.setTransform(DPR,0,0,DPR,0,0);
-  }
-  function initP(){
-    const r = pCanvas.getBoundingClientRect();
-    particles = Array.from({length: 42}, ()=>({
-      x: Math.random()*r.width,
-      y: Math.random()*r.height,
-      z: Math.random()*0.8 + 0.2,
-      vx: (Math.random()-0.5)*0.22,
-      vy: (Math.random()-0.5)*0.18,
-      r: Math.random()*1.1 + 0.4
-    }));
-  }
-  function drawP(){
-    const r = pCanvas.getBoundingClientRect();
-    ctx.clearRect(0,0,r.width,r.height);
-    // update and draw
-    particles.forEach(p=>{
-      p.x += p.vx * p.z;
-      p.y += p.vy * p.z;
-      if(p.x < 0) p.x = r.width;
-      if(p.x > r.width) p.x = 0;
-      if(p.y < 0) p.y = r.height;
-      if(p.y > r.height) p.y = 0;
-      const alpha = 0.18 * p.z;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * p.z, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(168,160,255,${alpha})`;
-      ctx.fill();
-      // glow
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * p.z * 2.2, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(124,58,237,${alpha*0.22})`;
-      ctx.fill();
-    });
-    // connect nearby
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const a=particles[i], b=particles[j];
-        const dx=a.x-b.x, dy=a.y-b.y;
-        const dist = Math.hypot(dx,dy);
-        if(dist < 88){
-          const alpha = (1 - dist/88) * 0.07 * Math.min(a.z, b.z);
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(139,92,246,${alpha})`;
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(drawP);
-  }
-  resizeP(); initP(); drawP();
-  window.addEventListener('resize', ()=>{resizeP(); initP();});
-  // Parallax for particles
-  if(heroShell){
-    heroShell.addEventListener('mousemove', e=>{
-      const r = heroShell.getBoundingClientRect();
-      const x = (e.clientX - r.left)/r.width - 0.5;
-      const y = (e.clientY - r.top)/r.height - 0.5;
-      pCanvas.style.transform = `translate3d(${x*8}px, ${y*6}px, 0)`;
-    });
-  }
-}
-
-// Coins auto float with 3D depth
-const coinsRow = document.getElementById('coinsRow');
-if(coinsRow){
-  let t=0;
-  function floatCoins(){
-    t+=0.015;
-    coinsRow.querySelectorAll('.coin').forEach((c,i)=>{
-      const floatY = Math.sin(t + i*0.7) * 3;
-      const rotY = Math.sin(t*0.5 + i) * 2;
-      if(!c.matches(':hover')){
-        const baseY = [6,2,0,1,3,6][i];
-        c.style.transform = `translateY(${baseY + floatY}px) rotateY(${rotY}deg)`;
-      }
-    });
-    requestAnimationFrame(floatCoins);
-  }
-  floatCoins();
-}
-
-// Growth grid stagger on scroll
-const grid=document.getElementById('growthGrid');
-if(grid){
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        const cards=entry.target.querySelectorAll('.g-card');
-        cards.forEach((c,i)=>{c.style.opacity='0'; c.style.transform='translateY(12px)'; setTimeout(()=>{c.style.transition='all .6s cubic-bezier(.16,1,.3,1)'; c.style.opacity='1'; c.style.transform='translateY(0)';}, i*70)});
-        obs.unobserve(entry.target);
-      }
-    });
-  },{threshold:.2});
-  obs.observe(grid);
-}
-
-// Eco grid parallax
-const eco=document.getElementById('ecoGrid');
-if(eco){
-  window.addEventListener('scroll',()=>{
-    const r=eco.getBoundingClientRect();
-    if(r.top < window.innerHeight && r.bottom > 0){
-      const p=(window.innerHeight - r.top)/(window.innerHeight + r.height);
-      eco.querySelectorAll('.eco-card').forEach((c,i)=>{
-        c.style.transform=`translateY(${Math.sin(p*Math.PI + i)*6}px)`;
-      });
-    }
-  },{passive:true});
-}
-
-// Connect stacks float
-const cs1=document.getElementById('coStack1');
-const cs2=document.getElementById('coStack2');
-if(cs1 && cs2){
-  let tt=0;
-  function loop(){
-    tt+=0.014;
-    cs1.style.transform=`rotateX(${2+Math.sin(tt)*1.5}deg) rotateY(${Math.cos(tt)*2}deg)`;
-    cs2.style.transform=`rotateX(${2+Math.cos(tt)*1.5}deg) rotateY(${Math.sin(tt)*2}deg)`;
-    requestAnimationFrame(loop);
-  }
-  loop();
-}
-</script>
-
+<script type="module" src="./js/app.js"></script>
 </body>
 </html>
