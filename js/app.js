@@ -183,18 +183,21 @@
     });
   }
 
-  // ---------- Hero motion: horizon + coins + orbs ----------
+  // ---------- Hero motion: horizon + coins + orbs + 3D stack ----------
   const heroShell = document.getElementById('heroShell');
   const horizon = document.querySelector('.horizon');
   const halo = document.querySelector('.halo');
   const orbs = document.querySelectorAll('.orb-3d');
+  const heroStack = document.getElementById('heroStack');
+  const heroStackWrap = document.getElementById('heroStackWrap');
   if (heroShell && isHoverCapable && !prefersReducedMotion) {
     let heroRaf = 0;
     let heroX = 0, heroY = 0;
     let heroTicking = false;
     heroShell.addEventListener('mousemove', (e) => {
-      heroX = (e.clientX - heroShell.getBoundingClientRect().left) / heroShell.getBoundingClientRect().width - 0.5;
-      heroY = (e.clientY - heroShell.getBoundingClientRect().top) / heroShell.getBoundingClientRect().height - 0.5;
+      const rect = heroShell.getBoundingClientRect();
+      heroX = (e.clientX - rect.left) / rect.width - 0.5;
+      heroY = (e.clientY - rect.top) / rect.height - 0.5;
       if (heroTicking) return;
       heroTicking = true;
       heroRaf = requestAnimationFrame(() => {
@@ -203,10 +206,9 @@
         // coins: slight parallax, but respect auto float not to fight if user hovers coin itself
         document.querySelectorAll('.coin').forEach((c, i) => {
           if (c.matches(':hover')) return;
-          const offset = (i - 2.5) * 0.8;
-          // keep baseY via data attr or array fallback
-          const baseY = [6, 2, 0, 1, 3, 6][i] || 0;
-          c.style.transform = `translateY(${baseY - heroY * 4}px) translateX(${heroX * 4 + offset}px) rotateY(${heroX * 6}deg)`;
+          const offset = (i - 2) * 0.9; // 5 coins centered
+          const baseY = [5, 1.5, 0, 1.5, 5][i] ?? 0;
+          c.style.transform = `translateY(${baseY - heroY * 4}px) translateX(${heroX * 5 + offset}px) rotateY(${heroX * 7}deg) rotateX(${-heroY * 3}deg)`;
         });
         orbs.forEach((orb, i) => {
           const depth = (i + 1) * 0.6;
@@ -214,6 +216,12 @@
         });
         const pCanvasEl = document.getElementById('particleCanvas');
         if (pCanvasEl) pCanvasEl.style.transform = `translate3d(${heroX * 8}px, ${heroY * 6}px, 0)`;
+        if (heroStack) {
+          heroStack.style.transform = `rotateX(${14 + heroY * 4}deg) rotateY(${-14 + heroX * 8}deg) translateZ(0)`;
+        }
+        if (heroStackWrap) {
+          heroStackWrap.style.transform = `translateX(${heroX * 10}px) translateY(${heroY * 6}px)`;
+        }
         heroTicking = false;
       });
     });
@@ -223,13 +231,31 @@
       if (horizon) horizon.style.transform = 'translateX(-50%)';
       if (halo) halo.style.transform = 'translateX(-50%)';
       document.querySelectorAll('.coin').forEach((c, i) => {
-        const baseY = [6, 2, 0, 1, 3, 6][i] || 0;
+        const baseY = [5, 1.5, 0, 1.5, 5][i] ?? 0;
         c.style.transform = `translateY(${baseY}px)`;
       });
       orbs.forEach((orb) => { orb.style.transform = ''; });
       const pCanvasEl = document.getElementById('particleCanvas');
       if (pCanvasEl) pCanvasEl.style.transform = '';
+      if (heroStack) heroStack.style.transform = 'rotateX(14deg) rotateY(-14deg)';
+      if (heroStackWrap) heroStackWrap.style.transform = '';
     });
+  }
+  // Hero stack gentle float (image-ref)
+  if (heroStack && heroStackWrap && !prefersReducedMotion) {
+    let t = 0;
+    function floatStack() {
+      if (!pageHidden) {
+        t += 0.012;
+        const floatY = Math.sin(t) * 3;
+        const rot = Math.sin(t * 0.6) * 0.6;
+        if (!heroShell || !heroShell.matches(':hover')) {
+          heroStack.style.transform = `rotateX(${14 + rot}deg) rotateY(${-14 + Math.cos(t*0.5)*0.8}deg) translateY(${floatY}px)`;
+        }
+      }
+      requestAnimationFrame(floatStack);
+    }
+    floatStack();
   }
 
   // ---------- Particle field (with hidden + reduced-motion handling + error guard) ----------
@@ -336,7 +362,7 @@
   // if reduced motion, hide canvas for perf (CSS also hides)
   if (prefersReducedMotion && pCanvas) pCanvas.style.display = 'none';
 
-  // ---------- Coins auto float ----------
+  // ---------- Coins auto float (5-coin arc) ----------
   const coinsRow = document.getElementById('coinsRow');
   if (coinsRow && !prefersReducedMotion) {
     let t = 0;
@@ -346,13 +372,11 @@
         t += 0.015;
         coinsRow.querySelectorAll('.coin').forEach((c, i) => {
           if (c.matches(':hover')) return; // don't fight user hover
-          // if hero mousemove is active, coins are already controlled there — skip to avoid jitter
-          // check if heroShell is being hovered
           const heroHover = heroShell && heroShell.matches(':hover');
           if (heroHover) return;
-          const floatY = Math.sin(t + i * 0.7) * 2.5;
-          const rotY = Math.sin(t * 0.5 + i) * 1.5;
-          const baseY = [6, 2, 0, 1, 3, 6][i] || 0;
+          const floatY = Math.sin(t + i * 0.68) * 2.6;
+          const rotY = Math.sin(t * 0.5 + i) * 1.6;
+          const baseY = [5, 1.5, 0, 1.5, 5][i] ?? 0;
           c.style.transform = `translateY(${baseY + floatY}px) rotateY(${rotY}deg)`;
         });
       }
