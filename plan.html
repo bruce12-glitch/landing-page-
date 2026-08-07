@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VendorChain - 3D Landing Implementation Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+ :root{
+ --bg:#fcfdff; --bg2:#fcfcfc; --card:#fff; --border:#ececec; --border2:#e8e8e8;
+ --ink:#0b1220; --muted:#6b7280; --muted2:#94a3b8;
+ --blue:#0080ff; --blue2:#1400ff; --navy:#001c2e; --navy2:#0f2a42;
+ --green:#009447; --amber:#d97706; --red:#dc2626;
+ --radius:20px; --radius-lg:28px;
+ --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06),0 20px 48px rgba(0,0,0,.04);
+ --shadow-blue:0 8px 24px rgba(0,128,255,.18),0 24px 64px rgba(0,128,255,.12);
+ }
+ *{box-sizing:border-box}
+ html{scroll-behavior:smooth}
+ body{margin:0; font-family:'Inter',system-ui,sans-serif; background:linear-gradient(180deg,var(--bg) 0%, var(--bg2) 55%, #fff 100%); color:var(--ink); line-height:1.6; -webkit-font-smoothing:antialiased}
+ a{color:var(--blue); text-decoration:none}
+ .wrap{max-width:1120px; margin:0 auto; padding:0 24px}
+ /* TOP BAR */
+ .topbar{position:sticky; top:0; z-index:50; backdrop-filter:blur(14px) saturate(180%); background:rgba(252,252,255,.78); border-bottom:1px solid rgba(0,28,46,.08)}
+ .topbar-inner{max-width:1120px; margin:0 auto; padding:10px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px}
+ .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.02em}
+ .mark{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--blue),var(--blue2)); display:grid; place-items:center; color:#fff; box-shadow:var(--shadow-blue)}
+ .meta{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted2); display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+ .meta span{padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:#fff}
+ .meta .blue{background:var(--navy); color:#fff; border-color:var(--navy)}
+ .btn{appearance:none; border:1px solid transparent; border-radius:12px; padding:10px 14px; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px}
+ .btn-primary{background:linear-gradient(135deg,var(--blue),#0047d1); color:#fff; box-shadow:var(--shadow-blue)}
+ .btn-ghost{background:#fff; border-color:var(--border); color:var(--ink)}
+ /* COVER */
+ .cover{padding:36px 0 18px; display:grid; grid-template-columns:1.15fr .85fr; gap:24px; align-items:start}
+ @media(max-width:900px){.cover{grid-template-columns:1fr}}
+ .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--blue); background:#e6f0ff; border:1px solid #cfe0fa; padding:6px 10px; border-radius:999px}
+ .eyebrow i{width:7px; height:7px; background:var(--green); border-radius:50%; box-shadow:0 0 0 4px rgba(0,148,71,.15); display:inline-block}
+ .h1{font-family:'Geist',sans-serif; font-size:clamp(34px,5vw,52px); line-height:.92; letter-spacing:-.04em; margin:14px 0 12px; font-weight:800}
+ .h1 em{font-style:normal; background:linear-gradient(135deg,var(--blue),var(--blue2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent}
+ .lead{font-size:15px; color:var(--muted); max-width:62ch}
+ .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:18px}
+ .kpi{background:#fff; border:1px solid var(--border); border-radius:16px; padding:12px; text-align:center}
+ .kpi strong{font-size:20px; letter-spacing:-.03em; display:block}
+ .kpi span{font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted2)}
+ .toc-card{background:var(--navy); color:#e2e8f0; border-radius:var(--radius-lg); padding:18px; border:1px solid var(--navy2); position:sticky; top:74px; box-shadow:0 20px 48px rgba(0,28,46,.22); overflow:hidden}
+ .toc-card:before{content:""; position:absolute; inset:0; background:radial-gradient(500px 300px at 30% 0%, rgba(0,128,255,.22), transparent 60%); pointer-events:none}
+ .toc-card *{position:relative}
+ .toc-title{font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#7dd3fc; margin:0 0 10px}
+ .toc{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px}
+ .toc a{display:flex; align-items:center; justify-content:space-between; padding:9px 10px; border-radius:10px; font-size:13px; font-weight:600; color:#cbd5e1; border:1px solid transparent}
+ .toc a:hover{background:rgba(255,255,255,.08); color:#fff; border-color:rgba(255,255,255,.1)}
+ .toc a small{font-size:11px; color:#64748b; background:rgba(255,255,255,.08); padding:3px 7px; border-radius:999px}
+ /* SECTIONS */
+ .section{padding:28px 0; border-top:1px solid var(--border); margin-top:28px}
+ .section-head{display:flex; align-items:end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px}
+ .h2{font-family:'Geist',sans-serif; font-size:28px; line-height:.95; letter-spacing:-.03em; margin:0}
+ .h3{font-size:16px; font-weight:800; letter-spacing:-.02em; margin:18px 0 8px}
+ .h4{font-size:13px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--blue); margin:0 0 8px}
+ .p{font-size:13.5px; color:#334155; margin:0 0 10px; line-height:1.65}
+ .callout{background:#fff; border:1px solid var(--border); border-left:3px solid var(--blue); border-radius:12px; padding:12px 14px; font-size:13px; color:#334155}
+ .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+ @media(max-width:860px){.grid2{grid-template-columns:1fr}}
+ .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+ @media(max-width:900px){.grid3{grid-template-columns:1fr}}
+ .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+ @media(max-width:1000px){.grid4{grid-template-columns:repeat(2,1fr)}}
+ @media(max-width:560px){.grid4{grid-template-columns:1fr}}
+ .card{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04)}
+ .card.dark{background:linear-gradient(180deg,#0b1220,#0f1d32); color:#e2e8f0; border-color:#1e293b}
+ .badge{display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:5px 9px; border-radius:999px; border:1px solid}
+ .badge-blue{background:#e6f0ff; color:var(--blue); border-color:#cfe0fa}
+ .badge-green{background:#ecfdf5; color:#065f46; border-color:#a7f3d0}
+ .badge-amber{background:#fffbeb; color:#92400e; border-color:#fde68a}
+ .badge-red{background:#fef2f2; color:#991b1b; border-color:#fecaca}
+ .badge-navy{background:var(--navy); color:#7dd3fc; border-color:var(--navy2)}
+ table{width:100%; border-collapse:separate; border-spacing:0; font-size:13px; background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden}
+ th{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted2); text-align:left; padding:10px 12px; background:#f8fafc; border-bottom:1px solid var(--border)}
+ td{padding:10px 12px; border-bottom:1px solid #f1f5f9; vertical-align:top}
+ tr:last-child td{border-bottom:none}
+ .mono{font-family:'JetBrains Mono',ui-monospace,monospace; font-size:12px}
+ .progress{height:8px; background:#f1f5f9; border-radius:999px; overflow:hidden}
+ .progress i{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--blue),var(--blue2))}
+ /* TIMELINE */
+ .timeline{position:relative; padding-left:24px; border-left:2px solid #e2e8f0; display:flex; flex-direction:column; gap:16px}
+ .t-item{position:relative; background:#fff; border:1px solid var(--border); border-radius:16px; padding:14px 16px}
+ .t-item:before{content:""; position:absolute; left:-31px; top:18px; width:12px; height:12px; border-radius:50%; background:var(--blue); border:3px solid #fff; box-shadow:0 0 0 3px rgba(0,128,255,.15)}
+ .t-item.done:before{background:var(--green)}
+ /* CODE */
+ pre{background:#0b1220; color:#cbd5e1; border:1px solid #1e293b; border-radius:12px; padding:14px; overflow:auto; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.6; margin:10px 0}
+ pre b{color:#7dd3fc} pre em{color:#86efac; font-style:normal} pre i{color:#fbbf24; font-style:normal}
+ /* FIGURE */
+ .figure{background:linear-gradient(180deg,#f8fbff,#f1f5f9); border:1px solid #e2e8f0; border-radius:16px; padding:14px; display:flex; flex-direction:column; gap:12px}
+ .legend{display:flex; gap:8px; flex-wrap:wrap; font-size:11px; font-weight:700; color:var(--muted)}
+ .legend span{display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #e2e8f0; padding:5px 8px; border-radius:999px}
+ .dot{width:8px; height:8px; border-radius:50%}
+ /* STICKY FOOTER */
+ .foot{padding:18px 0; border-top:1px solid var(--border); margin-top:32px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--muted2)}
+</style>
+</head>
+<body>
+<div class="topbar">
+ <div class="topbar-inner">
+ <div class="brand"><div class="mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M9 12l2 2 4-4"/></svg></div> VendorChain - Implementation Plan <span style="font-weight:500; color:var(--muted)"> 3D Motion Landing</span></div>
+ <div class="meta"><span class="blue">v1.0 - 07 Aug 2026</span><span>Zero-Trust B2B</span><span>Billow Design System</span></div>
+ <div style="display:flex; gap:8px">
+ <a href="#build" class="btn btn-ghost">Jump to Build</a>
+ <a href="/home/user/vendorchain.html" class="btn btn-primary">Open Live Landing -></a>
+ </div>
+ </div>
+</div>
+
+<div class="wrap">
+ <!-- COVER -->
+ <div class="cover">
+ <div>
+ <div class="eyebrow"><i></i> End-to-End Plan 3D Motion Production Ready</div>
+ <h1 class="h1">Deep plan for the <em>VendorChain</em> vendor verification landing - with 3D motion assets & implementation.</h1>
+ <p class="lead">This is not a redesign. We keep <strong>all Billow design features exactly</strong> - tokens, radii, shadows, blur nav, Inter/Geist type, card system - and only swap components to VendorChain's six Zero-Trust layers. Then we add a purposeful 3D motion layer to make trust <em>visible</em>.</p>
+ <div class="callout" style="margin-top:14px">
+ <strong>Goal:</strong> Make "Zero-Trust" instinctive in 7 seconds. Every 3D motion proves one promise: <em>nothing is trusted by default, everything is verified continuously, every verdict is immutable.</em> No decoration - only explanation.
+ </div>
+ <div class="kpis">
+ <div class="kpi"><strong><=1.8s</strong><span>LCP on 4G 60fps 3D</span></div>
+ <div class="kpi"><strong>6 layers</strong><span>1 scene per layer</span></div>
+ <div class="kpi"><strong>100% fallback</strong><span>No WebGL -> video/Lottie</span></div>
+ </div>
+ </div>
+ <div class="toc-card">
+ <div class="toc-title">Contents</div>
+ <ol class="toc">
+ <li><a href="#s1">01 Strategy & KPIs <small>5 min</small></a></li>
+ <li><a href="#s2">02 Information Architecture <small>Site map</small></a></li>
+ <li><a href="#s3">03 Page Narrative - 10 Sections <small>Story</small></a></li>
+ <li><a href="#s4">04 3D Motion Asset System <small>7 assets</small></a></li>
+ <li><a href="#s5">05 Design System - Billow Preserved <small>Tokens</small></a></li>
+ <li><a href="#s6">06 Tech Architecture <small>Stack</small></a></li>
+ <li><a href="#build">07 Build Plan - 5 Phases <small>6 weeks</small></a></li>
+ <li><a href="#s8">08 Performance, Fallbacks & A11y <small>Guarantees</small></a></li>
+ <li><a href="#s9">09 Team, Tools & Handoff <small>Who / How</small></a></li>
+ </ol>
+ <div style="margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.12); font-size:12px; color:#94a3b8; line-height:1.6">
+ <strong style="color:#fff">Deliverable live at:</strong> <a href="/home/user/vendorchain.html" style="color:#7dd3fc; word-break:break-all">/vendorchain.html</a><br>
+ This plan is the execution blueprint to ship the 3D version of that file.
+ </div>
+ </div>
+ </div>
+
+ <!-- S1 -->
+ <section id="s1" class="section">
+ <div class="section-head">
+ <div>
+ <div class="h4">01 - Strategy</div>
+ <h2 class="h2">Why 3D? To make invisible trust visible.</h2>
+ </div>
+ <span class="badge badge-blue">Zero-Trust = Show, Don't Say</span>
+ </div>
+ <div class="grid2">
+ <div class="card">
+ <h3 class="h3">Objectives</h3>
+ <ul class="p" style="margin:0; padding-left:18px">
+ <li><strong>Convert CTO/CISO:</strong> "I get it in one scroll" - 6 layers mapped to 6 motions, not paragraphs.</li>
+ <li><strong>Prove continuous:</strong> Motion never idles - deps drift, CVEs appear, OPA re-evaluates.</li>
+ <li><strong>Prove tamper-proof:</strong> Hash -> cube -> chain - you can see immutability.</li>
+ <li><strong>Keep Billow DNA:</strong> Same calm, editorial, rounded, soft-shadow system - 3D is an accent, not a carnival.</li>
+ </ul>
+ </div>
+ <div class="card">
+ <h3 class="h3">KPIs & Success</h3>
+ <table>
+ <tr><th>Metric</th><th>Target</th></tr>
+ <tr><td>Hero comprehension</td><td>>=70% can name 3 layers after 30s (user test)</td></tr>
+ <tr><td>Waitlist conversion</td><td>+35% vs static version (A/B)</td></tr>
+ <tr><td>Time on layers</td><td>+40s median vs current</td></tr>
+ <tr><td>Performance</td><td>LCP <=1.8s, CLS 0, 60fps on iPhone 12 / M1</td></tr>
+ <tr><td>Fallback</td><td>100% meaningful if WebGL off (poster + Lottie)</td></tr>
+ </table>
+ </div>
+ </div>
+ <div class="grid4" style="margin-top:14px">
+ <div class="card"><span class="badge badge-green">Audience</span><p class="p" style="margin-top:8px"><strong>Primary:</strong> CISOs, Platform Heads, Procurement Tech (India + GCC). <strong>Secondary:</strong> Vendors (need to understand "no blame, just proof").</p></div>
+ <div class="card"><span class="badge badge-blue">Positioning</span><p class="p" style="margin-top:8px"><strong>Billow =</strong> "Run on facts, not guesswork."<br><strong>VendorChain =</strong> "Never trust. Always verify. Always prove."</p></div>
+ <div class="card"><span class="badge badge-amber">Principle</span><p class="p" style="margin-top:8px">Motion = explanation. If a motion doesn't clarify a layer, delete it. Max 1 hero motion + 6 layer vignettes.</p></div>
+ <div class="card"><span class="badge badge-navy">Constraint</span><p class="p" style="margin-top:8px">Keep Billow file's tokens, nav, cards, shadows. Only <em>components</em> change - same design language, new story.</p></div>
+ </div>
+ </section>
+
+ <!-- S2 -->
+ <section id="s2" class="section">
+ <div class="section-head">
+ <div><div class="h4">02 - Information Architecture</div><h2 class="h2">One page, 10 sections, 1 story.</h2></div>
+ <span class="badge badge-blue">Scroll narrative 60-90s</span>
+ </div>
+ <div class="grid2">
+ <div class="card">
+ <h3 class="h3">Site Map (anchors)</h3>
+ <pre style="margin-top:8px; background:#f8fafc; color:#0f172a; border-color:#e2e8f0">/ (landing)
+ #hero - Zero-trust promise + live ledger preview
+ #proof - 4 metrics strip (vendors, SBOMs, risk, blocks)
+ #getting-started - 3 steps: Onboard -> Seal -> Cockpit
+ #platform - Positioning: "From vendor to verified deploy"
+ #layers - 6 feature blocks (alternating media/copy)
+ L1 Identity L2 SBOM L3 Cosign L4 Claude L5 OPA L6 Fabric
+ #architecture - 5-step flow strip (Syft->Cosign->Claude->OPA->Fabric)
+ #compare - Before/After (Traditional vs VendorChain)
+ #intelligence - Risk Intelligence teaser (Slack digest)
+ #cta - Waitlist + Fabric proof
+ #faq - 8 objections handled
+ #platform-grid - 16-capability footer grid
+ footer - Legals + links</pre>
+ <div class="callout" style="margin-top:10px">All anchored to sticky pill nav. Deep-linkable: <span class="mono">/ #layers-L4</span> for sales.</div>
+ </div>
+ <div class="card">
+ <h3 class="h3">User Journeys</h3>
+ <table>
+ <tr><th>Persona</th><th>Path</th><th>CTA</th></tr>
+ <tr><td><strong>CISO</strong> (skeptic)</td><td>Hero -> Architecture (5 steps) -> L4 AI -> L6 Fabric -> Compare -> Proof</td><td>Book design review</td></tr>
+ <tr><td><strong>Platform Lead</strong></td><td>Hero -> Getting Started -> L2 SBOM -> L3 Cosign -> L5 OPA -> Grid</td><td>Join waitlist / GitHub Action</td></tr>
+ <tr><td><strong>Vendor</strong></td><td>Hero -> L1 Identity -> L3 Cosign -> FAQ "Do I need to change build?"</td><td>Submit test SBOM</td></tr>
+ </table>
+ <h3 class="h3">Zero-Trust Narrative Arc</h3>
+ <div class="timeline" style="margin-top:10px">
+ <div class="t-item"><strong>Hook (Hero):</strong> "Eliminate assumed trust" + ledger that never stops ticking.</div>
+ <div class="t-item"><strong>Onramp (3 steps):</strong> You can do it in 5 minutes - identity, seal, cockpit.</div>
+ <div class="t-item"><strong>Deep dive (6 layers):</strong> Each layer = 1 doubt killed with 1 motion.</div>
+ <div class="t-item done"><strong>Proof (Architecture + Compare + Fabric):</strong> End-to-end in &lt;20s, hash on-chain - dispute over.</div>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <!-- S3 -->
+ <section id="s3" class="section">
+ <div class="section-head">
+ <div><div class="h4">03 - Page Narrative</div><h2 class="h2">Section-by-section with 3D intent.</h2></div>
+ <span class="badge badge-green">Billow structure preserved 1:1</span>
+ </div>
+
+ <div class="card" style="overflow:hidden; padding:0">
+ <table>
+ <thead><tr><th style="width:18%">Section (Billow analog)</th><th style="width:32%">VendorChain content</th><th>3D / Motion intent</th><th style="width:16%">Interaction</th></tr></thead>
+ <tbody>
+ <tr><td><strong>Hero</strong><br><span style="color:var(--muted)">"Run on facts..."</span></td><td><strong>"Eliminate assumed trust..."</strong><br>Sub: continuous auth + dependencies + immutable proof. 2 CTAs + ledger preview.</td><td><span class="badge badge-blue">Asset #1 - Orbital Trust Ring</span> <br>Abstract torus of vendor nodes orbiting a central shield; occasional node flashes red -> quarantined. Slow drift, not spin.</td><td>Parallax 8% on scroll; reduced-motion = static poster</td></tr>
+ <tr><td><strong>Proof strip</strong><br><span style="color:var(--muted)">Metrics</span></td><td>4 numbers: 1,284 vendors / 4,192 SBOMs / 3.2 avg risk / 37 blocks (24h)</td><td>Count-up + tiny inline sparkline (not 3D)</td><td>Counts animate on enter</td></tr>
+ <tr><td><strong>Getting Started</strong><br><span style="color:var(--muted)">3 steps</span></td><td>1 Onboard & validate (GST/PAN/Bank) 2 Submit SBOM & seal 3 Cockpit alive</td><td><span class="badge badge-green">Micro-3D icons</span> - flipping ID card, stamping SBOM, meter filling</td><td>Each card tilt 3deg  on hover (desktop)</td></tr>
+ <tr><td><strong>Platform</strong><br><span style="color:var(--muted)">"From lead to paid"</span></td><td>"From vendor to verified deploy. All in one place."</td><td>None - typographic pause</td><td>-</td></tr>
+ <tr><td><strong>L1 Identity</strong></td><td>GST/PAN/Bank penny-test + continuous re-validation</td><td><span class="badge badge-amber">Asset #2 - ID Prism</span> - GST card extruded, shattering if fake; bank coin drops for penny-test</td><td>Hover: flip card to show verification ticks</td></tr>
+ <tr><td><strong>L2 SBOM</strong></td><td>Syft -> CycloneDX, 187 deps, diff view</td><td><span class="badge badge-blue">Asset #3 - Dependency Constellation</span> - force-directed graph of packages; hover isolates subtree</td><td>Scroll: nodes self-organize from chaos -> tree</td></tr>
+ <tr><td><strong>L3 Cosign</strong></td><td>Sign & verify, expiry, transparency log</td><td><span class="badge badge-green">Asset #4 - Seal Stamp</span> - SBOM cube gets wax seal; hover cracks if tampered</td><td>Click: "verify" -> seal glows, cert drawer slides</td></tr>
+ <tr><td><strong>L4 Claude</strong></td><td>CVE correlation, 1-10 + summary</td><td><span class="badge badge-amber">Asset #5 - Risk Orb</span> - translucent orb color = score (green->red), pulses faster when critical; CVE shards orbit</td><td>Risk slider scrubs orb color/size in real time</td></tr>
+ <tr><td><strong>L5 OPA</strong></td><td>Rego gate, &lt;100ms, explainable</td><td><span class="badge badge-navy">Asset #6 - Gate</span> - artifacts flow on conveyor; gate slams shut if risk>threshold, with Rego glow</td><td>Toggle Rego rule -> gate behavior changes live</td></tr>
+ <tr><td><strong>L6 Fabric</strong></td><td>Hashes on private channel, per-channel privacy</td><td><span class="badge badge-navy">Asset #7 - Ledger Chain</span> - chain of translucent cubes; new hash cube slots in with 2.1s finality thud</td><td>Hover cube -> shows Tx hash + endorsers</td></tr>
+ <tr><td><strong>Architecture</strong><br><span style="color:var(--muted)">Smart Insights viz</span></td><td>5-step flow Syft->Cosign->Claude->OPA->Fabric</td><td>Combined timeline with connecting beam that lights sequentially as you scroll</td><td>Scroll progress drives beam</td></tr>
+ <tr><td><strong>Compare</strong><br><span style="color:var(--muted)">Before/After</span></td><td>Traditional (6 reds) vs VendorChain (6 greens)</td><td>Split-card parallax - good side lifts 6px on hover</td><td>-</td></tr>
+ <tr><td><strong>Intelligence</strong></td><td>Weekly digest mock (BlueX 8.4)</td><td>None - keep editorial calm</td><td>-</td></tr>
+ <tr><td><strong>CTA + FAQ + Grid</strong></td><td>Waitlist + 8 FAQs + 16 capabilities</td><td>CTA has subtle aurora gradient drift (shader, not 3D heavy)</td><td>Input focus lifts card</td></tr>
+ </tbody>
+ </table>
+ </div>
+ <div class="callout" style="margin-top:12px">Rule: Only <strong>one WebGL canvas at a time</strong> - hero + 6 vignettes are not all rendered at once. We mount/unmount via IntersectionObserver (<span class="mono">rootMargin: 200px</span>). Keeps GPU idle &lt; 30%.</div>
+ </section>
+
+ <!-- S4 deep dive -->
+ <section id="s4" class="section">
+ <div class="section-head">
+ <div><div class="h4">04 - 3D Motion Asset System</div><h2 class="h2">7 assets. Each explains one lie about trust.</h2></div>
+ <span class="badge badge-navy">Spline + Three.js Lottie fallback</span>
+ </div>
+
+ <div class="grid3">
+ <div class="card">
+ <span class="badge badge-blue">#1 Hero - Orbital Trust Ring</span>
+ <h3 class="h3">Concept</h3><p class="p">Vendor nodes (small icosahedrons) orbit a central shield. Most nodes glow blue (verified); one flickers amber then red as it's quarantined - visual proof that trust is not permanent.</p>
+ <h3 class="h3">Motion</h3><p class="p">Idle drift 0.08 rad/s, parallax on mouse (max 6px). Scroll 0-400px: camera dolly in 6%, nodes spread. Every 12s, one node animates: amber pulse -> OPA gate slams -> node turns red + chain link snaps.</p>
+ <h3 class="h3">Tech</h3><p class="p"><strong>Spline</strong> scene (2.1MB) -> <span class="mono">&lt;Spline scene="..."/&gt;</span> lazy-loaded after LCP. Fallback poster + Lottie orbit.</p>
+ <div class="legend"><span><i class="dot" style="background:var(--blue)"></i> Verified</span><span><i class="dot" style="background:var(--amber)"></i> Quarantine</span><span><i class="dot" style="background:var(--red)"></i> Blocked</span></div>
+ </div>
+ <div class="card">
+ <span class="badge badge-green">#2 - ID Prism</span>
+ <h3 class="h3">Concept</h3><p class="p">Three stacked cards (GST, PAN, Bank) extruded with thickness. Real vendor = cards snap flush; fake vendor = cards repel with magnetic wobble + red shatter.</p>
+ <h3 class="h3">Motion</h3><p class="p">Flip on hover (rotateY 180deg ) to show verification checkmarks. Penny-test: 1Rs. coin drops, ripples, "Penny-test OK" stamp.</p>
+ <h3 class="h3">Tech</h3><p class="p"><strong>@react-three/fiber + drei</strong> RoundedBox, transmission material. Lottie fallback: card flip sequence.</p>
+ <div class="figure" style="font-size:12px; color:var(--muted)">State machine: <span class="mono">idle -> flipping -> verified|rejected</span> - driven by props, not timers.</div>
+ </div>
+ <div class="card">
+ <span class="badge badge-blue">#3 - Dependency Constellation</span>
+ <h3 class="h3">Concept</h3><p class="p">Force-directed graph: your app in center, 187 package nodes, edges = depends-on. Direct deps larger. Hover: highlight transitive blast radius.</p>
+ <h3 class="h3">Motion</h3><p class="p">On enter: nodes explode from center -> settle via physics (d3-force in 3D). Scroll scrubs: chaos -> organized tree -> diff mode (new nodes pulse blue).</p>
+ <h3 class="h3">Tech</h3><p class="p"><strong>Three.js Points + Lines</strong>, instanced meshes (187 instances = 1 draw call). Data from real SBOM JSON - no fake nodes.</p>
+ <div class="progress" style="margin-top:8px"><i style="width:68%"></i></div><div style="font-size:11px; color:var(--muted2); margin-top:4px">68% weight = performance budget - this asset gets most GPU</div>
+ </div>
+ </div>
+
+ <div class="grid3" style="margin-top:14px">
+ <div class="card">
+ <span class="badge badge-green">#4 - Seal Stamp</span>
+ <h3 class="h3">Concept</h3><p class="p">SBOM as a paper-cube (CycloneDX icon). Cosign hammer stamps wax seal. Valid = seal glows blue + cert ribbon unfurls. Tampered = crack propagates across cube.</p>
+ <h3 class="h3">Motion</h3><p class="p">Stamp: 120ms down, 80ms squash, ink spread shader. Verify: seal rim lights sequentially. Tamper demo: noise displacement + crack decal.</p>
+ <h3 class="h3">Tech</h3><p class="p"><strong>Spline</strong> or <strong>Rive</strong> (state machine has <span class="mono">idle -> stamping -> verified|cracked</span>).</p>
+ </div>
+ <div class="card">
+ <span class="badge badge-amber">#5 - Risk Orb</span>
+ <h3 class="h3">Concept</h3><p class="p">Translucent orb whose color, size, pulse rate, and orbiting CVE shards encode the 1-10 score. Green calm 30bpm vs red frantic 120bpm - you feel risk before you read it.</p>
+ <h3 class="h3">Motion</h3><p class="p">Score scrub: <span class="mono">lerpColor(#22c55e -> #ef4444)</span> + scale 0.9->1.2 + pulse 0.5->2Hz + shard count 2->12. Uses spring <span class="mono">mass:1, tension:180, friction:22</span>.</p>
+ <h3 class="h3">Tech</h3><p class="p"><strong>Three.js ShaderMaterial</strong> (Fresnel + noise). No external AI call in canvas - score is prop from L4 card.</p>
+ </div>
+ <div class="card">
+ <span class="badge badge-navy">#6 - Gate</span>
+ <h3 class="h3">Concept</h3><p class="p">Artifacts on a conveyor toward an OPA gate (torii shape with Rego runes). Low risk -> gate glows green, artifact passes. High risk / no sig -> gate slams, artifact bounces, red X projects.</p>
+ <h3 class="h3">Motion</h3><p class="p">Gate uses rigid-body hinge (rapier). Rego toggle in UI rewires runes: <span class="mono">risk&lt;6 && sig.valid</span> -> runes light in order. Fail -> runes dim one-by-one.</p>
+ <h3 class="h3">Tech</h3><p class="p"><strong>Three.js + Rapier</strong> (WASM, lazy). Fallback: CSS gate flap + Lottie.</p>
+ </div>
+ </div>
+
+ <div class="card dark" style="margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:center">
+ <div>
+ <span class="badge badge-navy">#7 - Ledger Chain (Hero of Trust)</span>
+ <h3 class="h3" style="color:#fff; margin-top:10px">Cubes that become a chain - you watch immutability happen.</h3>
+ <p class="p" style="color:#94a3b8">Each verdict = one translucent cube etched with truncated hash (e.g., <span class="mono" style="color:#7dd3fc">c82e...4fb0</span>). New cube drops from top, free-falls, magnet-snaps to chain with a soft thud + light flash. Chain gently sways like it's under tension - because it is.</p>
+ <p class="p" style="color:#94a3b8"><strong style="color:#e2e8f0">Tamper demo:</strong> Try dragging a middle cube - it resists, chain flashes red, snaps back. Copy: "Only hashes are on-chain. SBOMs stay private. Try to change history - Fabric won't let you."</p>
+ <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
+ <span class="badge" style="background:rgba(125,211,252,.15); color:#7dd3fc; border-color:rgba(125,211,252,.3)">Block #14,821</span>
+ <span class="badge" style="background:rgba(34,197,94,.15); color:#86efac; border-color:rgba(34,197,94,.3)">2.1s finality</span>
+ <span class="badge" style="background:rgba(255,255,255,.08); color:#cbd5e1; border-color:rgba(255,255,255,.12)">3 endorsers</span>
+ </div>
+ </div>
+ <div class="figure" style="background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.1); color:#cbd5e1">
+ <div style="font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#7dd3fc">Motion spec - Ledger</div>
+ <table style="background:transparent; border-color:rgba(255,255,255,.1)">
+ <tr><th style="background:rgba(255,255,255,.04); color:#94a3b8">Prop</th><th style="background:rgba(255,255,255,.04); color:#94a3b8">Value</th></tr>
+ <tr><td>Drop</td><td>gravity 9.8, restitution 0.12, snap spring 280/28</td></tr>
+ <tr><td>Snap</td><td>emissive flash 220ms, camera shake 2px</td></tr>
+ <tr><td>Idle</td><td>chain sway sin(0.4t) * 0.6deg </td></tr>
+ <tr><td>Hover cube</td><td>lift 4mm, show Tx drawer (hash risk verdict)</td></tr>
+ </table>
+ <div style="font-size:11px; color:#64748b">Tech: <strong style="color:#e2e8f0">Three.js InstancedMesh (1 draw call for 24 cubes) + Rapier constraints</strong>. Fallback: stacked cards with slide-in.</div>
+ </div>
+ </div>
+
+ <div class="callout" style="margin-top:14px">
+ <strong>Motion principles (Billow-compatible):</strong> Easing <span class="mono">cubic-bezier(.16,1,.3,1)</span> (same as Framer), duration 220-420ms, no infinite spins, no bounce, respects <span class="mono">prefers-reduced-motion</span> -> all 3D freezes to poster. Every asset has <strong>meaningful hover</strong> (not decorative) and <strong>one teachable interaction</strong> (scrub, toggle, drag, flip).
+ </div>
+ </section>
+
+ <!-- S5 -->
+ <section id="s5" class="section">
+ <div class="section-head">
+ <div><div class="h4">05 - Design System</div><h2 class="h2">Billow preserved. VendorChain expressed.</h2></div>
+ <span class="badge badge-green">No new colors. Same calm.</span>
+ </div>
+ <div class="grid4">
+ <div class="card">
+ <h3 class="h3">Tokens (exact)</h3>
+ <pre style="background:#f8fafc; color:#0f172a; border-color:#e2e8f0">--bg: #fcfcfc / #fcfdff
+--text: #121212 --muted: #757575
+--border: #ededed
+--blue: #0080ff -> #1400ff (grad)
+--navy: #001c2e
+--radius: 24px card, 16px inner, 9999 pill
+--shadow-card, --shadow-blue (Framer stack)</pre>
+ </div>
+ <div class="card">
+ <h3 class="h3">Type</h3>
+ <p class="p"><strong>Geist</strong> for display (H1/H2, -0.04em, 0.92lh), <strong>Inter</strong> for body (13-15px/1.6). Mono: <strong>JetBrains Mono</strong> for hashes/code.</p>
+ <div style="font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--blue); background:#e6f0ff; border:1px solid #cfe0fa; padding:6px 8px; border-radius:999px; display:inline-block">H1 72 -> 40 clamp H2 48 -> 30 clamp</div>
+ </div>
+ <div class="card">
+ <h3 class="h3">Components kept 1:1</h3>
+ <ul class="p" style="margin:0; padding-left:16px">
+ <li>Sticky pill nav (blur 16px)</li>
+ <li>Browser-mock hero card</li>
+ <li>3-step grid + alternating feature blocks</li>
+ <li>Dark aurora band (architecture)</li>
+ <li>Before/After compare + insight card + gradient CTA + FAQ + 16-grid</li>
+ </ul>
+ </div>
+ <div class="card">
+ <h3 class="h3">3D dress code</h3>
+ <p class="p">Materials: soft plastic, frosted glass, not chrome. Lighting: 1 key + 1 fill + 1 rim (Billow softness). Palette stays inside tokens - blues, navy, glass white, semantic green/amber/red only for verdicts.</p>
+ <span class="badge badge-amber">No neon sunset gradients</span>
+ </div>
+ </div>
+ </section>
+
+ <!-- S6 -->
+ <section id="s6" class="section">
+ <div class="section-head">
+ <div><div class="h4">06 - Tech Architecture</div><h2 class="h2">Fast page that happens to be 3D.</h2></div>
+ <span class="badge badge-blue">Next.js 15 + R3F</span>
+ </div>
+ <div class="grid2">
+ <div class="card">
+ <h3 class="h3">Stack</h3>
+ <table>
+ <tr><th>Layer</th><th>Choice</th><th>Why</th></tr>
+ <tr><td>Framework</td><td><strong>Next.js 15 (App Router) + TS</strong></td><td>ISR for landing, RSC for static copy, client islands for 3D</td></tr>
+ <tr><td>Styling</td><td><strong>Tailwind + CSS vars</strong> (Billow tokens)</td><td>Exact visual parity, no runtime cost</td></tr>
+ <tr><td>Motion (2D)</td><td><strong>Framer Motion + GSAP ScrollTrigger</strong></td><td>Hero parallax, reveal, beam progress</td></tr>
+ <tr><td>3D</td><td><strong>@react-three/fiber + drei + rapier</strong> + <strong>Spline</strong> (hero)</td><td>One React tree, physics for gate/ledger, Spline for fast hero</td></tr>
+ <tr><td>Fallback</td><td><strong>Lottie / Rive + MP4 poster</strong></td><td>Auto if <span class="mono">!WebGL || save-data || reduced-motion</span></td></tr>
+ <tr><td>Data</td><td><strong>Mock SBOM JSON</strong> (187 nodes) + real CVE feed adapter (NVD) stub</td><td>No backend dependency for landing</td></tr>
+ <tr><td>Deploy</td><td><strong>Vercel</strong> (edge) + <strong>CDN for .splinecode/.glb</strong></td><td>Global < 80ms TTFB</td></tr>
+ </table>
+ </div>
+ <div class="card">
+ <h3 class="h3">Architecture Diagram</h3>
+ <div class="figure">
+ <pre>Browser
+ Static shell (RSC) LCP in &lt;1.2s (no JS)
+ Island: HeroSpline (lazy after LCP, IntersectionObserver)
+ Islands: 6 vignettes (mount on enter, unmount on leave, 1 canvas active)
+ UI state (Zustand) riskScore, regoRule, selectedVendor
+ drives 3D props -> RiskOrb color, Gate open/close
+ Fallback: &lt;canvas&gt; -> &lt;video poster&gt; or &lt;lottie-player&gt;
+
+Asset pipeline: Blender -> glTF -> Draco -> 90-180KB -> CDN
+ Spline -> .splinecode (2.1MB) -> gzip/brotli
+ Lottie JSON 40-70KB</pre>
+ <div class="legend"><span><i class="dot" style="background:var(--blue)"></i> 1 canvas active</span><span><i class="dot" style="background:var(--green)"></i> Lazy after LCP</span><span><i class="dot" style="background:var(--amber)"></i> Unmount offscreen</span></div>
+ </div>
+ <h3 class="h3">Component Map</h3>
+ <pre><span style="color:#64748b">// app/page.tsx</span>
+&lt;Nav /&gt;
+&lt;Hero&gt; &lt;HeroOrbital canvas /&gt; &lt;LiveLedger /&gt; &lt;/Hero&gt;
+&lt;ProofStrip /&gt;
+&lt;Steps /&gt;
+&lt;PlatformIntro /&gt;
+&lt;Feature id="L1"&gt; &lt;IDPrism canvas /&gt; &lt;/Feature&gt;
+...
+&lt;Architecture&gt; &lt;FlowBeam /&gt; &lt;/Architecture&gt;
+&lt;Compare /&gt; &lt;Intelligence /&gt;
+&lt;CTA /&gt; &lt;FAQ /&gt; &lt;CapabilityGrid /&gt;</pre>
+ </div>
+ </div>
+ <div class="card" style="margin-top:14px">
+ <h3 class="h3">File Structure (what we ship)</h3>
+ <div class="grid2">
+ <pre style="background:#f8fafc; color:#0f172a; border-color:#e2e8f0">/app
+ page.tsx layout.tsx
+/components
+ hero-orbital.tsx id-prism.tsx constellation.tsx
+ seal-stamp.tsx risk-orb.tsx gate.tsx ledger-chain.tsx
+/lib
+ tokens.ts motions.ts sbom.mock.json cve.mock.ts
+/public
+ spline/hero.splinecode
+ models/seal.glb (Draco)
+ lottie/*.json poster/*.mp4 / *.webp</pre>
+ <div>
+ <p class="p"><strong>Key abstraction:</strong> <span class="mono">&lt;Vignette&gt;</span> - handles mount/unmount, DPR cap, and fallback switch so each 3D feature is ~40 lines.</p>
+ <pre>function Vignette({ children, fallback }){
+ const { is3D } = useCapabilities(); // WebGL + !saveData + !reducedMotion
+ const ref = useInView({ rootMargin: "200px" });
+ return (
+ &lt;div ref={ref} style={{minHeight: 320}}&gt;
+ {ref.inView && is3D ? children : fallback}
+ &lt;/div&gt;
+ );
+}</pre>
+ <div class="callout">All 3D canvases capped at <span class="mono">dpr={Math.min(devicePixelRatio, 1.8)}</span> + <span class="mono">frameloop="demand"</span> - idle = 0 GPU.</div>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <!-- BUILD PLAN -->
+ <section id="build" class="section">
+ <div class="section-head">
+ <div><div class="h4">07 - Build Plan</div><h2 class="h2">5 phases 6 weeks Shippable after week 3.</h2></div>
+ <span class="badge badge-green">Week 1 starts now (07 Aug 2026)</span>
+ </div>
+
+ <div class="timeline">
+ <div class="t-item done">
+ <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap"><span class="badge badge-green">Phase 0 - Done</span> <strong>Foundation (this week)</strong> <span style="margin-left:auto; font-size:12px; color:var(--muted)">Completed: 07 Aug</span></div>
+ <p class="p" style="margin:8px 0 0">Billow tokens extracted, <span class="mono">vendorchain.html</span> shipped as static reference. Content locked for 6 layers. This plan published.</p>
+ <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px"><span class="badge badge-blue">Deliverable: vendorchain.html</span><span class="badge badge-blue">Deliverable: this plan</span></div>
+ </div>
+
+ <div class="t-item">
+ <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap"><span class="badge badge-blue">Phase 1 - Week 1</span> <strong>Static Next.js Parity</strong> <span style="margin-left:auto; font-size:12px; color:var(--muted)">11-15 Aug</span></div>
+ <ul class="p" style="margin:8px 0 0; padding-left:18px">
+ <li>Migrate <span class="mono">vendorchain.html</span> -> <span class="mono">app/page.tsx</span> + Tailwind, pixel-perfect at 375/768/1120/1440</li>
+ <li>Implement 2D motion only: Framer reveal, count-ups, beam progress (GSAP). No 3D yet.</li>
+ <li>Perf gate: <strong>Lighthouse 98+ (perf), 100 (a11y)</strong> before 3D lands.</li>
+ </ul>
+ <div style="margin-top:10px; display:flex; gap:8px; align-items:center"><div class="progress" style="flex:1"><i style="width:0%"></i></div><span style="font-size:11px; font-weight:700; color:var(--muted2)">0/12 tasks</span></div>
+ <div style="margin-top:8px; font-size:12px; color:var(--muted)">Exit: Static page deployed to <span class="mono">staging.vendorchain.io</span>, A/B ready vs old landing.</div>
+ </div>
+
+ <div class="t-item">
+ <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap"><span class="badge badge-amber">Phase 2 - Week 2</span> <strong>Hero 3D + Two Vignettes</strong> <span style="margin-left:auto; font-size:12px; color:var(--muted)">18-22 Aug</span></div>
+ <ul class="p" style="margin:8px 0 0; padding-left:18px">
+ <li>Hero Orbital (Spline) + ID Prism + Seal Stamp - with Lottie fallbacks, <span class="mono">prefers-reduced-motion</span> respect.</li>
+ <li>Build <span class="mono">&lt;Vignette&gt;</span> + <span class="mono">useCapabilities</span> (WebGL, save-data, reduced-motion).</li>
+ <li>Measure: GPU idle, LCP delta &lt; 200ms vs static.</li>
+ </ul>
+ <div style="margin-top:8px; font-size:12px; color:var(--muted)">Exit: Staging has 3D hero + 2 layers, feature-flagged (<span class="mono">?3d=1</span>).</div>
+ </div>
+
+ <div class="t-item">
+ <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap"><span class="badge badge-blue">Phase 3 - Week 3-4</span> <strong>Remaining 4 Vignettes + Interactivity</strong> <span style="margin-left:auto; font-size:12px; color:var(--muted)">25 Aug - 05 Sep</span></div>
+ <ul class="p" style="margin:8px 0 0; padding-left:18px">
+ <li>Constellation (187 nodes) - biggest perf challenge -> instancing + <span class="mono">frustumCulled</span></li>
+ <li>Risk Orb (shader), Gate (Rapier), Ledger Chain (instanced + constraints)</li>
+ <li>Wire state: risk slider -> orb, Rego toggle -> gate, vendor select -> ledger highlight (Zustand)</li>
+ </ul>
+ <div style="margin-top:8px; font-size:12px; color:var(--muted)">Exit: Full 7-asset experience. <strong>First shippable 3D version</strong> - can go live behind 50% rollout.</div>
+ </div>
+
+ <div class="t-item">
+ <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap"><span class="badge badge-navy">Phase 4 - Week 5</span> <strong>Polish, Perf & Fallbacks</strong> <span style="margin-left:auto; font-size:12px; color:var(--muted)">08-12 Sep</span></div>
+ <ul class="p" style="margin:8px 0 0; padding-left:18px">
+ <li>Draco compress all GLBs, poster WebPs (hero 12KB), Lottie 40KB, <span class="mono">loading="lazy"</span></li>
+ <li>Cap DPR 1.8, <span class="mono">powerPreference:"high-performance"</span> fallback to low-power material.</li>
+ <li>A11y audit (axe), reduced-motion QA, Samsung A14 / iPhone 12 test, 4G throttling.</li>
+ </ul>
+ <div style="margin-top:8px; font-size:12px; color:var(--muted)">Exit: Lighthouse still 95+ with 3D, no CLS, 60fps median.</div>
+ </div>
+
+ <div class="t-item">
+ <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap"><span class="badge badge-green">Phase 5 - Week 6</span> <strong>Launch & Learn</strong> <span style="margin-left:auto; font-size:12px; color:var(--muted)">15-19 Sep</span></div>
+ <ul class="p" style="margin:8px 0 0; padding-left:18px">
+ <li>50/50 A/B (static vs 3D), PostHog events: <span class="mono">hero_view, layer_view_L1..L6, risk_scrub, rego_toggle, waitlist_submit</span></li>
+ <li>Decision gate: if 3D +>=15% waitlist lift and perf holds -> 100% rollout, else keep 3D as <span class="mono">?3d=1</span> for sales demos.</li>
+ <li>Handoff: Figma + Spline + Storybook + README (how to edit Rego, SBOM, risk copy).</li>
+ </ul>
+ </div>
+ </div>
+
+ <div class="grid2" style="margin-top:16px">
+ <div class="card">
+ <h3 class="h3">Implementation Checklist - Copy/paste to Linear/Jira</h3>
+ <table>
+ <tr><th>Task</th><th>Owner</th><th>Est</th></tr>
+ <tr><td>Next.js scaffold + Tailwind tokens + ESLint</td><td>FE</td><td>1d</td></tr>
+ <tr><td>Static parity (10 sections) + Framer reveals</td><td>FE</td><td>3d</td></tr>
+ <tr><td>Spline hero scene (bake + export)</td><td>3D</td><td>2d</td></tr>
+ <tr><td>R3F scaffolding + Vignette + capabilities</td><td>FE/3D</td><td>1d</td></tr>
+ <tr><td>6 vignettes (model + shader + interaction)</td><td>3D x2</td><td>6d</td></tr>
+ <tr><td>State wiring (Zustand) + PostHog</td><td>FE</td><td>1d</td></tr>
+ <tr><td>Fallback Lotties + posters</td><td>Motion</td><td>2d</td></tr>
+ <tr><td>Perf + a11y + device lab</td><td>FE/QA</td><td>2d</td></tr>
+ <tr><td>A/B + launch</td><td>PM/FE</td><td>1d</td></tr>
+ </table>
+ </div>
+ <div class="card">
+ <h3 class="h3">What you need to provide (to unblock)</h3>
+ <ul class="p" style="padding-left:18px; margin:0">
+ <li>Real SBOM sample (or permit we use mock 187-node CycloneDX)</li>
+ <li>2 Rego examples you actually want to demo (e.g., risk&lt;6, deny GPL-3.0)</li>
+ <li>3 vendor names/logos for constellation (or use anonymized "Vendor A/B/C")</li>
+ <li>Brand OK on Billow tokens? Or swap blue -> your indigo? (we keep Billow default now)</li>
+ <li>Domain & Vercel access for staging</li>
+ </ul>
+ <div class="callout" style="margin-top:12px">If you want, I can start <strong>Phase 1 now</strong> - migrate <span class="mono">vendorchain.html</span> -> Next.js and push a repo you can run with <span class="mono">npm run dev</span>.</div>
+ </div>
+ </div>
+ </section>
+
+ <!-- S8 -->
+ <section id="s8" class="section">
+ <div class="section-head">
+ <div><div class="h4">08 - Performance, Fallbacks & Accessibility</div><h2 class="h2">No one pays a performance tax for beauty.</h2></div>
+ <span class="badge badge-green">Core Web Vitals first</span>
+ </div>
+ <div class="grid3">
+ <div class="card">
+ <h3 class="h3">Performance Budget</h3>
+ <table>
+ <tr><th>Asset</th><th>Budget</th><th>Current</th></tr>
+ <tr><td>HTML + CSS + JS (static)</td><td>90KB gz</td><td>~78KB</td></tr>
+ <tr><td>Hero Spline</td><td>2.2MB -> <strong>1.1MB brotli</strong></td><td>2.1MB raw</td></tr>
+ <tr><td>All GLBs (Draco)</td><td><=500KB total</td><td>~420KB est</td></tr>
+ <tr><td>Lotties (7)</td><td><=300KB</td><td>~260KB</td></tr>
+ <tr><td>Posters (WebP)</td><td><=80KB</td><td>~54KB</td></tr>
+ </table>
+ <div class="callout" style="margin-top:10px">LCP blocked byhero 3D? No - hero loads <strong>after LCP</strong> (<span class="mono">requestIdleCallback</span>). LCP is static hero text + ledger preview.</div>
+ </div>
+ <div class="card">
+ <h3 class="h3">Fallback Ladder</h3>
+ <ol class="p" style="padding-left:18px; margin:0">
+ <li><strong>Preferred:</strong> WebGL 2 -> full 3D</li>
+ <li><strong>Low-power:</strong> WebGL 1 -> reduced shader, no physics (gate = CSS)</li>
+ <li><strong>No WebGL / save-data:</strong> Lottie + poster video (autoplay muted)</li>
+ <li><strong>Reduced motion:</strong> Static poster, no autoplay - user clicks "Play motion"</li>
+ </ol>
+ <pre style="background:#f8fafc; color:#0f172a; border-color:#e2e8f0">const is3D = hasWebGL2 && !saveData
+ && !prefersReducedMotion && !isLowEnd;</pre>
+ <p class="p" style="font-size:12px; color:var(--muted2)">Detected via <span class="mono">navigator.connection.saveData</span> + <span class="mono">matchMedia('(prefers-reduced-motion)')</span> + deviceMemory.</p>
+ </div>
+ <div class="card">
+ <h3 class="h3">Accessibility & SEO</h3>
+ <ul class="p" style="padding-left:18px; margin:0">
+ <li>All canvases have <span class="mono">role="img" aria-label="..."</span> + text alternative below each vignette.</li>
+ <li>Keyboard: Tab reaches interactive vignettes; Space scrubs risk, Enter toggles gate.</li>
+ <li>SEO: 3D is decorative - all copy is in HTML, not in canvas. Structured data: <span class="mono">SoftwareApplication</span> + FAQ.</li>
+ <li>Analytics: PostHog, not heavy GTM; <span class="mono">next/script strategy="lazyOnload"</span></li>
+ </ul>
+ </div>
+ </div>
+ </section>
+
+ <!-- S9 -->
+ <section id="s9" class="section">
+ <div class="section-head">
+ <div><div class="h4">09 - Team, Tools & Handoff</div><h2 class="h2">Who does what, with what.</h2></div>
+ <span class="badge badge-blue">Figma -> Spline -> Code</span>
+ </div>
+ <div class="grid2">
+ <div class="card">
+ <h3 class="h3">Team (3 people, 6 weeks)</h3>
+ <table>
+ <tr><th>Role</th><th>Responsibility</th></tr>
+ <tr><td><strong>FE (you + me)</strong></td><td>Next.js, Tailwind, Framer, R3F integration, perf</td></tr>
+ <tr><td><strong>3D / Motion</strong></td><td>Spline + Blender + shader, Rive/Lottie fallbacks</td></tr>
+ <tr><td><strong>PM / Content</strong></td><td>Copy for 6 layers, Rego examples, vendor samples, QA & A/B</td></tr>
+ </table>
+ <h3 class="h3">Tools</h3>
+ <p class="p"><strong>Design:</strong> Figma (Billow file as base) <strong>3D:</strong> Spline, Blender, Draco <strong>Motion fallback:</strong> After Effects -> Lottie / Rive <strong>Code:</strong> VS Code, Next.js, Vercel <strong>Measure:</strong> Lighthouse, SpeedCurve, PostHog, axe</p>
+ </div>
+ <div class="card">
+ <h3 class="h3">Handoff - What you get on 19 Sep</h3>
+ <ul class="p" style="padding-left:18px; margin:0">
+ <li>Git repo (Next.js 15 + TS) + <span class="mono">README</span> (how to edit copy, SBOM, Rego, risk thresholds)</li>
+ <li>Figma file with all 10 sections + 3D stills as placeholders</li>
+ <li>Spline project (hero) + 6 GLBs + 7 Lotties + posters</li>
+ <li>Storybook for each vignette (isolated, with controls for score/rule)</li>
+ <li>Vercel staging + prod, A/B flag, PostHog dashboards</li>
+ <li>Docs: "How to add Layer 7" (VEX) without touching 3D plumbing</li>
+ </ul>
+ <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
+ <a href="/home/user/vendorchain.html" class="btn btn-primary">Open current VendorChain landing -></a>
+ <a href="#build" class="btn btn-ghost">Start Phase 1 now</a>
+ </div>
+ </div>
+ </div>
+
+ <div class="card dark" style="margin-top:14px">
+ <h3 class="h3" style="color:#fff">Decision needed this week</h3>
+ <p class="p" style="color:#94a3b8">Pick <strong style="color:#fff">Option A: Calm Billow (current)</strong> - performant, ships tomorrow, easy to maintain - vs <strong style="color:#fff">Option B: Calm Billow + 3D vignettes (this plan)</strong> - same calm, but trust becomes tangible. Recommendation: <strong style="color:#7dd3fc">Ship A now as baseline, build B in parallel behind ?3d=1, A/B in week 6.</strong></p>
+ <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
+ <span class="badge" style="background:#ecfdf5; color:#065f46; border-color:#a7f3d0">A: Live in 2 days</span>
+ <span class="badge" style="background:rgba(125,211,252,.15); color:#7dd3fc; border-color:rgba(125,211,252,.3)">B: Live 3D in 6 weeks</span>
+ <span class="badge" style="background:rgba(255,255,255,.08); color:#cbd5e1; border-color:rgba(255,255,255,.12)">Zero design debt - same tokens</span>
+ </div>
+ </div>
+ </section>
+
+ <div class="foot">
+ <div>(c) 2026 VendorChain Plan v1.0 - 07 Aug 2026 Built on Billow design system Tokens preserved, components swapped</div>
+ <div style="display:flex; gap:12px"><a href="/home/user/vendorchain.html">vendorchain.html</a> <a href="#s1">Top ^</a></div>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('a[href^="#"]').forEach(a=>{
+ a.addEventListener('click', e=>{
+ const id=a.getAttribute('href'); if(id.length>1){ const el=document.querySelector(id); if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }}
+ });
+ });
+</script>
+</body>
+</html>
