@@ -6,13 +6,14 @@ export default defineConfig({
     port: 5173,
     strictPort: false,
     cors: true,
-    // @ts-ignore - allow all hosts for E2B preview (Vite 5.4+ checks Host header)
+    // Vite 5.4+ host check - allow any e2b preview host
+    // @ts-ignore
     allowedHosts: true,
-    hmr: {
-      host: 'localhost',
-    },
+    hmr: false,
     headers: {
       'X-Frame-Options': 'ALLOWALL',
+      'Access-Control-Allow-Origin': '*',
+      'Content-Security-Policy': "frame-ancestors *",
     },
   },
   preview: {
@@ -23,6 +24,8 @@ export default defineConfig({
     allowedHosts: true,
     headers: {
       'X-Frame-Options': 'ALLOWALL',
+      'Access-Control-Allow-Origin': '*',
+      'Content-Security-Policy': "frame-ancestors *",
     },
   },
 });

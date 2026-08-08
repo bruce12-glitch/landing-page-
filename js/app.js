@@ -618,7 +618,7 @@
   });
 
 
-  // Aikido tabs & FAQ
+  // Aikido tabs & FAQ + VendorChain FAQ
   document.querySelectorAll('.ak-tab').forEach(btn => btn.addEventListener('click', () => {
     document.querySelectorAll('.ak-tab').forEach(b=>{b.classList.remove('active'); b.setAttribute('aria-selected','false');});
     btn.classList.add('active'); btn.setAttribute('aria-selected','true');
@@ -629,5 +629,369 @@
     document.querySelectorAll('.ak-faq-item').forEach(i=>i.classList.remove('open'));
     if(!open) item.classList.add('open');
   }));
+  document.querySelectorAll('.vc-faq-q').forEach(btn => btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.vc-faq-item').forEach(i=>{
+      i.classList.remove('open');
+      const b = i.querySelector('.vc-faq-q');
+      if(b) b.setAttribute('aria-expanded','false');
+    });
+    if(!open){
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded','true');
+    }
+  }));
 
+})();
+
+// ===============================
+// PREMIUM 3D MOTION SYSTEM - Entire page except hero
+// ===============================
+(() => {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+  const isMobile = window.innerWidth <= 860;
+  const heroEl = document.getElementById('heroShell');
+  const mainEl = document.getElementById('main');
+
+  // 1. Card light follow + tilt enhancement (except hero)
+  const cards = document.querySelectorAll('.vc-card, .vc-faq-item, .vc-cta, .vc-integrations-inner, .vc-footer-col');
+  cards.forEach(card => {
+    if (card.closest('#heroShell')) return;
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+      card.style.setProperty('--bx', x + '%');
+      card.style.setProperty('--by', y + '%');
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.removeProperty('--mx');
+      card.style.removeProperty('--my');
+    });
+  });
+
+  // 2. Magnetic buttons - attract to cursor
+  const magnetics = document.querySelectorAll('.vc-btn, .nav-cta, .ak-btn');
+  magnetics.forEach(btn => {
+    if (btn.closest('#heroShell')) return;
+    let raf = 0;
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) * 0.22;
+      const dy = (e.clientY - cy) * 0.28;
+      const ang = Math.atan2(dy, dx);
+      const dist = Math.hypot(dx, dy);
+      if (dist > 60) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        btn.style.transform = `translate3d(${dx}px, ${dy}px, 12px) scale(1.04)`;
+        btn.classList.add('magnetic');
+      });
+    });
+    btn.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(raf);
+      btn.style.transform = '';
+      btn.classList.remove('magnetic');
+    });
+  });
+
+  // 3. Scroll reveal with 3D
+  const revealEls = document.querySelectorAll('.vc-engine, .vc-storage, .vc-pipeline, .vc-defense, .vc-telemetry, .vc-remediation, .vc-trust, .vc-integrations, .vc-faq, .vc-cta');
+  revealEls.forEach(el => {
+    if (el.closest('#heroShell')) return;
+    el.classList.add('reveal-section');
+  });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          // stagger child cards
+          const childCards = entry.target.querySelectorAll('.vc-card, .vc-faq-item, .vc-trust-step, .vc-risk-item');
+          childCards.forEach((c, i) => {
+            c.style.transitionDelay = (i * 0.06) + 's';
+            c.style.opacity = '0';
+            c.style.transform = 'translateY(18px) rotateX(8deg)';
+            setTimeout(() => {
+              c.style.transition = 'all .72s cubic-bezier(.16,1,.3,1)';
+              c.style.opacity = '1';
+              c.style.transform = '';
+            }, i * 70 + 120);
+          });
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
+  // 4. Global particles - low density across main
+  const gCanvas = document.getElementById('globalParticles');
+  if (gCanvas) {
+    const ctx = gCanvas.getContext('2d');
+    if (ctx) {
+      let particles = [];
+      const DPR = Math.min(window.devicePixelRatio || 1, 1.4);
+      let rafId;
+      let visible = true;
+
+      function resize() {
+        const rect = mainEl ? mainEl.getBoundingClientRect() : { width: window.innerWidth, height: document.documentElement.scrollHeight };
+        const w = Math.max(window.innerWidth, rect.width);
+        const h = Math.max(window.innerHeight, mainEl ? mainEl.scrollHeight : document.body.scrollHeight);
+        gCanvas.width = Math.round(w * DPR);
+        gCanvas.height = Math.round(h * DPR);
+        gCanvas.style.width = w + 'px';
+        gCanvas.style.height = h + 'px';
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+
+      function init() {
+        const w = gCanvas.width / DPR;
+        const h = gCanvas.height / DPR;
+        particles = Array.from({ length: isMobile ? 18 : 42 }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          z: Math.random() * 0.8 + 0.2,
+          vx: (Math.random() - 0.5) * 0.14,
+          vy: (Math.random() - 0.5) * 0.10,
+          r: Math.random() * 1.2 + 0.3,
+          hue: Math.random() > 0.5 ? 195 : 265
+        }));
+      }
+
+      function draw() {
+        if (document.hidden) { rafId = requestAnimationFrame(draw); return; }
+        if (!visible) { rafId = requestAnimationFrame(draw); return; }
+        const w = gCanvas.width / DPR;
+        const h = gCanvas.height / DPR;
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.x += p.vx * p.z;
+          p.y += p.vy * p.z;
+          if (p.x < 0) p.x = w;
+          if (p.x > w) p.x = 0;
+          if (p.y < 0) p.y = h;
+          if (p.y > h) p.y = 0;
+          const alpha = 0.08 * p.z;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * p.z, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${p.hue}, 84%, 66%, ${alpha})`;
+          ctx.fill();
+        });
+        // connections
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const a = particles[i], b = particles[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 110) {
+              const alpha = (1 - dist / 110) * 0.022 * Math.min(a.z, b.z);
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = `hsla(265, 88%, 66%, ${alpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        rafId = requestAnimationFrame(draw);
+      }
+
+      resize(); init(); draw();
+      window.addEventListener('resize', () => {
+        resize(); init();
+      }, { passive: true });
+
+      if ('IntersectionObserver' in window && mainEl) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(en => { visible = en.isIntersecting; });
+        }, { threshold: 0 });
+        obs.observe(mainEl);
+      }
+    }
+  }
+
+  // 5. Global orbs parallax on mouse + scroll
+  const gOrbs = document.querySelectorAll('.g-orb');
+  if (gOrbs.length && !isMobile) {
+    let mouseX = 0, mouseY = 0, ticking = false;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5);
+      mouseY = (e.clientY / window.innerHeight - 0.5);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        gOrbs.forEach((orb, i) => {
+          const depth = (i + 1) * 0.42;
+          orb.style.transform = `translate3d(${mouseX * 18 * depth}px, ${mouseY * 12 * depth}px, 0) scale(${1 + Math.abs(mouseX) * 0.02})`;
+        });
+        ticking = false;
+      });
+    }, { passive: true });
+
+    // scroll parallax
+    let scrollTick = false;
+    window.addEventListener('scroll', () => {
+      if (scrollTick) return;
+      scrollTick = true;
+      requestAnimationFrame(() => {
+        const scrolled = window.scrollY * 0.04;
+        gOrbs.forEach((orb, i) => {
+          const factor = (i % 2 === 0 ? 1 : -1) * (0.2 + i * 0.06);
+          orb.style.translate = `0 ${scrolled * factor}px`;
+        });
+        scrollTick = false;
+      });
+    }, { passive: true });
+  }
+
+  // 6. Floating dots that rise over entire site (except hero)
+  const main = document.getElementById('main');
+  if (main && !isMobile) {
+    let dotInterval;
+    function spawnDot() {
+      if (document.hidden) return;
+      const dot = document.createElement('div');
+      dot.className = 'floating-dot';
+      const rect = main.getBoundingClientRect();
+      const x = Math.random() * window.innerWidth;
+      const y = window.scrollY + window.innerHeight * (0.6 + Math.random() * 0.4);
+      dot.style.left = x + 'px';
+      dot.style.top = y + 'px';
+      const dx = (Math.random() - 0.5) * 80 + 'px';
+      const dy = (-80 - Math.random() * 180) + 'px';
+      dot.style.setProperty('--dx', dx);
+      dot.style.setProperty('--dy', dy);
+      dot.style.animationDuration = (6 + Math.random() * 8) + 's';
+      dot.style.animationDelay = (Math.random() * 2) + 's';
+      document.body.appendChild(dot);
+      dot.addEventListener('animationend', () => dot.remove(), { once: true });
+      setTimeout(() => { if (dot.parentNode) dot.remove(); }, 16000);
+    }
+    dotInterval = setInterval(spawnDot, 700);
+    for (let i = 0; i < 8; i++) setTimeout(spawnDot, i * 280);
+  }
+
+  // 7. Marquee items index for float delay
+  document.querySelectorAll('.vc-marquee-item').forEach((el, i) => {
+    el.style.setProperty('--i', i);
+  });
+
+  // 8. CTA aurora follows cursor (except hero)
+  const cta = document.getElementById('cta');
+  if (cta) {
+    cta.addEventListener('mousemove', (e) => {
+      const rect = cta.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      cta.style.setProperty('--mx', x + '%');
+      cta.style.setProperty('--my', y + '%');
+    });
+  }
+
+  // 9. Hero enterprise: Tech pills 3D + quick verify
+  const techPills = document.getElementById('techPills');
+  const pills = document.querySelectorAll('.tech-pill');
+  const quickInput = document.getElementById('quickVerifyInput');
+  const quickBtn = document.getElementById('quickVerifyBtn');
+  const quickWrap = document.getElementById('quickVerify');
+
+  if (techPills && pills.length) {
+    // floating + cursor follow
+    pills.forEach((pill, i) => {
+      const baseY = [4, 0, -2, 1, 3][i] || 0;
+      pill.style.setProperty('--ty', baseY + 'px');
+      pill.addEventListener('mousemove', (e) => {
+        const rect = pill.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width/2) * 0.18;
+        const y = (e.clientY - rect.top - rect.height/2) * 0.22;
+        pill.style.transform = `translate3d(${x}px, ${y + baseY}px, 14px) rotateY(${x*0.18}deg) rotateX(${-y*0.18}deg) scale(1.08)`;
+      });
+      pill.addEventListener('mouseleave', () => {
+        pill.style.transform = `translateY(${baseY}px)`;
+      });
+    });
+
+    // hero shell moves tech pills subtly
+    const heroShellForPills = document.getElementById('heroShell');
+    if (heroShellForPills && isHoverCapable) {
+      heroShellForPills.addEventListener('mousemove', (e) => {
+        const rect = heroShellForPills.getBoundingClientRect();
+        const hx = (e.clientX - rect.left) / rect.width - 0.5;
+        const hy = (e.clientY - rect.top) / rect.height - 0.5;
+        pills.forEach((pill, i) => {
+          if (pill.matches(':hover')) return;
+          const depth = (i+1)*0.32;
+          const baseY = [4,0,-2,1,3][i]||0;
+          pill.style.transform = `translate3d(${hx*10*depth}px, ${hy*8*depth + baseY}px, 0)`;
+        });
+      });
+      heroShellForPills.addEventListener('mouseleave', () => {
+        pills.forEach((pill,i)=>{
+          const baseY = [4,0,-2,1,3][i]||0;
+          pill.style.transform = `translateY(${baseY}px)`;
+        });
+      });
+    }
+  }
+
+  if (quickInput && quickBtn && quickWrap) {
+    function doVerify() {
+      const val = quickInput.value.trim();
+      if (!val) {
+        quickInput.focus();
+        quickWrap.style.animation = 'none';
+        quickWrap.offsetHeight;
+        quickWrap.style.animation = 'shake 0.32s ease';
+        setTimeout(()=> quickWrap.style.animation='', 400);
+        return;
+      }
+      quickBtn.textContent = 'Verifying…';
+      quickBtn.disabled = true;
+      quickInput.disabled = true;
+      setTimeout(() => {
+        // find toast helper from previous scope? recreate
+        const toast = document.getElementById('toast');
+        if (toast) {
+          toast.textContent = `✓ Verified on-chain: ${val.slice(0,18)}… | Risk 2/10 | Sealed | Hyperledger #${Math.floor(Math.random()*9000)+1000}`;
+          toast.className = 'toast show success';
+          setTimeout(()=> toast.classList.remove('show'), 4200);
+        }
+        quickBtn.textContent = 'Verify On-Chain ↵';
+        quickBtn.disabled = false;
+        quickInput.disabled = false;
+        // scroll to ledger
+        const ledger = document.getElementById('blockchain-ledger');
+        if (ledger) ledger.scrollIntoView({ behavior: 'smooth' });
+      }, 950);
+    }
+    quickBtn.addEventListener('click', doVerify);
+    quickInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doVerify();
+    });
+
+    // focus glow
+    quickInput.addEventListener('focus', () => {
+      quickWrap.querySelector('.quick-verify-inner').style.borderColor = 'rgba(0,229,255,.22)';
+      quickWrap.querySelector('.quick-verify-inner').style.boxShadow = '0 0 0 3px rgba(0,229,255,.12), 0 22px 56px rgba(0,0,0,.52)';
+    });
+    quickInput.addEventListener('blur', () => {
+      quickWrap.querySelector('.quick-verify-inner').style.borderColor = '';
+      quickWrap.querySelector('.quick-verify-inner').style.boxShadow = '';
+    });
+  }
+
+  // add shake keyframes dynamically
+  const style = document.createElement('style');
+  style.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}`;
+  document.head.appendChild(style);
 })();
