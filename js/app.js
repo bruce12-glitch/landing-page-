@@ -183,39 +183,85 @@
     });
   }
 
-  // ---------- Hero motion: horizon + coins + orbs + 3D stack ----------
+  // ---------- Hero 3D motion + cursor glow (shape preserved, high contrast arc) ----------
   const heroShell = document.getElementById('heroShell');
+  const hero = document.querySelector('.hero');
   const horizon = document.querySelector('.horizon');
+  const horizonAfter = horizon; // after is pseudo, we move horizon itself but keep shape
   const halo = document.querySelector('.halo');
   const orbs = document.querySelectorAll('.orb-3d');
+  const badge = document.querySelector('.hero .badge');
+  const h1 = document.querySelector('.h1');
   const heroStack = document.getElementById('heroStack');
   const heroStackWrap = document.getElementById('heroStackWrap');
+  const cursorGlow = document.getElementById('heroCursorGlow');
+  const heroPcanvas = document.getElementById('particleCanvas');
+  // keep shape strict: store base horizon transform
+  const baseHorizon = 'translateX(-50%)';
   if (heroShell && isHoverCapable && !prefersReducedMotion) {
     let heroRaf = 0;
     let heroX = 0, heroY = 0;
     let heroTicking = false;
+    let mxPct = 50, myPct = 38;
+    const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
     heroShell.addEventListener('mousemove', (e) => {
       const rect = heroShell.getBoundingClientRect();
-      heroX = (e.clientX - rect.left) / rect.width - 0.5;
+      heroX = (e.clientX - rect.left) / rect.width - 0.5; // -0.5..0.5
       heroY = (e.clientY - rect.top) / rect.height - 0.5;
+      mxPct = ((e.clientX - rect.left) / rect.width) * 100;
+      myPct = ((e.clientY - rect.top) / rect.height) * 100;
+      // also update CSS vars for cursor glow immediately (no rAF lag for glow position)
+      if (cursorGlow) {
+        cursorGlow.style.setProperty('--mx', mxPct + '%');
+        cursorGlow.style.setProperty('--my', myPct + '%');
+        cursorGlow.classList.add('active');
+      }
+      if (hero) {
+        hero.style.setProperty('--mx', mxPct + '%');
+        hero.style.setProperty('--my', myPct + '%');
+      }
       if (heroTicking) return;
       heroTicking = true;
       heroRaf = requestAnimationFrame(() => {
-        if (horizon) horizon.style.transform = `translateX(-50%) perspective(1000px) rotateX(${heroY * 2}deg) rotateY(${heroX * 3}deg)`;
-        if (halo) halo.style.transform = `translateX(-50%) translateY(${heroY * 6}px)`;
-        // coins: slight parallax, but respect auto float not to fight if user hovers coin itself
+        // horizon: subtle 3D tilt but shape unchanged (width/height/radius untouched)
+        if (horizon) {
+          // keep translateX(-50%) as base, add perspective tilt + tiny parallax
+          const rotX = heroY * 2.2;
+          const rotY = heroX * 3.2;
+          const transY = heroY * 4;
+          const transX = heroX * 6;
+          horizon.style.transform = `${baseHorizon} perspective(1100px) rotateX(${rotX}deg) rotateY(${rotY}deg) translate3d(${transX}px, ${transY}px, 0)`;
+          // color contrast boost on move: make arc slightly brighter when cursor near center top
+          const distToCenter = Math.hypot(heroX, heroY - (-0.12)); // center top is slightly above middle
+          const bright = 1 + (0.12 * (1 - clamp(distToCenter * 1.6, 0, 1)));
+          const hAfter = horizon; // pseudo can't be styled directly, we fake via filter on horizon
+          horizon.style.filter = `blur(0.2px) brightness(${bright}) saturate(${1.15 + (0.10 * (1 - clamp(Math.abs(heroX),0,1)))})`;
+          horizon.style.opacity = '1';
+        }
+        // halo subtle follow
+        if (halo) halo.style.transform = `translateX(-50%) translate3d(${heroX * 10}px, ${heroY * 8}px, 0)`;
+        // orbs: strong depth parallax, more vivid due to saturate
+        orbs.forEach((orb, i) => {
+          const depth = (i + 1) * 0.62;
+          orb.style.transform = `translate3d(${heroX * 16 * depth}px, ${heroY * 11 * depth}px, ${depth * 10}px) scale(${1 + Math.abs(heroX)*0.02})`;
+        });
+        // particle canvas follows cursor
+        if (heroPcanvas) heroPcanvas.style.transform = `translate3d(${heroX * 14}px, ${heroY * 10}px, 0)`;
+        // badge and h1 3D depth - keep centered but add depth
+        if (badge) {
+          badge.style.transform = `translate3d(${heroX * 12}px, ${heroY * 8}px, 18px) rotateX(${-heroY * 4}deg) rotateY(${heroX * 5}deg)`;
+        }
+        if (h1) {
+          h1.style.transform = `translate3d(${heroX * 10}px, ${heroY * 6}px, 12px) rotateX(${-heroY * 2.2}deg) rotateY(${heroX * 3.2}deg)`;
+        }
+        // if coins still exist (in other sections) they get subtle parallax, but hero coins removed
         document.querySelectorAll('.coin').forEach((c, i) => {
           if (c.matches(':hover')) return;
-          const offset = (i - 2) * 0.9; // 5 coins centered
+          const offset = (i - 2) * 0.9;
           const baseY = [5, 1.5, 0, 1.5, 5][i] ?? 0;
           c.style.transform = `translateY(${baseY - heroY * 4}px) translateX(${heroX * 5 + offset}px) rotateY(${heroX * 7}deg) rotateX(${-heroY * 3}deg)`;
         });
-        orbs.forEach((orb, i) => {
-          const depth = (i + 1) * 0.6;
-          orb.style.transform = `translate3d(${heroX * 14 * depth}px, ${heroY * 10 * depth}px, ${depth * 8}px)`;
-        });
-        const pCanvasEl = document.getElementById('particleCanvas');
-        if (pCanvasEl) pCanvasEl.style.transform = `translate3d(${heroX * 8}px, ${heroY * 6}px, 0)`;
+        // heroStack if present (now hidden) keep logic but no-op
         if (heroStack) {
           heroStack.style.transform = `rotateX(${14 + heroY * 4}deg) rotateY(${-14 + heroX * 8}deg) translateZ(0)`;
         }
@@ -228,20 +274,38 @@
     heroShell.addEventListener('mouseleave', () => {
       cancelAnimationFrame(heroRaf);
       heroTicking = false;
-      if (horizon) horizon.style.transform = 'translateX(-50%)';
+      if (horizon) {
+        horizon.style.transform = baseHorizon;
+        horizon.style.filter = 'blur(0.2px)';
+      }
       if (halo) halo.style.transform = 'translateX(-50%)';
+      if (badge) badge.style.transform = 'translateZ(18px)';
+      if (h1) h1.style.transform = 'translateZ(12px)';
+      orbs.forEach((orb) => { orb.style.transform = ''; });
+      if (heroPcanvas) heroPcanvas.style.transform = '';
       document.querySelectorAll('.coin').forEach((c, i) => {
         const baseY = [5, 1.5, 0, 1.5, 5][i] ?? 0;
         c.style.transform = `translateY(${baseY}px)`;
       });
-      orbs.forEach((orb) => { orb.style.transform = ''; });
-      const pCanvasEl = document.getElementById('particleCanvas');
-      if (pCanvasEl) pCanvasEl.style.transform = '';
       if (heroStack) heroStack.style.transform = 'rotateX(14deg) rotateY(-14deg)';
       if (heroStackWrap) heroStackWrap.style.transform = '';
+      if (cursorGlow) cursorGlow.classList.remove('active');
     });
+    // subtle auto drift when not hovering - keep arc alive with very gentle float
+    let driftT = 0;
+    function driftLoop(){
+      if (!pageHidden && heroShell && !heroShell.matches(':hover')) {
+        driftT += 0.006;
+        const dX = Math.sin(driftT) * 0.010;
+        const dY = Math.cos(driftT*0.8) * 0.008;
+        if (horizon) horizon.style.transform = `${baseHorizon} perspective(1100px) rotateX(${dY*2}deg) rotateY(${dX*3}deg)`;
+        // orbs drift is already via CSS keyframes, keep light
+      }
+      requestAnimationFrame(driftLoop);
+    }
+    driftLoop();
   }
-  // Hero stack gentle float (image-ref)
+  // Hero stack gentle float (hidden now but keep for safety)
   if (heroStack && heroStackWrap && !prefersReducedMotion) {
     let t = 0;
     function floatStack() {
@@ -442,6 +506,91 @@
     loop();
   }
 
+  // ---------- Global modern arrow cursor + floating trail (everywhere) ----------
+  const customCursor = document.getElementById('customCursor');
+  if (customCursor && !prefersReducedMotion) {
+    // enable on hover-capable OR large screens, fallback to always on desktop preview (fixes invisible bug)
+    const canHover = isHoverCapable || window.matchMedia('(pointer:fine)').matches;
+    const isDesktop = window.innerWidth > 720;
+    const enableCursor = (canHover || isDesktop) && window.innerWidth > 0;
+    if (enableCursor) {
+      document.body.classList.add('has-custom-cursor');
+      customCursor.classList.add('ready');
+      let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+      let tx = cx, ty = cy;
+      let rafCursor = 0;
+      let lastEmit = 0;
+      const lerp = (a,b,t)=> a + (b-a)*t;
+      customCursor.style.opacity = '1';
+      // init position
+      customCursor.style.transform = `translate(-50%, -50%) translate3d(${cx}px, ${cy}px, 0)`;
+      function updateCursor(){
+        rafCursor = 0;
+        cx = lerp(cx, tx, 0.28);
+        cy = lerp(cy, ty, 0.28);
+        customCursor.style.transform = `translate(-50%, -50%) translate3d(${cx}px, ${cy}px, 0)`;
+        if (Math.hypot(tx - cx, ty - cy) > 0.4) rafCursor = requestAnimationFrame(updateCursor);
+      }
+      document.addEventListener('mousemove', (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+        if (!rafCursor) rafCursor = requestAnimationFrame(updateCursor);
+        const now = performance.now();
+        // throttled small floating burst - reduced hug
+        if (now - lastEmit > 38) {
+          lastEmit = now;
+          const dot = document.createElement('div');
+          dot.className = 'cursor-dot';
+          dot.style.left = e.clientX + 'px';
+          dot.style.top = e.clientY + 'px';
+          const ang = Math.random() * Math.PI * 2;
+          const dist = 8 + Math.random() * 10; // was 12-32, now 8-18 hug fix
+          dot.style.setProperty('--dx', (Math.cos(ang) * dist) + 'px');
+          dot.style.setProperty('--dy', (Math.sin(ang) * dist) + 'px');
+          const sz = 4 + Math.random()*2;
+          dot.style.width = sz + 'px';
+          dot.style.height = sz + 'px';
+          dot.style.marginLeft = '-' + (sz/2) + 'px';
+          dot.style.marginTop = '-' + (sz/2) + 'px';
+          document.body.appendChild(dot);
+          dot.addEventListener('animationend', () => dot.remove(), {once:true});
+          setTimeout(()=> { if(dot.parentNode) dot.remove(); }, 900);
+          if (Math.random() < 0.14) {
+            const ring = document.createElement('div');
+            ring.className = 'cursor-ring';
+            ring.style.left = e.clientX + 'px';
+            ring.style.top = e.clientY + 'px';
+            document.body.appendChild(ring);
+            ring.addEventListener('animationend', () => ring.remove(), {once:true});
+            setTimeout(()=> { if(ring.parentNode) ring.remove(); }, 900);
+          }
+        }
+      }, {passive:true});
+      const hoverEls = document.querySelectorAll('a, button, .btn, [data-tilt], .nav-links a, .arch-tab, .faq-q, input');
+      hoverEls.forEach(el => {
+        el.addEventListener('mouseenter', () => customCursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => customCursor.classList.remove('hover'));
+      });
+      document.addEventListener('mouseleave', () => { customCursor.style.opacity = '0'; });
+      document.addEventListener('mouseenter', () => { customCursor.style.opacity = '1'; });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= 720) {
+          customCursor.style.display = 'none';
+          document.body.classList.remove('has-custom-cursor');
+        } else {
+          customCursor.style.display = 'block';
+          document.body.classList.add('has-custom-cursor');
+        }
+      });
+    } else {
+      customCursor.style.display = 'none';
+      document.body.classList.remove('has-custom-cursor');
+    }
+  } else if (customCursor) {
+    customCursor.style.display = 'none';
+    document.body.classList.remove('has-custom-cursor');
+  }
+
   // ---------- Smooth scroll polish + active nav ----------
   const navLinks = document.querySelectorAll('.nav-links a, .mobile-drawer a');
   const sections = ['proof', 'layers', 'eco', 'faq'].map((id) => document.getElementById(id)).filter(Boolean);
@@ -467,5 +616,18 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); coin.click(); }
     });
   });
+
+
+  // Aikido tabs & FAQ
+  document.querySelectorAll('.ak-tab').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('.ak-tab').forEach(b=>{b.classList.remove('active'); b.setAttribute('aria-selected','false');});
+    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+  }));
+  document.querySelectorAll('.ak-faq-q').forEach(btn => btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.ak-faq-item').forEach(i=>i.classList.remove('open'));
+    if(!open) item.classList.add('open');
+  }));
 
 })();

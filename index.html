@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/style.css?v=20">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -50,17 +50,11 @@
         </div>
       </nav>
       <section class="hero" aria-labelledby="heroTitle">
+        <div class="hero-cursor-glow" id="heroCursorGlow" aria-hidden="true"></div>
         <div class="badge"><i aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></i> BUILT FOR WEB3 INNOVATION</div>
         <h1 class="h1 reveal in" id="heroTitle">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
-        <!-- 5-coin Web3 arc — exact style as reference image -->
-        <div class="coins reveal in" style="transition-delay:.06s; margin-top:18px" id="coinsRow" role="list" aria-label="Verified across 5 chains">
-          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Solana"><div class="coin-inner"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7.5h12l-2 3H3l2-3zm2 4h12l-2 3H5l2-3zm-2 4h12l-2 3H3l2-3z" fill="#C9D1E0" stroke="#C9D1E0" stroke-width="0.4" stroke-linejoin="round"/><path d="M5 7.5h12l-2 3H3l2-3zm2 4h12l-2 3H5l2-3zm-2 4h12l-2 3H3l2-3z" fill="none" stroke="#C9D1E0" stroke-width="0.7" stroke-linejoin="round"/></svg></div></div>
-          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Near Protocol"><div class="coin-inner"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18V6l8 12V6"/><path d="M6 6l8 12"/></svg></div></div>
-          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Aptos"><div class="coin-inner"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L4 20h5l2-4h2l2 4h5L12 4z"/><path d="M9.5 14h5"/></svg></div></div>
-          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Bitcoin"><div class="coin-inner"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7h5.5a2.5 2.5 0 0 1 0 5H9z"/><path d="M9 12h6a2.5 2.5 0 0 1 0 5H9z"/><path d="M11 5v2"/><path d="M13 5v2"/><path d="M11 17v2"/><path d="M13 17v2"/><path d="M9 7v10"/></svg></div></div>
-          <div class="coin magnet" data-tilt role="listitem" tabindex="0" aria-label="Ethereum"><div class="coin-inner"><svg width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9D1E0" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l7 9-7 4-7-4 7-9z"/><path d="M12 15l7-4-7 11-7-11 7 4z"/><path d="M5 11l7 4 7-4" opacity=".5"/></svg></div></div>
-        </div>
-        <div class="coin-label reveal in" style="transition-delay:.08s; margin-bottom:0" aria-hidden="true">5 CHAINS — SOLANA • NEAR • APTOS • BITCOIN • ETHEREUM</div>
+        <!-- coins removed -->
+        <!-- 5 chains label removed -->
         <div class="horizon" aria-hidden="true"></div>
         <div class="orbs" aria-hidden="true">
           <div class="orb-3d orb1"></div>
@@ -68,307 +62,300 @@
           <div class="orb-3d orb3"></div>
         </div>
         <canvas id="particleCanvas" aria-hidden="true" role="presentation"></canvas>
-        <!-- Dual CTA — exact as reference: primary blue + ghost dark -->
-        <div class="ctas reveal in" style="margin:38px auto 0; position:relative; z-index:5">
-          <a href="#demoForm" class="btn btn-primary magnet">Start Verifying <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
-          <a href="#layers" class="btn btn-ghost magnet">View Ecosystem <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9 12h6"/><path d="M12 9l3 3-3 3"/></svg></a>
-        </div>
-        <!-- 3D fanned glass stack — image-ref bottom -->
-        <div class="hero-stack-wrap reveal in" style="transition-delay:.14s" aria-hidden="true" id="heroStackWrap">
-          <div class="hero-stack" id="heroStack">
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer"></div>
-            <div class="hs-layer">
-              <div class="hs-front">
-                <div class="hs-front-inner">
-                  <div class="hs-logo"><img src="./assets/logo.png" alt="" width="42" height="42" loading="eager" decoding="async"></div>
-                  <div style="text-align:center">
-                    <div style="font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#A8A0FF">VendorChain</div>
-                    <div style="font-size:10px; font-weight:600; color:#6B728E; margin-top:2px">Zero-Trust OS • 6 Layers</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="hs-stack-glow"></div>
-        </div>
+        <!-- CTAs removed -->
+        <!-- layered boxes removed per request -->
       </section>
     </div>
   </div>
 
   <div class="spacer" aria-hidden="true"></div>
-  <main id="main">
-  <section class="section">
-    <h2 class="h2 reveal">Vendor Verification With VendorChain Is Not<br>Transactional. It Is Transformational.</h2>
-    <p class="sub reveal">Go-to-market, product and platform teams powering the next generation of verified supply chains - without the spreadsheet chaos.</p>
-    <div class="h-stack reveal" id="hStack" aria-hidden="true">
-      <div class="h-stack-inner" id="hStackInner">
-        <div class="h-layer"></div>
-        <div class="h-layer"></div>
-        <div class="h-layer"></div>
-        <div class="h-layer"></div>
-        <div class="h-layer"></div>
-        <div class="h-layer"></div>
+  <main id="main" class="aikido-main">
+
+  <!-- Trusted -->
+<!-- Tabs bar -->
+  <section class="ak-tabs">
+    <div class="ak-tabs-inner">
+      <div class="ak-pill" role="tablist">
+        <button class="ak-tab active" role="tab" aria-selected="true">Aikido /code</button>
+        <button class="ak-tab" role="tab" aria-selected="false">Aikido /cloud</button>
+        <button class="ak-tab" role="tab" aria-selected="false">Aikido /attack</button>
+        <button class="ak-tab" role="tab" aria-selected="false">Aikido /protect</button>
       </div>
+      <h2 class="ak-h2">Secure vulnerabilities <span>inside your /code</span></h2>
+      <div class="ak-tab-actions"><a href="https://www.aikido.dev/platform/code" class="ak-btn dark">Explore Aikido /Code →</a> <a href="https://www.aikido.dev/book/demo" class="ak-btn ghost">Talk to an Expert</a></div>
     </div>
   </section>
 
-  <section id="proof" class="growth">
-    <h3 class="growth-head reveal">Driving Growth. Delivering Care.</h3>
-    <div class="growth-grid reveal" id="growthGrid">
-      <div class="g-card magnet" data-tilt>
-        <div>
-          <div class="g-num">2.1s</div>
-          <div class="g-label">Average proof time</div>
+  <!-- CODE features -->
+  <section class="ak-features">
+    <div class="ak-features-inner">
+      <div class="ak-feat-grid">
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf239c6b4018d0cfaa3_SAST.svg" alt="" width="26" height="26"></div>
+          <h4>Static code analysis (SAST)</h4>
+          <p>Scans your source code for security risks before an issue can be merged.</p>
+          <a href="https://www.aikido.dev/code/static-code-analysis-sast" class="ak-feat-link">Learn more →</a>
         </div>
-        <div class="g-foot">Anchored on ledger</div>
-      </div>
-      <div class="g-card magnet" data-tilt>
-        <div>
-          <div class="g-num">&lt; 20s</div>
-          <div class="g-label">End-to-end verification</div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf3e29d610af61c6b0b_SCA.svg" alt="" width="26" height="26"></div>
+          <h4>Open source dependency scanning (SCA)</h4>
+          <p>Continuously monitors your code for known vulnerabilities, CVEs & other risks or generate SBOMs.</p>
+          <a href="https://www.aikido.dev/code/open-source-dependency-scanning-sca" class="ak-feat-link">Learn more →</a>
         </div>
-        <div class="g-foot">Inventory to decision</div>
-      </div>
-      <div class="g-card large magnet" data-tilt>
-        <div class="g-head">
-          <div class="g-num">4.2k+</div>
-          <div class="g-label" style="color:#C9D1E0">SBOMs sealed globally</div>
-          <div class="g-sub">Every build inventoried - no blind spots, no hidden deps.</div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/6a3d4095e3d4c52711865a13_code-audit-ai-sast.svg" alt="" width="26" height="26"></div>
+          <h4>Code Audit (NEW)</h4>
+          <p>Find complex vulnerabilities hidden in your source code that static engines can't.</p>
+          <a href="https://www.aikido.dev/code/code-audit" class="ak-feat-link">Learn more →</a>
         </div>
-        <div class="g-visual">
-          <div class="coins-mini" id="coinsMini" aria-hidden="true">
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
-            <div class="c2"><span style="display:grid; place-items:center; background:var(--card2); border-radius:50%; width:36px; height:36px; border:1px solid rgba(255,255,255,.06)"><img src="./assets/logo.png" alt="" width="22" height="22" style="width:22px; height:22px; object-fit:contain" loading="lazy" decoding="async"></span></div>
-          </div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5f7bc5828dc66ebf1510_code-quality.svg" alt="" width="26" height="26"></div>
+          <h4>AI Code Quality</h4>
+          <p>Ship clean code faster with AI code review. Auto review code for bug risks, anti-patterns & quality issues.</p>
+          <a href="https://www.aikido.dev/code/code-quality" class="ak-feat-link">Learn more →</a>
         </div>
-      </div>
-      <div class="g-card magnet" data-tilt>
-        <div>
-          <div class="g-num">6</div>
-          <div class="g-label">Layers of trust</div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf254053da1ba9ba0e8_secrets.svg" alt="" width="26" height="26"></div>
+          <h4>Secrets detection</h4>
+          <p>Checks your code for leaked and exposed API keys, passwords, certificates, encryption keys, etc.</p>
+          <a href="https://www.aikido.dev/code/secrets-detection" class="ak-feat-link">Learn more →</a>
         </div>
-        <div class="g-foot">Identity to ledger</div>
-      </div>
-      <div class="g-card magnet" data-tilt>
-        <div>
-          <div class="g-num">98%</div>
-          <div class="g-label">Tamper detected pre-deploy</div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf2b2386938a9907be1_malware.svg" alt="" width="26" height="26"></div>
+          <h4>Malware detection</h4>
+          <p>Prevents malicious packages from infiltrating your software supply chain. Powered by Aikido Intel.</p>
+          <a href="https://www.aikido.dev/protect/malware-detection-in-dependencies" class="ak-feat-link">Learn more →</a>
         </div>
-        <div class="g-foot">Sealed builds only</div>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top:16px" class="reveal">
-      <a href="#demoForm" class="btn btn-primary magnet">Start Verifying <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
-    </div>
-    <div class="quote reveal">
-      <p>From vendor identity to deploy decision, we handle the intangibles that scripts cannot touch. This is human-led verification, supercharged by crypto, not replaced by it.</p>
-      <div class="quote-author"><img src="https://i.pravatar.cc/100?img=32" alt="Avatar of VendorChain team member" width="20" height="20" loading="lazy" decoding="async"><span>VendorChain Team - Zero-Trust OS, Chennai</span></div>
-    </div>
-  </section>
-
-  <section class="arch-head reveal">
-    <h3>We Are Architecting the Trust<br>Layer of the Digital Future</h3>
-    <div class="arch-tabs" role="tablist" aria-label="View toggle">
-      <button class="arch-tab active" role="tab" aria-selected="true" data-tab="vendor">Vendor View</button>
-      <button class="arch-tab" role="tab" aria-selected="false" data-tab="auditor">Auditor View</button>
-    </div>
-  </section>
-  <div class="testis reveal" id="testis">
-    <div class="t-card magnet" data-tilt>
-      <div class="t-text">VendorChain makes verification seamless. Highly professional, proactive, and deeply attuned to our needs. The inventory filter is unmatched.</div>
-      <div class="t-foot"><div><div class="t-name">Angelica Ortega</div><div class="t-role">Founder of Novify</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
-    </div>
-    <div class="t-card hl magnet" data-tilt>
-      <div class="t-text">What sets VendorChain apart is the time it takes to deeply understand our needs, then put that understanding into action by filtering with precision.</div>
-      <div class="t-foot"><div><div class="t-name">Jake Lewis</div><div class="t-role">Head of Strategy</div></div><div class="t-logo" style="color:#fff"><i aria-hidden="true">B</i> BYS</div></div>
-    </div>
-    <div class="t-card magnet" data-tilt>
-      <div class="t-text">Highly professional, proactive. Every build she introduced was aligned - consistently goes above and beyond with sourcing support.</div>
-      <div class="t-foot"><div><div class="t-name">Cilim Stack</div><div class="t-role">Founder of Nefture</div></div><div class="t-logo"><i aria-hidden="true">N</i> Nefture</div></div>
-    </div>
-    <div class="t-card magnet" data-tilt>
-      <div class="t-text">Proactive, and deeply attuned to our needs. She feels like part of the team. Consistently goes above and beyond with operational support.</div>
-      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
-    </div>
-    <div class="t-card magnet" data-tilt>
-      <div class="t-text">I highly recommend VendorChain for expertise in verification. She is specialized in closing senior roles and has access to top-tier profiles.</div>
-      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
-    </div>
-    <div class="t-card magnet" data-tilt>
-      <div class="t-text">VendorChain feels like part of the team. Every build introduced was technically outstanding and culturally aligned.</div>
-      <div class="t-foot"><div><div class="t-name">Tom Gillingham</div><div class="t-role">VP Growth</div></div><div class="t-logo"><i aria-hidden="true">C</i> CIRCUIT</div></div>
-    </div>
-  </div>
-
-  <section id="layers" class="layers reveal">
-    <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#3B5BFF,#7C3AED)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg></div>
-      <h4>Identity that cannot be faked</h4>
-      <p>Official GST, PAN and bank verification - and re-verification every time.</p>
-      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Cross-checked with official sources</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> No trust cached</li></ul>
-      <div class="l-foot"><span>Layer 01 - Identity</span><span>Continuous</span></div>
-    </div>
-    <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#0EA5E9,#3B5BFF)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-      <h4>Know what is inside every build</h4>
-      <p>Complete inventory of every library - versioned, diffed, no blind spots.</p>
-      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Full inventory</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Drift highlighted</li></ul>
-      <div class="l-foot"><span>Layer 02 - Inventory</span><span>Transparent</span></div>
-    </div>
-    <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <h4>Sealed. Tamper shows instantly</h4>
-      <p>Cryptographically sealed. One byte changes - verification fails before deploy.</p>
-      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Keyless or BYO-key</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Post-seal flagged</li></ul>
-      <div class="l-foot"><span>Layer 03 - Sealing</span><span>Tamper-evident</span></div>
-    </div>
-    <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
-      <h4>Risk you can actually read</h4>
-      <p>Clear 1 to 10 score and plain-English summary - what, why, what to do.</p>
-      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> 1-10 score + why</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Re-scored on threats</li></ul>
-      <div class="l-foot"><span>Layer 04 - Risk</span><span>Explainable</span></div>
-    </div>
-    <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#7C3AED,#4F46E5)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M9 12l2 2 4-4"/></svg></div>
-      <h4>Policy that enforces itself</h4>
-      <p>Your rules auto-enforced. No manual gatekeeping, no exceptions by email.</p>
-      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Auto-allow / block</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Explainable</li></ul>
-      <div class="l-foot"><span>Layer 05 - Policy</span><span>Automatic</span></div>
-    </div>
-    <div class="l-card magnet" data-tilt>
-      <div class="l-icon" style="background:linear-gradient(135deg,#06B6D4,#3B5BFF)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div>
-      <h4>Proof that cannot be rewritten</h4>
-      <p>Every decision anchored to immutable ledger. Private - only hashes.</p>
-      <ul class="l-list"><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> Private ledger</li><li><i aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></i> One-click verify</li></ul>
-      <div class="l-foot"><span>Layer 06 - Ledger</span><span>Immutable</span></div>
-    </div>
-  </section>
-
-  <section id="eco" class="ecosystem reveal">
-    <div class="eco-head">
-      <h3>Embedded in the Ecosystem</h3>
-      <p class="eco-sub">From vendor onboarding to board-ready proofs - VendorChain lives where your supply chain happens.</p>
-    </div>
-    <div class="eco-grid" id="ecoGrid">
-      <div class="eco-card magnet" data-tilt>
-        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f19d?w=800&q=80&auto=format&fit=crop" alt="Team collaborating on vendor onboarding" width="800" height="600" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-        <span class="eco-badge">Onboarding</span>
-        <div class="eco-content">
-          <h4>Vendor Day Zero</h4>
-          <p>Identity verified in minutes, not weeks. GST, PAN, bank - continuous.</p>
-        </div>
-      </div>
-      <div class="eco-card mid magnet" data-tilt>
-        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80&auto=format&fit=crop" alt="Verification hub dashboard" width="800" height="600" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-        <span class="eco-badge">Live Verification</span>
-        <div class="eco-content">
-          <h4>The Verification Hub</h4>
-          <p>Every build streams through the 6 layers. One cockpit, zero blind spots.</p>
-        </div>
-      </div>
-      <div class="eco-card magnet" data-tilt>
-        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80&auto=format&fit=crop" alt="Audit meeting with proof documents" width="800" height="600" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-        <span class="eco-badge">Proof Ready</span>
-        <div class="eco-content">
-          <h4>Audit Day - No Panic</h4>
-          <p>Share a link. Auditor verifies hashes on the ledger - no emails, no dumps.</p>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf3e672c8f00d179d39_eol%20software.svg" alt="" width="26" height="26"></div>
+          <h4>Outdated Software</h4>
+          <p>Checks if any frameworks & runtimes you are using are no longer maintained.</p>
+          <a href="https://www.aikido.dev/code/outdated-eol-software" class="ak-feat-link">Learn more →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="connect reveal">
-    <h3>Where Verified Vendors and<br>Trusted Enterprises Connect</h3>
-    <p class="connect-sub">Two sides, one trust layer. Vendors prove once, enterprises verify everywhere.</p>
-    <div class="connect-grid" id="connectGrid">
-      <div class="co-card magnet" data-tilt>
-        <div class="co-top">For Vendors <a href="#demoForm">Get Verified <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></div>
-        <div class="co-visual">
-          <div class="co-stack" id="coStack1" aria-hidden="true">
-            <div class="co-layer"></div>
-            <div class="co-layer"></div>
-            <div class="co-layer" style="display:grid; place-items:center"><img src="./assets/logo.png" alt="" width="64" height="64" style="width:64px; height:64px; object-fit:contain; filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))" loading="lazy" decoding="async"></div>
-          </div>
-        </div>
-        <p>Submit once, get sealed, get scored. Share proof with every customer without re-sending dumps.</p>
+  <!-- CLOUD -->
+  <section class="ak-features alt">
+    <div class="ak-features-inner">
+      <div class="ak-section-head">
+        <h3 class="ak-h3">Scan the environments <span>inside your /cloud</span></h3>
+        <div class="ak-section-cta"><a href="https://www.aikido.dev/platform/cloud" class="ak-btn dark">Explore Aikido /Cloud →</a> <a href="https://www.aikido.dev/archived-pages/book-a-demo" class="ak-btn ghost">Talk to an Expert</a></div>
       </div>
-      <div class="co-card magnet" data-tilt>
-        <div class="co-top">For Enterprises <a href="#demoForm">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></div>
-        <div class="co-visual">
-          <div class="co-stack" id="coStack2" aria-hidden="true">
-            <div class="co-layer" style="background:linear-gradient(135deg, rgba(59,91,255,.12), rgba(124,58,237,.08))"></div>
-            <div class="co-layer" style="background:linear-gradient(135deg, rgba(59,91,255,.16), rgba(124,58,237,.12))"></div>
-            <div class="co-layer" style="display:grid; place-items:center; background:linear-gradient(135deg, rgba(59,91,255,.18), rgba(124,58,237,.14))"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></div>
-          </div>
+      <div class="ak-feat-grid three">
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf2a994a78a222afb62_CSPM.svg" alt="" width="26" height="26"></div>
+          <h4>Cloud Security Posture Management (CSPM)</h4>
+          <p>Detects cloud infrastructure risks (misconfigurations, VMs, Container images) across major cloud providers.</p>
+          <a href="https://www.aikido.dev/cloud/cloud-posture-management-cspm" class="ak-feat-link">Learn more →</a>
         </div>
-        <p>One policy, every vendor. Auto-block risky builds before they reach production.</p>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf35499bebfbdbbea97_virtual-machines.svg" alt="" width="26" height="26"></div>
+          <h4>Virtual Machine Scanning</h4>
+          <p>Scans your virtual machines for vulnerable packages, outdated runtimes and risky licenses.</p>
+          <a href="https://www.aikido.dev/cloud/virtual-machine-scanning" class="ak-feat-link">Learn more →</a>
+        </div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf2795ef624a232924d_container-scanning.svg" alt="" width="26" height="26"></div>
+          <h4>Containers & K8 scanning</h4>
+          <p>Scans your container images for packages with security issues.</p>
+          <a href="https://www.aikido.dev/platform/cloud#scanners" class="ak-feat-link">Learn more →</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="wrap">
-    <div class="cta reveal">
-      <h3>Stop trusting. Start proving.</h3>
-      <p>Join the private beta. Bring your riskiest vendor - we will show you what is inside and prove it.</p>
-      <form id="demoForm" class="cta-form" novalidate>
-        <label for="emailInput" class="sr-only" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0)">Work email</label>
-        <input id="emailInput" type="email" placeholder="work@company.com" required autocomplete="email" aria-describedby="formMsg" aria-label="Work email">
-        <button type="submit" class="btn btn-primary">Join waitlist <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></button>
-        <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
-      </form>
+  <!-- ATTACK -->
+  <section class="ak-attack">
+    <div class="ak-features-inner">
+      <h3 class="ak-h3">Pentest your applications continuously with /attack</h3>
+      <div class="ak-feat-grid three">
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb2521a1620d1698bcd319_Container_align-center.svg" alt="" width="26" height="26"></div>
+          <h4>AI pentesting</h4>
+          <p>Get a pentest done in hours. 200+ agents unleashed that outperform humans every single time. No High+ finding? Money back.</p>
+          <a href="https://www.aikido.dev/attack/aipentest" class="ak-feat-link">Learn more →</a>
+        </div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5e20b2386938a990be7e_infinite.svg" alt="" width="26" height="26"></div>
+          <h4>Continuous autonomous pentesting</h4>
+          <p>Autonomous agents pentest every deployment, validate exploitability, generate patches, and retest the fix, all before code hits production.</p>
+          <a href="https://www.aikido.dev/attack/infinite" class="ak-feat-link">Learn more →</a>
+        </div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf28ad842828c476d98_DAST.svg" alt="" width="26" height="26"></div>
+          <h4>Surface monitoring (DAST)</h4>
+          <p>Dynamically tests your web app’s front-end & APIs to find vulnerabilities through simulated attacks.</p>
+          <a href="https://www.aikido.dev/attack/surface-monitoring-dast" class="ak-feat-link">Learn more →</a>
+        </div>
+      </div>
+      <div class="ak-section-cta"><a href="https://www.aikido.dev/platform/attack" class="ak-btn dark">Explore Aikido /Attack →</a> <a href="https://www.aikido.dev/archived-pages/book-a-demo" class="ak-btn ghost">Talk to an Expert</a></div>
     </div>
-
-    <div id="faq" class="faq reveal">
-      <div class="faq-head">
-        <div class="faq-badge">FAQ</div>
-        <h3 class="faq-title">Totally fair to ask.</h3>
-      </div>
-      <div class="faq-item open">
-        <button class="faq-q" aria-expanded="true">How is this different from a one-time vendor check? <i aria-hidden="true">+</i></button>
-        <div class="faq-a">We never cache trust. Identity, inventory, risk and policy are re-checked on every submission - and every new threat.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">Do vendors need to change how they build? <i aria-hidden="true">+</i></button>
-        <div class="faq-a">No. They send what they already build. We inventory it and seal it.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">What does the risk score actually mean? <i aria-hidden="true">+</i></button>
-        <div class="faq-a">A 1 to 10 score with a short explanation: what is risky, how it can be reached, and what to do.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">Is our software inventory exposed? <i aria-hidden="true">+</i></button>
-        <div class="faq-a">Never. Only a cryptographic fingerprint is anchored. The inventory stays encrypted.</div>
-      </div>
-    </div>
-
-    <footer>
-      <div style="display:flex; gap:8px; align-items:center">
-        <div class="mark" style="width:26px; height:26px; border-radius:8px; background:transparent; border:none; box-shadow:none; padding:0; overflow:hidden"><img src="./assets/logo.png" alt="VendorChain" width="26" height="26" style="width:26px; height:26px; object-fit:contain; display:block" loading="lazy" decoding="async"></div>
-        <div><div style="font-size:13px; font-weight:700; color:#F5F7FA">VendorChain</div><div style="font-size:11px; color:#6B728E">(c) 2026 VendorChain Labs - Chennai</div></div>
-      </div>
-      <div style="display:flex; gap:16px; font-size:11px"><a href="#">Privacy</a><a href="#">Security</a><a href="https://github.com/bruce12-glitch/landing-page-" target="_blank" rel="noopener">Docs</a></div>
-      <div class="footer-word" aria-hidden="true">VENDORCHAIN</div>
-    </footer>
   </section>
+
+  <!-- PROTECT -->
+  <section class="ak-protect">
+    <div class="ak-features-inner">
+      <h3 class="ak-h3">Block attacks in your runtime <span>and devices with /protect</span></h3>
+      <div class="ak-feat-grid three">
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5ee5f24e8b7df6c1369d_device-protection.svg" alt="" width="26" height="26"></div>
+          <h4>Device Protection</h4>
+          <p>Protect every install without slowing down your developers. Block malicious browser extensions, IDE plugins, and code libraries.</p>
+          <a href="https://www.aikido.dev/protect/device-protection" class="ak-feat-link">Learn more →</a>
+        </div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf24044c24f545f9d09_kuberneties-runtime.svg" alt="" width="26" height="26"></div>
+          <h4>Runtime Protection</h4>
+          <p>Zen is your in-app firewall for peace of mind. Auto block critical injection attacks, introduce API rate limiting & more</p>
+          <a href="https://www.aikido.dev/protect/zen" class="ak-feat-link">Learn more →</a>
+        </div>
+        <div class="ak-feat">
+          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5f4b5dc8eca8ca5b1686_bot-protection.svg" alt="" width="26" height="26"></div>
+          <h4>Bot protection</h4>
+          <p>Automatically block critical injection attacks, introduce rate limiting for APIs, and more...</p>
+          <a href="https://www.aikido.dev/protect/zen#block-traffic" class="ak-feat-link">Learn more →</a>
+        </div>
+      </div>
+      <div class="ak-section-cta"><a href="https://www.aikido.dev/platform/protect" class="ak-btn dark">Explore Aikido /Protect →</a> <a href="https://www.aikido.dev/archived-pages/book-a-demo" class="ak-btn ghost">Talk to an Expert</a></div>
+    </div>
+  </section>
+
+  <!-- ONLY GET ALERTS THAT MATTER -->
+  <section class="ak-priority">
+    <div class="ak-priority-inner">
+      <div class="ak-eyebrow">FEATURES</div>
+      <div class="ak-priority-head">
+        <h3>Only get alerts <span>that matter to you.</span></h3>
+        <p>your environment.<br>your software.<br>Security tools generate a lot of alerts. Only a few are worth acting on.</p>
+      </div>
+      <h3 class="ak-h3 center" style="margin-top:18px">We prioritize alerts <span>so you don’t have to.</span></h3>
+      <div class="ak-priority-grid">
+        <div class="ak-p-card">
+          <div class="ak-p-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf3640241a5371df8e_deduplication.svg" alt="" width="28" height="28"></div>
+          <h4>Deduplication</h4>
+          <p>Related alerts are grouped together, so you can resolve more issues with less effort.</p>
+        </div>
+        <div class="ak-p-card">
+          <div class="ak-p-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf364024cd0971df98_traige-diamond.svg" alt="" width="28" height="28"></div>
+          <h4>AutoTriage</h4>
+          <p>Aikido evaluates alerts in the context of your code and infrastructure and deprioritizes issues that do not pose real risk to your application.</p>
+        </div>
+        <div class="ak-p-card">
+          <div class="ak-p-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf3640246b5171dfb8_eye.svg" alt="" width="28" height="28"></div>
+          <h4>Custom Rules</h4>
+          <p>Fine tune what is relevant for your team. Exclude specific paths, packages, or conditions while still being alerted when something critical happens.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FROM ALERT TO FIX -->
+  <section class="ak-fix">
+    <div class="ak-fix-inner">
+      <h3 class="ak-h3 center">We help you go <span>from alert to fix.</span></h3>
+      <div class="ak-fix-grid">
+        <div class="ak-f-card">
+          <div class="ak-f-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/677d4adfb62f7585d241aaaf_Icon.svg" alt="" width="28" height="28"></div>
+          <h4>AutoFix</h4>
+          <p>Generate reviewable pull requests to fix issues across code, dependencies, infrastructure, and containers, with full visibility before you merge.</p>
+        </div>
+        <div class="ak-f-card">
+          <div class="ak-f-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/678dff76aabf9b67d64a71db_bulk.svg" alt="" width="28" height="28"></div>
+          <h4>Bulk Fix with One Click</h4>
+          <p>Create ready to merge pull requests that address multiple related alerts at once, saving time and manual work.</p>
+        </div>
+        <div class="ak-f-card">
+          <div class="ak-f-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/677d4ba246ad7d8c4a1c4679_Icon%20aiai.svg" alt="" width="28" height="28"></div>
+          <h4>TL;DR Summaries</h4>
+          <p>Get a short, actionable summary of what’s wrong and how to fix it. Turn it into a ticket or assign it in one click.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="ak-trust">
+    <div class="ak-trust-inner">
+      <div class="ak-eyebrow">TRUST</div>
+      <h3 class="ak-h3">Taking care of your data like it’s our own</h3>
+      <div class="ak-trust-links"><a href="https://help.aikido.dev/doc/overview-aikido-docs/docCpLHBMatZ">Documentation</a> <a href="https://www.aikido.dev/trust-center">Trust center</a> <a href="https://integrations.aikido.dev/">Integrations</a></div>
+      <div class="ak-trust-grid">
+        <div class="ak-trust-step"><span>1</span><h4>Choose the repos yourself</h4><p>When you log in with your VCS we don’t get access to any repositories. You manually give read-only access to the ones you’d like to scan.</p></div>
+        <div class="ak-trust-step"><span>2</span><h4>Read-only access</h4><p>We can’t change any of your code.</p></div>
+        <div class="ak-trust-step"><span>3</span><h4>No keys on our side</h4><p>You log in with Github, Gitlab or Bitbucket so we can’t store/view keys.</p></div>
+        <div class="ak-trust-step"><span>4</span><h4>Short-lived access tokens</h4><p>Can only be generated with a certificate, stored in AWS secrets manager.</p></div>
+        <div class="ak-trust-step"><span>5</span><h4>Separate docker container</h4><p>Every scan generates a separate docker container which gets hard-deleted right after analysis is done.</p></div>
+      </div>
+      <div class="ak-testimonial-strip">
+        <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/6866951d31dc7e8ef8b7fe52_T01BMLNG7V4-U06JV8HQRKN-a41224d8996c-512.jpg" alt="Christian" width="44" height="44">
+        <div><p>“There wasn’t noise reduction in Snyk — it was more like ‘here’s everything, good luck.’ With Aikido, the triaging is just… done.”</p><span>Christian Schmidt — VP, Security & IT</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section class="ak-integrations">
+    <div class="ak-integrations-inner">
+      <h3>The flow must go on</h3>
+      <p>Instead of adding another UI to check, Aikido integrates with the tools you already use. We'll notify you when it's important.</p>
+      <div class="ak-marquee light" aria-hidden="true">
+        <div class="ak-track light">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00d0b49c04a8e596719f_GitHub.avif" alt="GitHub" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00e4c8f20d5eda573cac_Gitlab.avif" alt="GitLab" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00edbba09219b87d66b9_Jira.avif" alt="Jira" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec003e914843d11ec4ad1a_microsoft-teams.avif" alt="Teams" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec0115a2ce2b6d89b95fcb_VSCode.avif" alt="VSCode" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec0097d598b1fb055471dc_BitBucket.avif" alt="Bitbucket" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec007377c52822dfac7e5b_AzurePipeline.avif" alt="Azure" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00a9414268cea694de68_ClickUp.avif" alt="ClickUp" height="28">
+          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00d0b49c04a8e596719f_GitHub.avif" alt="GitHub" height="28">
+        </div>
+      </div>
+      <a href="https://integrations.aikido.dev/" class="ak-btn ghost">Explore Integrations →</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="ak-faq-wrap">
+    <div class="ak-faq-inner">
+      <h3 class="ak-h3">Frequently Asked Questions</h3>
+      <div class="ak-faq-list">
+        <div class="ak-faq-item open"><button class="ak-faq-q">How does Aikido know which alerts are relevant? <span>+</span></button><div class="ak-faq-a">We’ve built a rule engine that takes the context of your environment into account. This allows us to easily adapt the criticality score for your environment & filter out false positives.</div></div>
+        <div class="ak-faq-item"><button class="ak-faq-q">What happens to my data? <span>+</span></button><div class="ak-faq-a">We clone the repositories inside of temporary environments (docker containers unique to you). Those containers are disposed of after analysis — 1-5 mins.</div></div>
+        <div class="ak-faq-item"><button class="ak-faq-q">Does Aikido make changes to my codebase? <span>+</span></button><div class="ak-faq-a">We can’t & won’t, this is guaranteed by read-only access.</div></div>
+        <div class="ak-faq-item"><button class="ak-faq-q">How is Aikido different? <span>+</span></button><div class="ak-faq-a">Aikido combines features from lots of different platforms in one. We contextualize vulnerabilities, filter false positives and reduce noise by 95%.</div></div>
+        <div class="ak-faq-item"><button class="ak-faq-q">How can I trust Aikido? <span>+</span></button><div class="ak-faq-a">Aikido is SOC 2 Type II & ISO 27001:2022 certified. See our Trust Center.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="ak-cta">
+    <div class="ak-cta-inner">
+      <h3>Ready to secure your code?</h3>
+      <p>See results in 30 seconds. No CC required.</p>
+      <div class="ak-cta-actions"><a href="https://app.aikido.dev/login" class="ak-btn dark">Start for Free →</a> <a href="https://www.aikido.dev/book/demo" class="ak-btn ghost">Book a Demo</a></div>
+    </div>
+  </section>
+
+  <footer class="ak-footer">
+    <div class="ak-footer-inner">
+      <div class="ak-footer-left"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf364024281f71df43_Logo-Full.svg" alt="Aikido" height="22"><span style="font-size:11px; color:#6B7280; margin-left:8px">© 2026 Aikido Security</span></div>
+      <div class="ak-footer-links"><a href="https://help.aikido.dev/">Documentation</a><a href="https://www.aikido.dev/trust-center">Trust Center</a><a href="https://integrations.aikido.dev/">Integrations</a></div>
+    </div>
+  </footer>
+
   </main>
 </div>
 
 <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="customCursor" class="custom-cursor" aria-hidden="true">
+  <div class="cursor-ball"></div>
+</div>
 
 <script type="module" src="./js/app.js"></script>
+
 </body>
 </html>
