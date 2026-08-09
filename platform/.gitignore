@@ -1,7 +1,7 @@
 node_modules/
 .next/
 dist/
-storage/
+/storage/
 .env
 .env.local
 .env.production

@@ -13,8 +13,9 @@ const PAN_SEARCH_REGEX = /[A-Z]{5}[0-9]{4}[A-Z]{1}/g;
 const GST_SEARCH_REGEX = /[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}/g;
 
 /**
- * Extracts text from a document buffer (PDF text stream or image OCR)
- * and verifies extracted credential claims against registered vendor credentials.
+ * Extracts text from document buffers and verifies claims against registered credentials.
+ * - PDF documents: Extracts digital text layer via pdf-parse.
+ * - Image documents (PNG/JPEG): Slice 3 defers OCR to Slice 4 worker pipeline -> FLAGGED for manual review.
  * Raw OCR text is processed in memory and NEVER logged or persisted.
  */
 export async function performDocumentOcr(
@@ -23,9 +24,32 @@ export async function performDocumentOcr(
   registeredGst: string,
   registeredPan: string
 ): Promise<OcrResult> {
+  // Check if buffer is an image document (PNG or JPEG)
+  const isPng =
+    decryptedBuffer.length >= 8 &&
+    decryptedBuffer[0] === 0x89 &&
+    decryptedBuffer[1] === 0x50 &&
+    decryptedBuffer[2] === 0x4e &&
+    decryptedBuffer[3] === 0x47;
+  const isJpg =
+    decryptedBuffer.length >= 3 &&
+    decryptedBuffer[0] === 0xff &&
+    decryptedBuffer[1] === 0xd8 &&
+    decryptedBuffer[2] === 0xff;
+
+  if (isPng || isJpg) {
+    return {
+      matched: false,
+      confidence: 0.0,
+      extractedPanMasked: null,
+      mismatchedField: 'image_ocr_deferred',
+      reason: 'Image document intake: Image OCR deferred to Slice 4 worker pipeline — document FLAGGED for manual compliance review',
+    };
+  }
+
   let extractedText = '';
 
-  // 1. Extract document text layer
+  // PDF document text parsing
   if (
     decryptedBuffer.length >= 5 &&
     decryptedBuffer[0] === 0x25 &&
@@ -42,7 +66,6 @@ export async function performDocumentOcr(
       extractedText = decryptedBuffer.toString('utf-8');
     }
   } else {
-    // 2. Image fallback / text parsing
     extractedText = decryptedBuffer.toString('utf-8');
   }
 

@@ -1,5 +1,5 @@
 # VendorChain Platform — Module 1: Zero-Trust Onboarding
-## Slice 2: Government Verification Adapter + Async Pipeline
+## Slice 3: Document Intelligence + Production Storage
 
 > ⚠️ **SANDBOX HONESTY NOTICE**:  
 > **SANDBOX MODE — NOT GOVERNMENT-BACKED.**  
@@ -7,25 +7,35 @@
 
 ---
 
-## 1. Environment & Adapter Configuration
+## 1. Document Intelligence & OCR Architecture
 
-The verification pipeline supports dynamic adapter switching via the `VERIFICATION_ADAPTER` environment variable:
-
-| `VERIFICATION_ADAPTER` | Implementation | Behavior |
-|---|---|---|
-| `sandbox` (Default) | `GstSandboxAdapter` | **Deterministic Sandbox Engine**: Validates Luhn Mod-36 GST checksums, verifies GST↔PAN alignment, inspects document payloads, and stamps `evidence.sandbox: true`. Same input **always** yields the identical verdict and evidence SHA. |
-| `gstn` | `GstnAdapter` | **Government GSTN Portal Stub**: Explicitly throws `NotConfiguredError` ("GSTN Production Adapter not configured in this environment — set VERIFICATION_ADAPTER=sandbox for testing"). |
+- **Primary Path (PDF Text-Layer)**: Digital PDF documents are parsed in memory using `pdf-parse`. Extracted PAN and GSTIN numbers are cross-referenced against the vendor's registered credentials.
+- **Image Documents (PNG / JPEG)**: Image docs: no OCR in Slice 3 → FLAGGED → manual review; real image OCR in Slice 4. PDF text-layer is the primary path.
+- **Forgery Detection**: If extracted document credentials do not match registered credentials, both the document and vendor are immediately transitioned to `FLAGGED` status, with an append-only audit event recording the mismatched field.
+- **Zero-Trust Memory Rule**: Decrypted document buffers are processed entirely in RAM and immediately zeroed out (`buffer.fill(0)`) in `finally` blocks. Raw OCR text is never logged or written to storage.
 
 ---
 
-## 2. Core Question: Why must the sandbox be deterministic — what does a random verdict teach a system?
+## 2. Core Question: Why is retrieval an auditable event rather than just a download endpoint?
 
-1. **Flawed Feedback Loops & Negative Learning**: A nondeterministic or randomized verification mock teaches upstream systems and developers that verification outcomes are arbitrary gambling rather than cryptographic proofs. It makes automated regression tests flaky, masks real validation failures, and prevents building reliable state machines.
-2. **Reproducible Dispute & Audit Evidence**: In a Zero-Trust platform, verification records are permanent legal and compliance artifacts committed to audit ledgers. If submitting the exact same GST number or document produces `VERIFIED` on Tuesday and `FAILED` on Wednesday without underlying evidence changing, the audit trail is worthless. A deterministic sandbox guarantees that every verdict is mathematically verifiable from its inputs.
+1. **Chain of Custody & Non-Repudiation**: In a Zero-Trust compliance network, access to raw vendor identity evidence is sensitive. A plain, unaudited download endpoint allows stealth data harvesting, credential exfiltration, and unauthorized inspection without leaving an evidentiary trail. Treating retrieval as a first-class `VerificationEvent` (`reason: "ADMIN_READ"`, actor attribution, timestamp, SHA-256 evidence hash) guarantees non-repudiation: every viewing is permanently logged in the dispute ledger.
+2. **Access Telemetry & Anomaly Detection**: By making byte retrieval an audited event, automated security monitors can immediately detect suspicious operational patterns (e.g., bulk downloads, unexpected off-hours access, or non-compliance personnel inspecting documents) and automatically trigger containment safeguards (`FLAGGED` or `BLOCKED` states).
 
 ---
 
-## 3. VendorStatus State Machine & Transition Rules
+## 3. Storage Driver Architecture & Audited Byte Retrieval
+
+- **`StorageDriver` Interface**: Abstraction layer implemented by `LocalStorageDriver` (AES-256-GCM encrypted local volume) and `S3StorageDriver` (`@aws-sdk/client-s3`).
+- **Dynamic Configuration**: Controlled via `STORAGE_DRIVER=local|s3` (default `local`).
+- **Audited Byte Retrieval (`GET /api/vendors/:id/documents/:docId/bytes`)**:
+  - Gated by `x-admin-key` with actor attribution (`admin:ops-lead`, `admin:compliance`, `admin:default`).
+  - Streams decrypted bytes with `Content-Type` header (`application/pdf`, `image/png`, `image/jpeg`).
+  - Response headers: `Cache-Control: no-store, no-cache, must-revalidate`.
+  - **Every single read** appends an immutable `VerificationEvent` (`reason: "ADMIN_READ"`, `actor: authResult.actor`, `evidenceSha: doc.sha256`).
+
+---
+
+## 4. VendorStatus State Machine & Transition Rules
 
 ```
        ┌──────────────────────────────────────────────────────────┐
@@ -41,34 +51,16 @@ The verification pipeline supports dynamic adapter switching via the `VERIFICATI
        │                                │ IN_PROGRESS  │ ◄────────┘
        │                                └──────────────┘ (Re-evaluation)
        │                                  /     │    \
-       │                   ┌─────────────┘      │     └────────────┐
-       │ All 3 Docs Pass   │ Single Doc Fail    │ Anomaly Review   │ Sanctions/Block
+       │ All 3 Docs Pass   │ Single Doc Fail    │ OCR / Anomaly    │ Sanctions/Block
        ▼                   ▼                    ▼                  ▼
 ┌──────────────┐  ┌──────────────┐     ┌──────────────┐   ┌──────────────┐
 │   VERIFIED   │  │    FAILED    │     │   FLAGGED    │   │   BLOCKED    │
 └──────────────┘  └──────────────┘     └──────────────┘   └──────────────┘
 ```
 
-### Traceability of `VERIFIED` State Writes
-Under the **TRUTH RULE**, `VERIFIED` is written **ONLY** by adapter result code paths:
-- In `src/lib/queue/worker.ts`:
-  1. `verdict = await adapter.verify(job)`
-  2. If `verdict.outcome === 'VERIFIED'`: `doc.status = 'VERIFIED'`
-  3. When all 3 document types (`GST_CERT`, `PAN_CARD`, `BANK_PROOF`) are verified: `vendor.status = 'VERIFIED'`
-  4. Appends immutable `VerificationEvent` with `actor: verdict.adapterName` and `evidenceSha: verdict.evidenceSha`.
-
 ---
 
-## 4. Asynchronous Queue & Security Pipeline
-
-- **Idempotency Key**: Generated as `${vendorId}:${docId}:${sha256}`. Re-submitting identical verification jobs returns existing status without redundant processing.
-- **Worker Concurrency & Backoff**: Concurrency cap of 2, 3 automatic retries with exponential backoff (1s, 2s, 4s).
-- **Dead-Letter Queue (DLQ)**: On the 4th failure (exhausted retries), jobs are routed to the DLQ (`verification-dlq`) for forensic inspection.
-- **In-Memory Zero-Trust Decryption**: Documents are decrypted into ephemeral memory buffers; buffers are zeroed (`buffer.fill(0)`) immediately after adapter inspection. Plaintext is never saved to disk or logs.
-
----
-
-## 5. API Endpoints (Slice 2)
+## 5. API Endpoints
 
 | Route | Method | Auth | Description |
 |---|---|---|---|
@@ -78,13 +70,14 @@ Under the **TRUTH RULE**, `VERIFIED` is written **ONLY** by adapter result code 
 | `/api/vendors/:id/documents` | `POST` | `x-admin-key` | Validates magic bytes, envelope encrypts, advances to `PENDING`. |
 | `/api/vendors/:id/documents` | `GET` | `x-admin-key` | Lists document metadata (no byte stream). |
 | `/api/vendors/:id/documents/:docId/verify` | `POST` | `x-admin-key` | Enqueues verification job (`202 Accepted`), advances to `IN_PROGRESS`. |
+| `/api/vendors/:id/documents/:docId/bytes` | `GET` | `x-admin-key` | Streams decrypted bytes; appends audited `ADMIN_READ` event. |
 | `/api/vendors/:id/verification` | `GET` | `x-admin-key` | Full audit timeline with adapter names and `sandbox: true` flags. |
 
 ---
 
 ## 6. Docker & Testing
 ```bash
-# 1. Start PostgreSQL 15 & Redis 7
+# 1. Start PostgreSQL 15, Redis 7 & MinIO
 docker compose up -d
 
 # 2. Run test suites
