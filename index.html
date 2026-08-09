@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
 <title>VendorChain - The Trust Network for Zero-Trust Supply Chains</title>
 <meta name="description" content="VendorChain is the verification network for zero-trust supply chains. Every vendor, every build, every deploy — proven, not presumed.">
 <meta name="theme-color" content="#050507">
 
 <!-- swap SITE_URL at deploy -->
+<link rel="canonical" href="https://vendorchain.io/">
 <meta property="og:site_name" content="VendorChain">
 <meta property="og:title" content="VendorChain - The Trust Network for Zero-Trust Supply Chains">
 <meta property="og:description" content="Every vendor, every build, every deploy — proven, not presumed.">
@@ -35,12 +37,12 @@
     <div class="hero-shell" id="heroShell">
       <nav class="nav" aria-label="Primary">
         <div class="nav-left">
-          <div class="mark" style="background:transparent; border:none; box-shadow:none; padding:0; overflow:hidden"><img src="./assets/logo.png" srcset="./assets/logo.png 1x, ./assets/logo@2x.png 2x" alt="VendorChain" width="28" height="28" style="width:28px; height:28px; object-fit:contain; display:block; border-radius:8px" decoding="async" fetchpriority="high"></div>
-          <div style="font-size:13px; font-weight:700; letter-spacing:-.02em">VendorChain</div>
-          <div style="font-size:11px; color:#6B728E; border-left:1px solid rgba(255,255,255,.07); padding-left:10px; margin-left:2px">Zero-Trust OS</div>
+          <div class="nav-brand-logo"><img src="./assets/logo.png" srcset="./assets/logo.png 1x, ./assets/logo@2x.png 2x" alt="VendorChain" width="28" height="28" decoding="async" fetchpriority="high"></div>
+          <div class="nav-brand-title">VendorChain</div>
+          <div class="nav-brand-tag">Zero-Trust OS</div>
         </div>
         <div class="nav-links" role="list">
-          <a class="active" href="#" aria-current="page">Home</a>
+          <a class="active" href="#main" aria-current="page">Home</a>
           <a href="#engine-spec">Platform</a>
           <a href="#verify">Proof</a>
           <a href="#integrations">Ecosystem</a>
@@ -51,7 +53,7 @@
           <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer"><span></span></button>
         </div>
         <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-label="Mobile menu">
-          <a href="#">Home <span>↗</span></a>
+          <a href="#main">Home <span>↗</span></a>
           <a href="#engine-spec">Platform <span>›</span></a>
           <a href="#verify">Proof <span>›</span></a>
           <a href="#integrations">Ecosystem <span>›</span></a>
@@ -326,7 +328,7 @@
       <div class="vc-risk-prio-header">
         <h3 class="vc-h3">We evaluate vendor risk <span>so you don't have to.</span></h3>
       </div>
-      <div class="vc-grid three" style="margin-top:24px">
+      <div class="vc-grid three mt-24">
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-layers">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
@@ -359,7 +361,7 @@
   <section class="vc-remediation" id="remediation" aria-labelledby="remediationTitle">
     <div class="vc-telemetry-inner">
       <h3 class="vc-h3" id="remediationTitle">We help you go <span>from upload to verified audit.</span></h3>
-      <div class="vc-grid three" style="margin-top:24px">
+      <div class="vc-grid three mt-24">
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-wrench">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
@@ -391,46 +393,46 @@
   <!-- TRUST CENTER - Section 9 -->
   <section class="vc-trust" id="trust" aria-labelledby="trustTitle">
     <div class="vc-telemetry-inner">
-      <span class="vc-eyebrow mono" style="color:#3B82F6; letter-spacing:.14em;">ZERO-TRUST ARCHITECTURE</span>
+      <span class="vc-eyebrow mono">ZERO-TRUST ARCHITECTURE</span>
       <h3 class="vc-h3" id="trustTitle">Securing your supply chain data with Zero-Trust guarantees</h3>
       <div class="vc-trust-links">
         <span class="vc-trust-badge" aria-disabled="true">Docs soon</span>
         <a href="#trust">Trust Center</a>
         <a href="#integrations">CI/CD Integrations</a>
       </div>
-      <div class="vc-grid three" style="margin-top:24px">
+      <div class="vc-grid three mt-24">
         <div class="vc-card" data-tilt>
-          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">1</span></div>
+          <div class="vc-card-icon icon-number"><span>1</span></div>
           <h4>Select Submitted Artifacts Yourself</h4>
           <p>Vendors retain complete control over uploaded software artifacts. VendorChain only processes explicitly submitted package builds and SBOM JSON files, requiring no write access to source code repositories.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
-          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">2</span></div>
+          <div class="vc-card-icon icon-number"><span>2</span></div>
           <h4>Zero-Write Code Access</h4>
           <p>We never alter, modify, or inject code into your source repositories. All verification operations run strictly on generated SBOMs and compiled artifacts.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
-          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">3</span></div>
+          <div class="vc-card-icon icon-number"><span>3</span></div>
           <h4>Cryptographic Key Privacy (Cosign)</h4>
           <p>Private signing keys stay under vendor ownership or in secure GitHub Secrets. VendorChain only verifies public keys (cosign.pub) to validate signatures without storing private credentials.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
-          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">4</span></div>
+          <div class="vc-card-icon icon-number"><span>4</span></div>
           <h4>Ephemeral Session Tokens & OIDC</h4>
           <p>Authentication uses short-lived tokens and OpenID Connect (OIDC) through Supabase and GitHub Actions, ensuring no long-term static credentials exist.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
-          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">5</span></div>
+          <div class="vc-card-icon icon-number"><span>5</span></div>
           <h4>Isolated Execution Environments</h4>
           <p>Policy evaluations (OPA) and SBOM extractions (Syft) run inside isolated Docker containers and ephemeral GitHub Actions runners, guaranteeing zero cross-vendor data leakage.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
       </div>
-      <div class="vc-testimonial-strip" style="margin-top:24px">
+      <div class="vc-testimonial-strip mt-24">
         <div class="vc-avatar-monogram" aria-hidden="true">VC</div>
         <div><p>“With VendorChain, we finally have cryptographic proof for every vendor build — no more blind trust, just verifiable supply chain integrity.”</p><span>VendorChain — Zero-Trust OS</span></div>
       </div>
@@ -585,10 +587,10 @@
     <div class="vc-footer-inner">
       <div class="vc-footer-top">
         <div class="vc-footer-brand">
-          <div style="display:flex; align-items:center; gap:8px">
-            <img src="./assets/logo.png" srcset="./assets/logo.png 1x, ./assets/logo@2x.png 2x" alt="VendorChain" width="28" height="28" style="border-radius:8px">
-            <span style="font-weight:700; font-size:14px; color:#F8FAFC">VendorChain</span>
-            <span style="font-size:11px; color:#6B728E; border-left:1px solid rgba(255,255,255,.08); padding-left:8px; margin-left:4px">Zero-Trust OS</span>
+          <div class="footer-brand-header">
+            <img src="./assets/logo.png" srcset="./assets/logo.png 1x, ./assets/logo@2x.png 2x" alt="VendorChain" width="28" height="28">
+            <span class="footer-brand-title">VendorChain</span>
+            <span class="footer-brand-tag">Zero-Trust OS</span>
           </div>
           <span class="vc-copy">© 2026 VendorChain. Zero-Trust B2B Vendor Verification Platform.</span>
         </div>

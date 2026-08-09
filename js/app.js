@@ -137,7 +137,12 @@
 
       // Minimum-time-to-submit check (3s from page load)
       if (Date.now() - formInitTime < 3000) {
-        // Fast submit guard
+        if (formErrorSummary) {
+          formErrorSummary.innerHTML = '<strong>Submitted too quickly — please review your details and try again.</strong>';
+          formErrorSummary.hidden = false;
+          formErrorSummary.focus();
+        }
+        return;
       }
 
       const nameVal = nameInput ? nameInput.value.trim() : '';
@@ -183,7 +188,7 @@
       // If invalid, block submit and focus error summary
       if (validationErrors.length > 0) {
         if (formErrorSummary) {
-          formErrorSummary.innerHTML = `<strong>Please correct the following errors before submitting:</strong><ul style="margin:6px 0 0 18px; padding:0;">${validationErrors.map(item => `<li>${item.msg}</li>`).join('')}</ul>`;
+          formErrorSummary.innerHTML = `<strong>Please correct the following errors before submitting:</strong><ul class="form-error-list">${validationErrors.map(item => `<li>${item.msg}</li>`).join('')}</ul>`;
           formErrorSummary.hidden = false;
           formErrorSummary.focus();
         } else if (validationErrors[0].el) {
@@ -260,9 +265,9 @@
         clearTimeout(timeoutId);
         if (formStatusMsg) {
           formStatusMsg.innerHTML = `
-            <div class="form-offline-notice" role="alert" tabindex="-1" style="border-color:rgba(239,68,68,0.4)">
+            <div class="form-offline-notice error-banner" role="alert" tabindex="-1">
               <div>
-                <strong style="color:#FCA5A5">Submission Error</strong>
+                <strong>Submission Error</strong>
                 <p>Unable to send your request. Please retry or email <a href="mailto:hello@vendorchain.io">hello@vendorchain.io</a> directly.</p>
               </div>
             </div>
