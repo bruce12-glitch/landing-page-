@@ -1,0 +1,80 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum VendorStatus {
+  UNVERIFIED
+  PENDING
+  IN_PROGRESS
+  VERIFIED
+  FAILED
+  FLAGGED
+  BLOCKED
+}
+
+enum DocumentType {
+  GST_CERT
+  PAN_CARD
+  BANK_PROOF
+}
+
+enum DocumentStatus {
+  STORED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+model Vendor {
+  id           String              @id @default(cuid())
+  legalName    String
+  gstNumber    String              @unique
+  panEncrypted String              // Encrypted AES-256-GCM payload (NO plaintext PAN column exists)
+  status       VendorStatus        @default(UNVERIFIED)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  documents    Document[]
+  events       VerificationEvent[]
+
+  @@index([gstNumber])
+  @@index([status])
+}
+
+model Document {
+  id          String         @id @default(cuid())
+  vendorId    String
+  vendor      Vendor         @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  type        DocumentType
+  storagePath String
+  sha256      String
+  dekWrapped  String         // DEK encrypted by Master KEK (hex/base64)
+  iv          String         // Initialization vector for document encryption (hex)
+  authTag     String         // AES-256-GCM authentication tag (hex)
+  status      DocumentStatus @default(STORED)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([vendorId])
+  @@index([sha256])
+}
+
+// Append-only immutable verification audit trail.
+// No update or delete operations are permitted on this table.
+model VerificationEvent {
+  id         String       @id @default(cuid())
+  vendorId   String
+  vendor     Vendor       @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  actor      String       // Identity or subsystem initiating the event
+  fromStatus VendorStatus
+  toStatus   VendorStatus
+  reason     String
+  createdAt  DateTime     @default(now())
+
+  @@index([vendorId])
+  @@index([createdAt])
+}
