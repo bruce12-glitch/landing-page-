@@ -1,0 +1,5 @@
+# swap SITE_URL at deploy
+User-agent: *
+Allow: /
+
+Sitemap: https://vendorchain.io/sitemap.xml

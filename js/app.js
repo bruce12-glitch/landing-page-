@@ -82,34 +82,240 @@
     toastTimer = setTimeout(() => { toastEl.classList.remove('show'); }, 3400);
   }
 
-  // ---------- CTA form (CSP-safe, no inline onsubmit) ----------
-  const demoForm = document.getElementById('demoForm');
-  const emailInput = document.getElementById('emailInput');
-  const formMsg = document.getElementById('formMsg');
-  if (demoForm && emailInput) {
-    demoForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if (!valid) {
-        emailInput.setAttribute('aria-invalid', 'true');
-        if (formMsg) { formMsg.textContent = 'Please enter a valid work email.'; formMsg.className = 'form-msg error'; }
-        showToast('Please enter a valid work email.', 'error');
-        emailInput.focus();
-        return;
+  // ---------- Phase 2: Honest Early Access Submit Pipeline (No Fake Success, No PII in Storage) ----------
+  const FORM_ENDPOINT = ''; // set at deploy; empty = not connected
+  const earlyAccessForm = document.getElementById('earlyAccessForm');
+  const nameInput = document.getElementById('earlyAccessName');
+  const emailInput = document.getElementById('earlyAccessEmail');
+  const orgInput = document.getElementById('earlyAccessCompany');
+  const honeypotInput = document.getElementById('honeypotField');
+  const formErrorSummary = document.getElementById('formErrorSummary');
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const orgError = document.getElementById('companyError');
+  const formStatusMsg = document.getElementById('formStatusMsg');
+  const submitBtn = document.getElementById('earlyAccessSubmitBtn');
+
+  const formInitTime = Date.now();
+  let isSubmitting = false;
+
+  // Inline error reset listeners on input
+  if (nameInput) {
+    nameInput.addEventListener('input', () => {
+      nameInput.setAttribute('aria-invalid', 'false');
+      if (nameError) nameError.textContent = '';
+      if (formErrorSummary && formErrorSummary.hidden === false) {
+        if (!nameInput.value.trim() === false && !emailInput?.value.trim() === false && !orgInput?.value.trim() === false) {
+          formErrorSummary.hidden = true;
+        }
       }
-      emailInput.setAttribute('aria-invalid', 'false');
-      // simulate success (replace with real fetch when backend ready)
-      demoForm.innerHTML = '<div class="form-success" role="status" aria-live="polite">✓ You are on the list — we will reach out within 24h.</div>';
-      showToast('You are on the list — we will reach out within 24h.', 'success');
-      // analytics placeholder
-      // window.posthog?.capture('waitlist_submit', { email_domain: email.split('@')[1] });
-    });
-    emailInput.addEventListener('input', () => {
-      emailInput.setAttribute('aria-invalid', 'false');
-      if (formMsg) formMsg.textContent = '';
     });
   }
+
+  if (emailInput) {
+    emailInput.addEventListener('input', () => {
+      emailInput.setAttribute('aria-invalid', 'false');
+      if (emailError) emailError.textContent = '';
+    });
+  }
+
+  if (orgInput) {
+    orgInput.addEventListener('input', () => {
+      orgInput.setAttribute('aria-invalid', 'false');
+      if (orgError) orgError.textContent = '';
+    });
+  }
+
+  if (earlyAccessForm && submitBtn) {
+    earlyAccessForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Honeypot spam check
+      if (honeypotInput && honeypotInput.value.trim() !== '') {
+        return; // Bot detected, silent reject
+      }
+
+      // Minimum-time-to-submit check (3s from page load)
+      if (Date.now() - formInitTime < 3000) {
+        if (formErrorSummary) {
+          formErrorSummary.innerHTML = '<strong>Submitted too quickly — please review your details and try again.</strong>';
+          formErrorSummary.hidden = false;
+          formErrorSummary.focus();
+        }
+        return;
+      }
+
+      const nameVal = nameInput ? nameInput.value.trim() : '';
+      const emailVal = emailInput ? emailInput.value.trim() : '';
+      const orgVal = orgInput ? orgInput.value.trim() : '';
+
+      // RFC-sane email regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
+      const validationErrors = [];
+
+      if (!nameVal) {
+        validationErrors.push({ el: nameInput, errEl: nameError, msg: 'Full name is required.' });
+        if (nameInput) nameInput.setAttribute('aria-invalid', 'true');
+        if (nameError) nameError.textContent = 'Please enter your full name.';
+      } else if (nameInput) {
+        nameInput.setAttribute('aria-invalid', 'false');
+        if (nameError) nameError.textContent = '';
+      }
+
+      if (!emailVal) {
+        validationErrors.push({ el: emailInput, errEl: emailError, msg: 'Work email is required.' });
+        if (emailInput) emailInput.setAttribute('aria-invalid', 'true');
+        if (emailError) emailError.textContent = 'Please enter your work email.';
+      } else if (!emailRegex.test(emailVal)) {
+        validationErrors.push({ el: emailInput, errEl: emailError, msg: 'Please enter a valid work email address.' });
+        if (emailInput) emailInput.setAttribute('aria-invalid', 'true');
+        if (emailError) emailError.textContent = 'Please enter a valid work email (e.g. name@company.com).';
+      } else if (emailInput) {
+        emailInput.setAttribute('aria-invalid', 'false');
+        if (emailError) emailError.textContent = '';
+      }
+
+      if (!orgVal) {
+        validationErrors.push({ el: orgInput, errEl: orgError, msg: 'Company / Organization is required.' });
+        if (orgInput) orgInput.setAttribute('aria-invalid', 'true');
+        if (orgError) orgError.textContent = 'Please enter your company or organization.';
+      } else if (orgInput) {
+        orgInput.setAttribute('aria-invalid', 'false');
+        if (orgError) orgError.textContent = '';
+      }
+
+      // If invalid, block submit and focus error summary
+      if (validationErrors.length > 0) {
+        if (formErrorSummary) {
+          formErrorSummary.innerHTML = `<strong>Please correct the following errors before submitting:</strong><ul class="form-error-list">${validationErrors.map(item => `<li>${item.msg}</li>`).join('')}</ul>`;
+          formErrorSummary.hidden = false;
+          formErrorSummary.focus();
+        } else if (validationErrors[0].el) {
+          validationErrors[0].el.focus();
+        }
+        return;
+      }
+
+      if (formErrorSummary) formErrorSummary.hidden = true;
+
+      // Prevent double submit
+      if (isSubmitting) return;
+      isSubmitting = true;
+
+      const btnText = submitBtn.querySelector('.btn-text');
+      submitBtn.disabled = true;
+      if (btnText) btnText.textContent = 'Sending…';
+
+      // ENDPOINT EMPTY -> Honest offline state (NEVER fake success)
+      if (!FORM_ENDPOINT) {
+        setTimeout(() => {
+          if (formStatusMsg) {
+            formStatusMsg.innerHTML = `
+              <div class="form-offline-notice" role="status" tabindex="-1">
+                <svg class="offline-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div>
+                  <strong>Early Access Queue</strong>
+                  <p>Our early-access list isn't connected yet — email <a href="mailto:hello@vendorchain.io">hello@vendorchain.io</a></p>
+                </div>
+              </div>
+            `;
+            const notice = formStatusMsg.querySelector('.form-offline-notice');
+            if (notice) notice.focus();
+          }
+          submitBtn.disabled = false;
+          if (btnText) btnText.textContent = 'Request Early Access →';
+          isSubmitting = false;
+        }, 500);
+        return;
+      }
+
+      // ENDPOINT SET -> Fetch POST JSON with 8s timeout
+      const abortCtrl = new AbortController();
+      const timeoutId = setTimeout(() => abortCtrl.abort(), 8000);
+
+      try {
+        const res = await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nameVal,
+            email: emailVal,
+            organization: orgVal,
+          }),
+          signal: abortCtrl.signal,
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          // 2xx -> Replace form with focusable confirmation
+          earlyAccessForm.innerHTML = `
+            <div class="form-confirmation" role="status" tabindex="-1">
+              <div class="confirmation-icon" aria-hidden="true">✓</div>
+              <h4>Request Received</h4>
+              <p>Thank you. We have added your organization to our early access queue and will reach out shortly.</p>
+            </div>
+          `;
+          const confirmation = earlyAccessForm.querySelector('.form-confirmation');
+          if (confirmation) confirmation.focus();
+        } else {
+          throw new Error(`Server returned ${res.status}`);
+        }
+      } catch (err) {
+        clearTimeout(timeoutId);
+        if (formStatusMsg) {
+          formStatusMsg.innerHTML = `
+            <div class="form-offline-notice error-banner" role="alert" tabindex="-1">
+              <div>
+                <strong>Submission Error</strong>
+                <p>Unable to send your request. Please retry or email <a href="mailto:hello@vendorchain.io">hello@vendorchain.io</a> directly.</p>
+              </div>
+            </div>
+          `;
+          const alertEl = formStatusMsg.querySelector('.form-offline-notice');
+          if (alertEl) alertEl.focus();
+        }
+        submitBtn.disabled = false;
+        if (btnText) btnText.textContent = 'Request Early Access →';
+        isSubmitting = false;
+      }
+    });
+  }
+
+  // ---------- CTA Discipline (F3): Primary CTAs scroll to #cta and focus name field ----------
+  document.querySelectorAll('a[href="#cta"]').forEach((ctaLink) => {
+    ctaLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const ctaSection = document.getElementById('cta');
+      if (ctaSection) {
+        ctaSection.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      }
+      if (mobileDrawer && mobileDrawer.classList.contains('open')) {
+        mobileDrawer.classList.remove('open');
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+        mobileDrawer.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+      setTimeout(() => {
+        if (nameInput) nameInput.focus();
+      }, prefersReducedMotion ? 50 : 350);
+    });
+  });
+
+  // ---------- Secondary CTAs: Try Demo Verifier ----------
+  document.querySelectorAll('a[href="#quickVerify"]').forEach((demoLink) => {
+    demoLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const qv = document.getElementById('quickVerify');
+      if (qv) {
+        qv.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      }
+      setTimeout(() => {
+        const qInput = document.getElementById('quickVerifyInput');
+        if (qInput) qInput.focus();
+      }, prefersReducedMotion ? 50 : 350);
+    });
+  });
 
   // ---------- Horizontal stack scroll parallax (throttled) ----------
   const hInner = document.getElementById('hStackInner');
@@ -593,7 +799,7 @@
 
   // ---------- Smooth scroll polish + active nav ----------
   const navLinks = document.querySelectorAll('.nav-links a, .mobile-drawer a');
-  const sections = ['proof', 'layers', 'eco', 'faq'].map((id) => document.getElementById(id)).filter(Boolean);
+  const sections = ['engine-spec', 'verify', 'integrations', 'faq'].map((id) => document.getElementById(id)).filter(Boolean);
   if ('IntersectionObserver' in window && sections.length) {
     const navObs = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
@@ -901,9 +1107,6 @@
   // 9. Hero enterprise: Tech pills 3D + quick verify
   const techPills = document.getElementById('techPills');
   const pills = document.querySelectorAll('.tech-pill');
-  const quickInput = document.getElementById('quickVerifyInput');
-  const quickBtn = document.getElementById('quickVerifyBtn');
-  const quickWrap = document.getElementById('quickVerify');
 
   if (techPills && pills.length) {
     // floating + cursor follow
@@ -944,6 +1147,19 @@
     }
   }
 
+  const SAMPLE_ARTIFACT_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+  const quickInput = document.getElementById('quickVerifyInput');
+  const quickBtn = document.getElementById('quickVerifyBtn');
+  const quickWrap = document.getElementById('quickVerify');
+  const useSampleBtn = document.getElementById('useSampleBtn');
+
+  if (useSampleBtn && quickInput) {
+    useSampleBtn.addEventListener('click', () => {
+      quickInput.value = SAMPLE_ARTIFACT_HASH;
+      quickInput.focus();
+    });
+  }
+
   if (quickInput && quickBtn && quickWrap) {
     function doVerify() {
       const val = quickInput.value.trim();
@@ -952,27 +1168,36 @@
         quickWrap.style.animation = 'none';
         quickWrap.offsetHeight;
         quickWrap.style.animation = 'shake 0.32s ease';
-        setTimeout(()=> quickWrap.style.animation='', 400);
+        setTimeout(() => { quickWrap.style.animation = ''; }, 400);
         return;
       }
       quickBtn.textContent = 'Verifying…';
       quickBtn.disabled = true;
       quickInput.disabled = true;
       setTimeout(() => {
-        // find toast helper from previous scope? recreate
         const toast = document.getElementById('toast');
-        if (toast) {
-          toast.textContent = `✓ Verified on-chain: ${val.slice(0,18)}… | Risk 2/10 | Sealed | Hyperledger #${Math.floor(Math.random()*9000)+1000}`;
-          toast.className = 'toast show success';
-          setTimeout(()=> toast.classList.remove('show'), 4200);
+        const isSample = val.toLowerCase() === SAMPLE_ARTIFACT_HASH.toLowerCase();
+
+        if (isSample) {
+          if (toast) {
+            toast.textContent = `✓ Sample verification record — demo data: ${SAMPLE_ARTIFACT_HASH.slice(0, 16)}… | Risk 0/10 | Cosign: Sealed | OPA: Pass | Hyperledger Fabric Block #4812`;
+            toast.className = 'toast show success';
+            setTimeout(() => toast.classList.remove('show'), 5000);
+          }
+          const ledger = document.getElementById('blockchain-ledger');
+          if (ledger) ledger.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          if (toast) {
+            toast.textContent = 'Demo Mode: Live verification is restricted to the published sample artifact. Click "Use sample artifact" to test.';
+            toast.className = 'toast show error';
+            setTimeout(() => toast.classList.remove('show'), 5000);
+          }
         }
+
         quickBtn.textContent = 'Verify On-Chain ↵';
         quickBtn.disabled = false;
         quickInput.disabled = false;
-        // scroll to ledger
-        const ledger = document.getElementById('blockchain-ledger');
-        if (ledger) ledger.scrollIntoView({ behavior: 'smooth' });
-      }, 950);
+      }, 700);
     }
     quickBtn.addEventListener('click', doVerify);
     quickInput.addEventListener('keydown', (e) => {
@@ -981,17 +1206,18 @@
 
     // focus glow
     quickInput.addEventListener('focus', () => {
-      quickWrap.querySelector('.quick-verify-inner').style.borderColor = 'rgba(0,229,255,.22)';
-      quickWrap.querySelector('.quick-verify-inner').style.boxShadow = '0 0 0 3px rgba(0,229,255,.12), 0 22px 56px rgba(0,0,0,.52)';
+      const inner = quickWrap.querySelector('.quick-verify-inner');
+      if (inner) {
+        inner.style.borderColor = 'rgba(0,229,255,.22)';
+        inner.style.boxShadow = '0 0 0 3px rgba(0,229,255,.12), 0 22px 56px rgba(0,0,0,.52)';
+      }
     });
     quickInput.addEventListener('blur', () => {
-      quickWrap.querySelector('.quick-verify-inner').style.borderColor = '';
-      quickWrap.querySelector('.quick-verify-inner').style.boxShadow = '';
+      const inner = quickWrap.querySelector('.quick-verify-inner');
+      if (inner) {
+        inner.style.borderColor = '';
+        inner.style.boxShadow = '';
+      }
     });
   }
-
-  // add shake keyframes dynamically
-  const style = document.createElement('style');
-  style.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}`;
-  document.head.appendChild(style);
 })();
