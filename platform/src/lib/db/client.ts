@@ -32,6 +32,7 @@ export interface VerificationEventRecord {
   fromStatus: VendorStatus;
   toStatus: VendorStatus;
   reason: string;
+  evidenceSha?: string;
   createdAt: Date;
 }
 
@@ -99,6 +100,23 @@ class DatabaseStore {
   }
 
   // Document Operations
+  public async findDocumentById(id: string): Promise<DocumentRecord | null> {
+    return this.documents.get(id) || null;
+  }
+
+  public async updateDocumentStatus(id: string, status: DocumentStatus): Promise<DocumentRecord | null> {
+    const doc = this.documents.get(id);
+    if (!doc) return null;
+
+    const updated: DocumentRecord = {
+      ...doc,
+      status,
+      updatedAt: new Date(),
+    };
+    this.documents.set(id, updated);
+    return updated;
+  }
+
   public async createDocument(data: {
     vendorId: string;
     type: DocumentType;
@@ -151,6 +169,7 @@ class DatabaseStore {
     fromStatus: VendorStatus;
     toStatus: VendorStatus;
     reason: string;
+    evidenceSha?: string;
   }): Promise<VerificationEventRecord> {
     const id = `evt_${crypto.randomBytes(12).toString('hex')}`;
     const event: VerificationEventRecord = {
@@ -160,6 +179,7 @@ class DatabaseStore {
       fromStatus: data.fromStatus,
       toStatus: data.toStatus,
       reason: data.reason,
+      evidenceSha: data.evidenceSha,
       createdAt: new Date(),
     };
     this.events.push(event);
@@ -167,7 +187,9 @@ class DatabaseStore {
   }
 
   public async findEventsByVendorId(vendorId: string): Promise<VerificationEventRecord[]> {
-    return this.events.filter((e) => e.vendorId === vendorId);
+    return this.events
+      .filter((e) => e.vendorId === vendorId)
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
 
   // Testing & Reset Helper
