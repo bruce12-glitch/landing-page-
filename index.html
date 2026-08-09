@@ -4,14 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VendorChain - The Trust Network for Zero-Trust Supply Chains</title>
-<meta name="description" content="VendorChain is the verification network for zero-trust supply chains. Every vendor, every build, every deploy - proven, not presumed.">
+<meta name="description" content="VendorChain is the verification network for zero-trust supply chains. Every vendor, every build, every deploy — proven, not presumed.">
 <meta name="theme-color" content="#050507">
-<meta property="og:title" content="VendorChain - Zero-Trust OS">
+
+<!-- swap SITE_URL at deploy -->
+<meta property="og:site_name" content="VendorChain">
+<meta property="og:title" content="VendorChain - The Trust Network for Zero-Trust Supply Chains">
 <meta property="og:description" content="Every vendor, every build, every deploy — proven, not presumed.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="./assets/logo.png">
+<meta property="og:url" content="https://vendorchain.io/">
+<meta property="og:image" content="https://vendorchain.io/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="VendorChain - Zero-Trust OS">
+<meta name="twitter:description" content="Every vendor, every build, every deploy — proven, not presumed.">
+<meta name="twitter:image" content="https://vendorchain.io/assets/og-card.png">
+
 <link rel="icon" type="image/png" href="./assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,22 +41,22 @@
         </div>
         <div class="nav-links" role="list">
           <a class="active" href="#" aria-current="page">Home</a>
-          <a href="#layers">Platform</a>
-          <a href="#proof">Proof</a>
-          <a href="#eco">Ecosystem</a>
+          <a href="#engine-spec">Platform</a>
+          <a href="#verify">Proof</a>
+          <a href="#integrations">Ecosystem</a>
           <a href="#faq">About</a>
         </div>
         <div class="nav-actions">
-          <a href="#demoForm" class="nav-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+          <a href="#cta" class="nav-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
           <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer"><span></span></button>
         </div>
         <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-label="Mobile menu">
           <a href="#">Home <span>↗</span></a>
-          <a href="#layers">Platform <span>›</span></a>
-          <a href="#proof">Proof <span>›</span></a>
-          <a href="#eco">Ecosystem <span>›</span></a>
+          <a href="#engine-spec">Platform <span>›</span></a>
+          <a href="#verify">Proof <span>›</span></a>
+          <a href="#integrations">Ecosystem <span>›</span></a>
           <a href="#faq">About <span>›</span></a>
-          <a href="#demoForm" class="mob-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+          <a href="#cta" class="mob-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
         </div>
       </nav>
       <section class="hero" aria-labelledby="heroTitle">
@@ -55,7 +65,7 @@
         <h1 class="h1 reveal in" id="heroTitle">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
         <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to Hyperledger Fabric.</p>
         <div class="hero-ctas reveal in" id="heroCtas">
-          <a href="/portal" class="hero-btn primary" id="launchPortalBtn">Launch Vendor Portal →</a>
+          <a href="#cta" class="hero-btn primary" id="launchPortalBtn">Request Early Access →</a>
           <a href="#blockchain-ledger" class="hero-btn secondary">Explore Audit Ledger</a>
         </div>
         <div class="tech-pills reveal in" id="techPills" aria-label="Core tech stack">
@@ -65,13 +75,20 @@
           <div class="tech-pill" data-tech="opa"><span class="tech-dot opa"></span> OPA / Rego</div>
           <div class="tech-pill" data-tech="claude"><span class="tech-dot claude"></span> Claude AI</div>
         </div>
-        <div class="quick-verify-wrap reveal in" id="quickVerify" role="search" aria-label="Quick verify on-chain">
+        <div class="quick-verify-wrap reveal in" id="quickVerify" role="search" aria-label="Quick verify on-chain demo">
+          <div class="quick-verify-header">
+            <span class="quick-verify-demo-badge"><span class="demo-dot" aria-hidden="true"></span>DEMO</span>
+            <span class="quick-verify-demo-title">Zero-Trust Artifact Verifier</span>
+          </div>
           <div class="quick-verify-inner">
             <svg class="qv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA0C5" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
-            <input type="text" class="quick-verify-input" placeholder="Enter Submission ID or SBOM SHA-256 Hash..." aria-label="Enter Submission ID or SBOM SHA-256 Hash" id="quickVerifyInput" autocomplete="off" spellcheck="false">
+            <input type="text" class="quick-verify-input" placeholder="Enter SBOM SHA-256 Hash..." aria-label="Enter SBOM SHA-256 Hash" id="quickVerifyInput" autocomplete="off" spellcheck="false">
             <button class="quick-verify-btn" id="quickVerifyBtn" type="button">Verify On-Chain ↵</button>
           </div>
-          <div class="quick-verify-hint">Try <code>vc_sub_9f3a2c...</code> or <code>e3b0c442...</code></div>
+          <div class="quick-verify-hint">
+            <span>Demo artifact: <code>e3b0c442...b855</code></span>
+            <button type="button" class="quick-verify-sample-btn" id="useSampleBtn">Use sample artifact</button>
+          </div>
         </div>
         <div class="horizon" aria-hidden="true"></div>
         <div class="orbs" aria-hidden="true">
@@ -116,7 +133,7 @@
           </div>
           <h4>Zero-Trust Vendor Identity</h4>
           <p>Verifies official business credentials (GST, PAN, bank proof) and enforces continuous behavior monitoring rather than static, one-time checks.</p>
-          <a href="/docs/identity" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <!-- Row 1 Col 2: SBOM -->
         <div class="vc-card" data-card="sbom_generation" data-tilt>
@@ -125,7 +142,7 @@
           </div>
           <h4>Automated SBOM Generation (Syft)</h4>
           <p>Automatically scans software packages using <strong>Syft</strong> to extract a complete CycloneDX Software Bill of Materials (SBOM) dependency tree.</p>
-          <a href="/docs/sbom" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <!-- Row 1 Col 3: Cosign -->
         <div class="vc-card" data-card="artifact_signing" data-tilt>
@@ -134,7 +151,7 @@
           </div>
           <h4>Cryptographic Signing (Cosign)</h4>
           <p>Stamps software artifacts and SBOM files with <strong>Cosign</strong> digital signatures, ensuring post-generation tampering is immediately detected.</p>
-          <a href="/docs/cosign" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <!-- Row 2 Col 1: AI Risk -->
         <div class="vc-card" data-card="ai_risk_analysis" data-tilt>
@@ -143,7 +160,7 @@
           </div>
           <h4>AI Vulnerability Analysis (Claude)</h4>
           <p>Deep-scans SBOM dependencies and CVE exposures using Claude AI to produce dynamic risk scores (1–10) and summaries.</p>
-          <a href="/docs/ai-risk" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <!-- Row 2 Col 2: OPA -->
         <div class="vc-card" data-card="policy_gatekeeping" data-tilt>
@@ -152,7 +169,7 @@
           </div>
           <h4>Policy Gatekeeping (OPA & Rego)</h4>
           <p>Automatically blocks non-compliant submissions using <strong>Open Policy Agent (OPA)</strong> rules if signatures are missing, certs expire, or risk spikes.</p>
-          <a href="/docs/opa-rego" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <!-- Row 2 Col 3: Hyperledger -->
         <div class="vc-card" data-card="blockchain_ledger" id="blockchain-ledger" data-tilt>
@@ -161,7 +178,7 @@
           </div>
           <h4>Immutable Ledger (Hyperledger Fabric)</h4>
           <p>Commits cryptographic SHA-256 hashes, AI risk scores, and policy verdicts permanently to Hyperledger Fabric for unalterable dispute records.</p>
-          <a href="/docs/hyperledger" class="vc-card-link">Learn more →</a>
+          <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
         <!-- Row 3 Col 1: Telemetry -->
         <div class="vc-card" data-card="system_telemetry" data-tilt>
@@ -170,7 +187,7 @@
           </div>
           <h4>Live Operations Telemetry (Grafana)</h4>
           <p>Tracks total vendor submissions, pass/fail rates, and average AI risk scores in real-time via Prometheus and Grafana monitoring dashboards.</p>
-          <a href="/docs/telemetry" class="vc-card-link">Learn more →</a>
+          <a href="#telemetry" class="vc-card-link">Learn more →</a>
         </div>
       </div>
     </div>
@@ -183,7 +200,7 @@
         <h3 class="vc-h3" id="storageTitle">Secure vendor artifacts <span>inside your /storage</span></h3>
         <div class="vc-actions">
           <a href="#storage" class="vc-btn primary">Explore Artifact Storage →</a>
-          <a href="/docs/storage-specs" class="vc-btn ghost">View Storage Specs</a>
+          <a href="#storage" class="vc-btn ghost">View Storage Specs</a>
         </div>
       </div>
       <div class="vc-grid three">
@@ -193,7 +210,7 @@
           </div>
           <h4>Private Object Storage (Supabase)</h4>
           <p>Secures raw CycloneDX SBOM JSON files, digital signatures, and vendor onboarding documents in private bucket storage with strict access controls.</p>
-          <a href="/docs/storage" class="vc-card-link">Learn more →</a>
+          <a href="#storage" class="vc-card-link">Learn more →</a>
         </div>
         <div class="vc-card" data-card="cosign_blob_verification" data-tilt>
           <div class="vc-card-icon icon-key">
@@ -201,7 +218,7 @@
           </div>
           <h4>Cryptographic Blob Verification (Cosign)</h4>
           <p>Stamps SBOM files with Cosign keypair digital signatures and verifies cryptographic seals before artifacts enter the pipeline.</p>
-          <a href="/docs/cosign-signing" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-card="relational_credential_registry" data-tilt>
           <div class="vc-card-icon icon-server">
@@ -209,7 +226,7 @@
           </div>
           <h4>Relational Credential Registry</h4>
           <p>Maintains vendor profiles, verified GST/PAN records, and transaction submission history backed by Supabase relational tables.</p>
-          <a href="/docs/database-schema" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
       </div>
     </div>
@@ -222,7 +239,7 @@
         <h3 class="vc-h3" id="pipelineTitle">Enforce Zero-Trust rules continuously with <span>/pipeline</span></h3>
         <div class="vc-actions">
           <a href="#pipeline" class="vc-btn primary">Explore CI/CD Pipeline →</a>
-          <a href="/docs/policy" class="vc-btn ghost">View Policy Docs</a>
+          <a href="#pipeline" class="vc-btn ghost">View Policy Specs</a>
         </div>
       </div>
       <div class="vc-grid three">
@@ -232,7 +249,7 @@
           </div>
           <h4>AI Vulnerability Scoring (Claude AI)</h4>
           <p>Leverages Claude AI to scan dependency trees, cross-reference CVE vulnerability databases, and compute dynamic risk scores from 1 to 10.</p>
-          <a href="/docs/ai-risk" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-card="automated_rego_gatekeeping" data-tilt>
           <div class="vc-card-icon icon-lock">
@@ -240,7 +257,7 @@
           </div>
           <h4>Automated Policy Gatekeeping (OPA)</h4>
           <p>Evaluates custom Rego policy rules on every code push to automatically block submissions with missing signatures, expired certs, or high risk scores.</p>
-          <a href="/docs/opa-rego" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-card="immutable_chaincode_audit" data-tilt>
           <div class="vc-card-icon icon-blocks">
@@ -248,7 +265,7 @@
           </div>
           <h4>Immutable Chaincode Audit (Hyperledger)</h4>
           <p>Executes smart contracts on a private Hyperledger Fabric blockchain to record unalterable submission hashes, policy verdicts, and timestamps.</p>
-          <a href="/docs/hyperledger-fabric" class="vc-card-link">Learn more →</a>
+          <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
       </div>
     </div>
@@ -271,7 +288,7 @@
           </div>
           <h4>Artifact Signature Seals (Cosign)</h4>
           <p>Validates cryptographic keypair signatures on every build. Instantly blocks tampered SBOMs, unverified binaries, and unauthorized code submissions.</p>
-          <a href="/docs/cosign-seals" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-card="opa_policy_firewall" data-tilt>
           <div class="vc-card-icon icon-terminal">
@@ -279,7 +296,7 @@
           </div>
           <h4>In-Line Policy Gatekeeper (OPA)</h4>
           <p>Acts as an automated firewall for your CI/CD pipeline. Evaluates Rego policy rules to deny deployments if certs expire or AI risk scores spike.</p>
-          <a href="/docs/opa-firewall" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-card="hyperledger_audit_trail" data-tilt>
           <div class="vc-card-icon icon-blocks">
@@ -287,7 +304,7 @@
           </div>
           <h4>Immutable Ledger Audit (Hyperledger)</h4>
           <p>Permanently registers every transaction attempt, pass/fail verdict, and vendor risk score on a distributed Hyperledger Fabric network.</p>
-          <a href="/docs/ledger-audit" class="vc-card-link">Learn more →</a>
+          <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
       </div>
     </div>
@@ -316,7 +333,7 @@
           </div>
           <h4>Dependency Grouping & De-duplication</h4>
           <p>Consolidates nested dependencies across multiple vendor SBOMs, eliminating redundant vulnerability flags and duplicate CVE alerts across your supply chain.</p>
-          <a href="/docs/dedup" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-spark">
@@ -324,7 +341,7 @@
           </div>
           <h4>AI Risk Scoring (Claude AI)</h4>
           <p>Claude AI evaluates SBOMs in the context of actual CVE exploitability, generating dynamic 1–10 risk scores that automatically filter out unexploitable dependency noise.</p>
-          <a href="/docs/ai-risk" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-custom">
@@ -332,13 +349,13 @@
           </div>
           <h4>Custom Policy Rules (OPA & Rego)</h4>
           <p>Fine-tune compliance rules using Open Policy Agent. Define custom threshold conditions for package licenses, expired certificates, or high risk scores while automatically approving verified builds.</p>
-          <a href="/docs/opa" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- AUTOMATED REMEDIATION - Section 8 - Now Card Grid like Image -->
+  <!-- AUTOMATED REMEDIATION - Section 8 -->
   <section class="vc-remediation" id="remediation" aria-labelledby="remediationTitle">
     <div class="vc-telemetry-inner">
       <h3 class="vc-h3" id="remediationTitle">We help you go <span>from upload to verified audit.</span></h3>
@@ -349,7 +366,7 @@
           </div>
           <h4>Automated Remediation Guidance</h4>
           <p>Automatically identifies non-compliant dependency packages within vendor SBOMs and provides step-by-step upgrade paths to clear OPA policy blocks before code hits production.</p>
-          <a href="/docs/remediation" class="vc-card-link">Learn more →</a>
+          <a href="#remediation" class="vc-card-link">Learn more →</a>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-layers">
@@ -357,7 +374,7 @@
           </div>
           <h4>Batch On-Chain Ledgering</h4>
           <p>Commit multiple vendor submission records, AI risk scores, and OPA compliance verdicts directly to the Hyperledger Fabric ledger in a single batch transaction.</p>
-          <a href="/docs/ledger-batch" class="vc-card-link">Learn more →</a>
+          <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-file">
@@ -365,56 +382,56 @@
           </div>
           <h4>AI Risk Summaries (Claude AI)</h4>
           <p>Generates plain-English security breakdowns of complex CycloneDX SBOMs and CVE vulnerability exposures, allowing regulators and compliance teams to review vendor risk instantly.</p>
-          <a href="/docs/summaries" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TRUST CENTER - Section 9 - Card Grid like Image -->
+  <!-- TRUST CENTER - Section 9 -->
   <section class="vc-trust" id="trust" aria-labelledby="trustTitle">
     <div class="vc-telemetry-inner">
       <span class="vc-eyebrow mono" style="color:#3B82F6; letter-spacing:.14em;">ZERO-TRUST ARCHITECTURE</span>
       <h3 class="vc-h3" id="trustTitle">Securing your supply chain data with Zero-Trust guarantees</h3>
       <div class="vc-trust-links">
-        <a href="/docs">Documentation</a>
-        <a href="/trust-center">Trust Center</a>
-        <a href="/docs/cicd">CI/CD Integrations</a>
+        <span class="vc-trust-badge" aria-disabled="true">Docs soon</span>
+        <a href="#trust">Trust Center</a>
+        <a href="#integrations">CI/CD Integrations</a>
       </div>
       <div class="vc-grid three" style="margin-top:24px">
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">1</span></div>
           <h4>Select Submitted Artifacts Yourself</h4>
           <p>Vendors retain complete control over uploaded software artifacts. VendorChain only processes explicitly submitted package builds and SBOM JSON files, requiring no write access to source code repositories.</p>
-          <a href="/docs/artifacts" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">2</span></div>
           <h4>Zero-Write Code Access</h4>
           <p>We never alter, modify, or inject code into your source repositories. All verification operations run strictly on generated SBOMs and compiled artifacts.</p>
-          <a href="/docs/zero-write" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">3</span></div>
           <h4>Cryptographic Key Privacy (Cosign)</h4>
           <p>Private signing keys stay under vendor ownership or in secure GitHub Secrets. VendorChain only verifies public keys (cosign.pub) to validate signatures without storing private credentials.</p>
-          <a href="/docs/key-privacy" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">4</span></div>
           <h4>Ephemeral Session Tokens & OIDC</h4>
           <p>Authentication uses short-lived tokens and OpenID Connect (OIDC) through Supabase and GitHub Actions, ensuring no long-term static credentials exist.</p>
-          <a href="/docs/oidc" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
         <div class="vc-card" data-tilt>
           <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">5</span></div>
           <h4>Isolated Execution Environments</h4>
           <p>Policy evaluations (OPA) and SBOM extractions (Syft) run inside isolated Docker containers and ephemeral GitHub Actions runners, guaranteeing zero cross-vendor data leakage.</p>
-          <a href="/docs/isolated" class="vc-card-link">Learn more →</a>
+          <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
       </div>
       <div class="vc-testimonial-strip" style="margin-top:24px">
-        <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/6866951d31dc7e8ef8b7fe52_T01BMLNG7V4-U06JV8HQRKN-a41224d8996c-512.jpg" alt="Christian" width="44" height="44" style="border-radius:50%">
+        <div class="vc-avatar-monogram" aria-hidden="true">VC</div>
         <div><p>“With VendorChain, we finally have cryptographic proof for every vendor build — no more blind trust, just verifiable supply chain integrity.”</p><span>VendorChain — Zero-Trust OS</span></div>
       </div>
     </div>
@@ -427,7 +444,7 @@
       <p>VendorChain plugs directly into GitHub Actions, Supabase, and Hyperledger Fabric. Automatically trigger SBOM generation, Cosign signing, and OPA policy evaluation on every push.</p>
       <div class="vc-marquee" aria-hidden="true">
         <div class="vc-track">
-          <span class="vc-marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="" width="22" height="22"> GitHub Actions</span>
+          <span class="vc-marquee-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> GitHub Actions</span>
           <span class="vc-marquee-item">Supabase</span>
           <span class="vc-marquee-item">Hyperledger Fabric</span>
           <span class="vc-marquee-item">Cosign</span>
@@ -439,7 +456,7 @@
           <span class="vc-marquee-item">GitHub Actions</span>
         </div>
       </div>
-      <a href="/docs/integrations" class="vc-btn ghost">Explore Integrations →</a>
+      <a href="#integrations" class="vc-btn ghost">Explore Integrations →</a>
     </div>
   </section>
 
@@ -478,8 +495,8 @@
       <h3 id="ctaTitle">Ready to eliminate assumed trust in your B2B supply chain?</h3>
       <p>Automate vendor verification with cryptographically backed audit logs.</p>
       <div class="vc-cta-actions">
-        <a href="/portal" class="vc-btn primary">Launch Vendor Portal →</a>
-        <a href="/demo" class="vc-btn ghost">Schedule Enterprise Demo</a>
+        <a href="#cta" class="vc-btn primary">Request Early Access →</a>
+        <a href="#cta" class="vc-btn ghost">Schedule Enterprise Demo</a>
       </div>
     </div>
   </section>
@@ -498,17 +515,17 @@
         <div class="vc-footer-cols">
           <div class="vc-footer-col">
             <h5>Product</h5>
-            <a href="/portal">Vendor Portal</a>
+            <a href="#cta">Request Early Access</a>
             <a href="#pipeline">Verification Pipeline</a>
             <a href="#blockchain-ledger">Audit Ledger</a>
-            <a href="/docs">Documentation</a>
+            <span class="footer-disabled" aria-disabled="true">Documentation (Soon)</span>
           </div>
           <div class="vc-footer-col">
             <h5>Standards & Compliance</h5>
-            <a href="/docs/nist">NIST SP 800-207 Guidelines</a>
-            <a href="/docs/iso">ISO/IEC 27001</a>
-            <a href="/trust-center">Trust Center</a>
-            <a href="/docs/integrations">CI/CD Integrations</a>
+            <span class="footer-disabled" aria-disabled="true">NIST SP 800-207 (Docs Soon)</span>
+            <span class="footer-disabled" aria-disabled="true">ISO/IEC 27001 (Docs Soon)</span>
+            <a href="#trust">Trust Center</a>
+            <a href="#integrations">CI/CD Integrations</a>
           </div>
         </div>
       </div>

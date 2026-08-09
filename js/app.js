@@ -593,7 +593,7 @@
 
   // ---------- Smooth scroll polish + active nav ----------
   const navLinks = document.querySelectorAll('.nav-links a, .mobile-drawer a');
-  const sections = ['proof', 'layers', 'eco', 'faq'].map((id) => document.getElementById(id)).filter(Boolean);
+  const sections = ['engine-spec', 'verify', 'integrations', 'faq'].map((id) => document.getElementById(id)).filter(Boolean);
   if ('IntersectionObserver' in window && sections.length) {
     const navObs = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
@@ -901,9 +901,6 @@
   // 9. Hero enterprise: Tech pills 3D + quick verify
   const techPills = document.getElementById('techPills');
   const pills = document.querySelectorAll('.tech-pill');
-  const quickInput = document.getElementById('quickVerifyInput');
-  const quickBtn = document.getElementById('quickVerifyBtn');
-  const quickWrap = document.getElementById('quickVerify');
 
   if (techPills && pills.length) {
     // floating + cursor follow
@@ -944,6 +941,19 @@
     }
   }
 
+  const SAMPLE_ARTIFACT_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+  const quickInput = document.getElementById('quickVerifyInput');
+  const quickBtn = document.getElementById('quickVerifyBtn');
+  const quickWrap = document.getElementById('quickVerify');
+  const useSampleBtn = document.getElementById('useSampleBtn');
+
+  if (useSampleBtn && quickInput) {
+    useSampleBtn.addEventListener('click', () => {
+      quickInput.value = SAMPLE_ARTIFACT_HASH;
+      quickInput.focus();
+    });
+  }
+
   if (quickInput && quickBtn && quickWrap) {
     function doVerify() {
       const val = quickInput.value.trim();
@@ -952,27 +962,36 @@
         quickWrap.style.animation = 'none';
         quickWrap.offsetHeight;
         quickWrap.style.animation = 'shake 0.32s ease';
-        setTimeout(()=> quickWrap.style.animation='', 400);
+        setTimeout(() => { quickWrap.style.animation = ''; }, 400);
         return;
       }
       quickBtn.textContent = 'Verifying…';
       quickBtn.disabled = true;
       quickInput.disabled = true;
       setTimeout(() => {
-        // find toast helper from previous scope? recreate
         const toast = document.getElementById('toast');
-        if (toast) {
-          toast.textContent = `✓ Verified on-chain: ${val.slice(0,18)}… | Risk 2/10 | Sealed | Hyperledger #${Math.floor(Math.random()*9000)+1000}`;
-          toast.className = 'toast show success';
-          setTimeout(()=> toast.classList.remove('show'), 4200);
+        const isSample = val.toLowerCase() === SAMPLE_ARTIFACT_HASH.toLowerCase();
+
+        if (isSample) {
+          if (toast) {
+            toast.textContent = `✓ Sample verification record — demo data: ${SAMPLE_ARTIFACT_HASH.slice(0, 16)}… | Risk 0/10 | Cosign: Sealed | OPA: Pass | Hyperledger Fabric Block #4812`;
+            toast.className = 'toast show success';
+            setTimeout(() => toast.classList.remove('show'), 5000);
+          }
+          const ledger = document.getElementById('blockchain-ledger');
+          if (ledger) ledger.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          if (toast) {
+            toast.textContent = 'Demo Mode: Live verification is restricted to the published sample artifact. Click "Use sample artifact" to test.';
+            toast.className = 'toast show error';
+            setTimeout(() => toast.classList.remove('show'), 5000);
+          }
         }
+
         quickBtn.textContent = 'Verify On-Chain ↵';
         quickBtn.disabled = false;
         quickInput.disabled = false;
-        // scroll to ledger
-        const ledger = document.getElementById('blockchain-ledger');
-        if (ledger) ledger.scrollIntoView({ behavior: 'smooth' });
-      }, 950);
+      }, 700);
     }
     quickBtn.addEventListener('click', doVerify);
     quickInput.addEventListener('keydown', (e) => {
@@ -981,17 +1000,18 @@
 
     // focus glow
     quickInput.addEventListener('focus', () => {
-      quickWrap.querySelector('.quick-verify-inner').style.borderColor = 'rgba(0,229,255,.22)';
-      quickWrap.querySelector('.quick-verify-inner').style.boxShadow = '0 0 0 3px rgba(0,229,255,.12), 0 22px 56px rgba(0,0,0,.52)';
+      const inner = quickWrap.querySelector('.quick-verify-inner');
+      if (inner) {
+        inner.style.borderColor = 'rgba(0,229,255,.22)';
+        inner.style.boxShadow = '0 0 0 3px rgba(0,229,255,.12), 0 22px 56px rgba(0,0,0,.52)';
+      }
     });
     quickInput.addEventListener('blur', () => {
-      quickWrap.querySelector('.quick-verify-inner').style.borderColor = '';
-      quickWrap.querySelector('.quick-verify-inner').style.boxShadow = '';
+      const inner = quickWrap.querySelector('.quick-verify-inner');
+      if (inner) {
+        inner.style.borderColor = '';
+        inner.style.boxShadow = '';
+      }
     });
   }
-
-  // add shake keyframes dynamically
-  const style = document.createElement('style');
-  style.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}`;
-  document.head.appendChild(style);
 })();

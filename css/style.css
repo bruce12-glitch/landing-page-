@@ -215,6 +215,41 @@ img{display:block; max-width:100%}
   z-index:6;
   transform-style:preserve-3d;
 }
+.quick-verify-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+  padding:0 6px;
+}
+.quick-verify-demo-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-family:var(--font-mono);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#00E5FF;
+  background:rgba(0,229,255,.12);
+  border:1px solid rgba(0,229,255,.3);
+  padding:2px 8px;
+  border-radius:999px;
+}
+.quick-verify-demo-badge .demo-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#00E5FF;
+  box-shadow:0 0 6px #00E5FF;
+}
+.quick-verify-demo-title{
+  font-size:11px;
+  font-weight:500;
+  color:#9AA0C5;
+  letter-spacing:.02em;
+}
 .quick-verify-inner{
   display:flex;
   align-items:center;
@@ -268,9 +303,13 @@ img{display:block; max-width:100%}
 .quick-verify-btn:active{ transform:scale(0.97); }
 .quick-verify-hint{
   margin-top:8px;
-  font-size:10px;
+  font-size:11px;
   color:#6B728E;
-  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
 }
 .quick-verify-hint code{
   background:rgba(255,255,255,.06);
@@ -280,6 +319,27 @@ img{display:block; max-width:100%}
   font-family:var(--font-mono);
   font-size:10px;
   color:#9AA0C5;
+}
+.quick-verify-sample-btn{
+  appearance:none;
+  background:rgba(0,229,255,.08);
+  border:1px solid rgba(0,229,255,.24);
+  color:#00E5FF;
+  font-family:var(--font-primary);
+  font-size:10.5px;
+  font-weight:600;
+  padding:2px 8px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:all .18s ease;
+}
+.quick-verify-sample-btn:hover{
+  background:rgba(0,229,255,.18);
+  border-color:rgba(0,229,255,.45);
+  transform:translateY(-1px);
+}
+.quick-verify-sample-btn:active{
+  transform:translateY(0);
 }
 @media(max-width:640px){
   .hero{ min-height:720px; padding:28px 16px 120px; }
@@ -806,6 +866,25 @@ footer{margin-top:32px; border-top:1px solid var(--border); padding:20px 0; disp
   color:#7DD3FC;
   gap:6px;
 }
+.vc-card-badge{
+  margin-top:18px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.02em;
+  color:#64748B;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  padding:3px 8px;
+  border-radius:6px;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  width:fit-content;
+  position:relative;
+  z-index:1;
+  cursor:default;
+  user-select:none;
+}
 .vc-card[data-card="system_telemetry"]{
   background:linear-gradient(180deg, rgba(19,19,38,.90) 0%, rgba(16,16,30,.92) 100%);
 }
@@ -1067,6 +1146,19 @@ footer{margin-top:32px; border-top:1px solid var(--border); padding:20px 0; disp
   transition:color .18s;
 }
 .vc-trust-links a:hover{ color:#60A5FA; }
+.vc-trust-badge{
+  color:#64748B;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  padding:3px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  cursor:default;
+  user-select:none;
+}
 .vc-trust-grid{
   margin-top:24px;
   display:grid;
@@ -1120,6 +1212,23 @@ footer{margin-top:32px; border-top:1px solid var(--border); padding:20px 0; disp
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.06);
   border-radius:14px;
+}
+.vc-avatar-monogram{
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #3B5BFF 0%, #7C3AED 100%);
+  border:1.5px solid rgba(0,229,255,.35);
+  box-shadow:0 4px 14px rgba(59,91,255,.3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--font-primary);
+  font-weight:700;
+  font-size:14px;
+  color:#FFFFFF;
+  letter-spacing:.02em;
 }
 .vc-testimonial-strip p{
   margin:0;
@@ -1229,6 +1338,13 @@ footer{margin-top:32px; border-top:1px solid var(--border); padding:20px 0; disp
 .vc-footer-col h5{ font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#C9D1E0; margin:0 0 4px; }
 .vc-footer-col a{ font-size:12px; color:#94A3B8; transition:color .18s; }
 .vc-footer-col a:hover{ color:#F8FAFC; }
+.footer-disabled{ font-size:12px; color:#475569; cursor:default; user-select:none; }
+
+@keyframes shake{
+  0%,100%{ transform:translateX(0); }
+  20%,60%{ transform:translateX(-4px); }
+  40%,80%{ transform:translateX(4px); }
+}
 
 /* ============================================
    PREMIUM 3D MOTION & FLOATING SYSTEM

@@ -1,3 +1,5 @@
+SUPERSEDED — pre-refactor snapshot of 07 Aug 2026. See README.md for current architecture.
+
 # VendorChain Landing — End-to-End Codebase Analysis
 > Branch: `arena/019fdc8b-landing-page` · Base: `0d42a7c` (main) · Date: 2026-08-07 · Folder: `/home/user/landing-page-`
 
