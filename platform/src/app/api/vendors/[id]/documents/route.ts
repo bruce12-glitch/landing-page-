@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import { validateAdminKey } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limiter';
 import { DocumentTypeEnum } from '@/lib/validation/vendor';
 import { inspectMagicBytes } from '@/lib/crypto/magic-bytes';
 import { encryptDocument } from '@/lib/crypto/envelope';
+import { getStorageDriver } from '@/lib/storage/factory';
 import { db } from '@/lib/db/client';
 import { logger } from '@/lib/logger';
 
@@ -15,7 +14,6 @@ const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB Strict Limit
 const KEK_MASTER_KEY =
   process.env.KEK_MASTER_KEY ||
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
-const STORAGE_DIR = process.env.STORAGE_DIR || './storage/encrypted_docs';
 
 export async function POST(
   req: NextRequest,
@@ -116,15 +114,10 @@ export async function POST(
     // 5. Envelope Encryption (AES-256-GCM) with random DEK and Master KEK wrapping
     const encryptedPayload = encryptDocument(fileBuffer, KEK_MASTER_KEY);
 
-    // 6. Write ciphertext to local storage directory
-    const resolvedStorageDir = path.resolve(STORAGE_DIR);
-    await fs.mkdir(resolvedStorageDir, { recursive: true });
-
+    // 6. Write ciphertext using StorageDriver (Local / S3)
+    const storage = getStorageDriver();
     const filename = `vendor_${params.id}_${docType}_${Date.now()}_${encryptedPayload.sha256.slice(0, 12)}.enc`;
-    const storagePath = path.join(resolvedStorageDir, filename);
-
-    // Store ONLY ciphertext at rest
-    await fs.writeFile(storagePath, encryptedPayload.ciphertext);
+    const storagePath = await storage.write(filename, encryptedPayload.ciphertext);
 
     // 7. Persist Document metadata in database
     const documentRecord = await db.createDocument({

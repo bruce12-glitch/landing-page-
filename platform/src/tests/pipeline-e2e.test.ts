@@ -21,7 +21,7 @@ describe('End-to-End Verification Pipeline (F2, F3, F4)', () => {
   });
 
   it('progresses vendor lifecycle: UNVERIFIED -> PENDING -> IN_PROGRESS -> VERIFIED after all 3 docs pass', async () => {
-    // 1. Register Vendor with valid GSTIN (checksum char '0')
+    // 1. Register Vendor with valid GSTIN (checksum char '0') and matching PAN (ABCDE1234F)
     const regReq = new NextRequest('http://localhost/api/vendors', {
       method: 'POST',
       body: JSON.stringify({
@@ -41,7 +41,10 @@ describe('End-to-End Verification Pipeline (F2, F3, F4)', () => {
     gstFormData.append('type', 'GST_CERT');
     gstFormData.append(
       'file',
-      new Blob([Buffer.from('%PDF-1.5 GST Certificate')], { type: 'application/pdf' }),
+      new Blob(
+        [Buffer.from('%PDF-1.5 Government of India GST Certificate 27ABCDE1234F1Z0 ABCDE1234F Valid')],
+        { type: 'application/pdf' }
+      ),
       'gst_cert.pdf'
     );
     const gstUploadReq = new NextRequest(`http://localhost/api/vendors/${vendor.id}/documents`, {
@@ -56,12 +59,15 @@ describe('End-to-End Verification Pipeline (F2, F3, F4)', () => {
     const afterGstVendor = await db.findVendorById(vendor.id);
     expect(afterGstVendor?.status).toBe('PENDING');
 
-    // 3. Upload Document 2: PAN_CARD
+    // 3. Upload Document 2: PAN_CARD containing matching PAN ABCDE1234F
     const panFormData = new FormData();
     panFormData.append('type', 'PAN_CARD');
     panFormData.append(
       'file',
-      new Blob([Buffer.from('%PDF-1.5 PAN Document')], { type: 'application/pdf' }),
+      new Blob(
+        [Buffer.from('%PDF-1.5 Income Tax Department PAN Card ABCDE1234F Paramount Defense')],
+        { type: 'application/pdf' }
+      ),
       'pan_card.pdf'
     );
     const panUploadReq = new NextRequest(`http://localhost/api/vendors/${vendor.id}/documents`, {
@@ -78,7 +84,9 @@ describe('End-to-End Verification Pipeline (F2, F3, F4)', () => {
     bankFormData.append('type', 'BANK_PROOF');
     bankFormData.append(
       'file',
-      new Blob([Buffer.from('%PDF-1.5 Bank Statement')], { type: 'application/pdf' }),
+      new Blob([Buffer.from('%PDF-1.5 Certified Bank Proof Statement of Account Valid')], {
+        type: 'application/pdf'
+      }),
       'bank_proof.pdf'
     );
     const bankUploadReq = new NextRequest(`http://localhost/api/vendors/${vendor.id}/documents`, {

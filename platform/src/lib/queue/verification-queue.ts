@@ -1,12 +1,16 @@
 import crypto from 'node:crypto';
 import { db } from '../db/client';
 import { processVerificationJob } from './worker';
+import { assertQueueHealth } from './boot-check';
 import type {
   VerificationJobPayload,
   VerificationJobResult,
   DeadLetterEntry,
 } from './types';
 import { logger } from '../logger';
+
+// Enforce fail-closed boot check
+assertQueueHealth();
 
 class VerificationQueueService {
   private jobs = new Map<string, VerificationJobResult>();

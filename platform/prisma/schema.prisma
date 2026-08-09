@@ -28,6 +28,7 @@ enum DocumentStatus {
   PENDING
   VERIFIED
   REJECTED
+  FLAGGED
 }
 
 model Vendor {

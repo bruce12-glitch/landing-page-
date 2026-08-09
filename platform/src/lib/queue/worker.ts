@@ -1,8 +1,9 @@
-import fs from 'node:fs/promises';
 import { db } from '../db/client';
 import { decryptDocument } from '../crypto/envelope';
 import { decryptPan } from '../crypto/pan-encryption';
 import { getVerificationAdapter } from '../verification/adapter-factory';
+import { getStorageDriver } from '../storage/factory';
+import { performDocumentOcr } from '../ocr/extractor';
 import type { Verdict } from '../verification/types';
 import type { VerificationJobPayload } from './types';
 import { logger } from '../logger';
@@ -12,12 +13,14 @@ const KEK_MASTER_KEY =
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
 
 /**
- * Core asynchronous verification worker task.
- * 1. Loads encrypted document ciphertext from disk.
+ * Core asynchronous verification worker task (Slice 3: Document Intelligence).
+ * 1. Reads encrypted document ciphertext from configured StorageDriver.
  * 2. Performs ephemeral in-memory decryption (never written to disk or logs).
- * 3. Invokes the configured VerificationAdapter.
- * 4. Zeroes out the decrypted memory buffer immediately (zero-trust RAM cleanup).
- * 5. Applies state transitions and append-only audit events.
+ * 3. Invokes the configured VerificationAdapter (GSTN/Sandbox).
+ * 4. Executes OCR cross-check comparing extracted document text against registered credentials.
+ * 5. Flags forgeries / mismatches (`FLAGGED`) or confirms authenticity (`VERIFIED`).
+ * 6. Zeroes out the decrypted memory buffer immediately (`decryptedBuffer.fill(0)`).
+ * 7. Enforces Truth Rule state transitions and append-only audit events.
  */
 export async function processVerificationJob(
   job: VerificationJobPayload
@@ -32,11 +35,12 @@ export async function processVerificationJob(
     throw new Error(`Document with ID '${job.documentId}' not found`);
   }
 
+  const storage = getStorageDriver();
   const adapter = getVerificationAdapter();
   let decryptedBuffer: Buffer | null = null;
 
   try {
-    const ciphertext = await fs.readFile(doc.storagePath);
+    const ciphertext = await storage.read(doc.storagePath);
 
     // Ephemeral in-memory decryption
     decryptedBuffer = decryptDocument(
@@ -64,17 +68,51 @@ export async function processVerificationJob(
       decryptedBuffer,
     });
 
-    // Handle document verdict outcomes
     if (verdict.outcome === 'VERIFIED') {
+      // Execute Document Intelligence OCR cross-check
+      const ocrVerdict = await performDocumentOcr(
+        decryptedBuffer,
+        doc.type,
+        vendor.gstNumber,
+        plaintextPan
+      );
+
+      if (!ocrVerdict.matched) {
+        // OCR Mismatch Detected -> Document and Vendor FLAGGED
+        await db.updateDocumentStatus(doc.id, 'FLAGGED');
+        const prevVendorStatus = vendor.status;
+        await db.updateVendorStatus(job.vendorId, 'FLAGGED');
+
+        await db.createVerificationEvent({
+          vendorId: job.vendorId,
+          actor: 'OCR_INTELLIGENCE',
+          fromStatus: prevVendorStatus,
+          toStatus: 'FLAGGED',
+          reason: ocrVerdict.reason,
+          evidenceSha: verdict.evidenceSha,
+        });
+
+        logger.warn(
+          { vendorId: job.vendorId, documentId: doc.id, mismatchedField: ocrVerdict.mismatchedField },
+          'Document intelligence detected credential mismatch — flagged vendor and document'
+        );
+
+        return {
+          ...verdict,
+          outcome: 'FAILED',
+          reason: ocrVerdict.reason,
+        };
+      }
+
+      // OCR Matched -> Document VERIFIED
       await db.updateDocumentStatus(doc.id, 'VERIFIED');
 
-      // Record append-only verification event
       await db.createVerificationEvent({
         vendorId: job.vendorId,
         actor: verdict.adapterName,
         fromStatus: vendor.status,
         toStatus: vendor.status,
-        reason: verdict.reason,
+        reason: `${verdict.reason} | OCR cross-check confirmed (${(ocrVerdict.confidence * 100).toFixed(0)}% confidence)`,
         evidenceSha: verdict.evidenceSha,
       });
 
@@ -88,18 +126,17 @@ export async function processVerificationJob(
       const hasPan = verifiedTypes.has('PAN_CARD');
       const hasBank = verifiedTypes.has('BANK_PROOF');
 
-      if (hasGst && hasPan && hasBank) {
+      if (hasGst && hasPan && hasBank && vendor.status !== 'FLAGGED') {
         const prevStatus = vendor.status;
         await db.updateVendorStatus(job.vendorId, 'VERIFIED');
 
-        // Append-only transition event to VERIFIED
         await db.createVerificationEvent({
           vendorId: job.vendorId,
           actor: verdict.adapterName,
           fromStatus: prevStatus,
           toStatus: 'VERIFIED',
           reason:
-            'All 3 required identity documents (GST_CERT, PAN_CARD, BANK_PROOF) have passed cryptographic verification',
+            'All 3 required identity documents (GST_CERT, PAN_CARD, BANK_PROOF) have passed cryptographic verification and OCR validation',
           evidenceSha: verdict.evidenceSha,
         });
 

@@ -17,7 +17,7 @@ export type VendorStatus = z.infer<typeof VendorStatusEnum>;
 export const DocumentTypeEnum = z.enum(['GST_CERT', 'PAN_CARD', 'BANK_PROOF']);
 export type DocumentType = z.infer<typeof DocumentTypeEnum>;
 
-export const DocumentStatusEnum = z.enum(['STORED', 'PENDING', 'VERIFIED', 'REJECTED']);
+export const DocumentStatusEnum = z.enum(['STORED', 'PENDING', 'VERIFIED', 'REJECTED', 'FLAGGED']);
 export type DocumentStatus = z.infer<typeof DocumentStatusEnum>;
 
 export const CreateVendorSchema = z
