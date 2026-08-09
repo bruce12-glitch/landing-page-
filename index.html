@@ -47,7 +47,7 @@
           <a href="#faq">About</a>
         </div>
         <div class="nav-actions">
-          <a href="#cta" class="nav-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+          <a href="#cta" class="nav-cta">Request Early Access <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
           <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer"><span></span></button>
         </div>
         <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-label="Mobile menu">
@@ -56,7 +56,7 @@
           <a href="#verify">Proof <span>›</span></a>
           <a href="#integrations">Ecosystem <span>›</span></a>
           <a href="#faq">About <span>›</span></a>
-          <a href="#cta" class="mob-cta">Start Verifying <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+          <a href="#cta" class="mob-cta">Request Early Access <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
         </div>
       </nav>
       <section class="hero" aria-labelledby="heroTitle">
@@ -66,7 +66,7 @@
         <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to Hyperledger Fabric.</p>
         <div class="hero-ctas reveal in" id="heroCtas">
           <a href="#cta" class="hero-btn primary" id="launchPortalBtn">Request Early Access →</a>
-          <a href="#blockchain-ledger" class="hero-btn secondary">Explore Audit Ledger</a>
+          <a href="#quickVerify" class="hero-btn secondary">Try Demo Verifier</a>
         </div>
         <div class="tech-pills reveal in" id="techPills" aria-label="Core tech stack">
           <div class="tech-pill" data-tech="fabric"><span class="tech-dot ledger"></span> Hyperledger Fabric</div>
@@ -489,15 +489,95 @@
     </div>
   </section>
 
-  <!-- CTA - Section 12 -->
+  <!-- CTA - Section 12: Early Access Capture -->
   <section class="vc-cta" id="cta" aria-labelledby="ctaTitle">
     <div class="vc-cta-inner">
+      <div class="vc-cta-badge">EARLY ACCESS</div>
       <h3 id="ctaTitle">Ready to eliminate assumed trust in your B2B supply chain?</h3>
-      <p>Automate vendor verification with cryptographically backed audit logs.</p>
-      <div class="vc-cta-actions">
-        <a href="#cta" class="vc-btn primary">Request Early Access →</a>
-        <a href="#cta" class="vc-btn ghost">Schedule Enterprise Demo</a>
-      </div>
+      <p class="vc-cta-subtitle">Be the first to secure and verify your vendor software builds with cryptographically sealed audit trails.</p>
+
+      <form id="earlyAccessForm" class="early-access-form" novalidate>
+        <!-- Error Summary container (receives focus on submit validation error) -->
+        <div id="formErrorSummary" class="form-error-summary" role="alert" aria-live="assertive" tabindex="-1" hidden></div>
+
+        <!-- Honeypot Field for Spam Protection -->
+        <div class="honeypot-wrap" aria-hidden="true">
+          <label for="honeypotField">Do not fill this field</label>
+          <input type="text" id="honeypotField" name="honeypot" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="form-grid">
+          <!-- Full Name -->
+          <div class="form-group">
+            <label for="earlyAccessName" class="form-label">Full Name <span class="required-star" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="earlyAccessName"
+              name="name"
+              class="form-input"
+              placeholder="e.g. Elena Rostova"
+              autocomplete="name"
+              required
+              aria-required="true"
+              aria-invalid="false"
+              aria-describedby="nameError"
+              spellcheck="false"
+            >
+            <span id="nameError" class="field-error" aria-live="polite"></span>
+          </div>
+
+          <!-- Work Email -->
+          <div class="form-group">
+            <label for="earlyAccessEmail" class="form-label">Work Email <span class="required-star" aria-hidden="true">*</span></label>
+            <input
+              type="email"
+              id="earlyAccessEmail"
+              name="email"
+              class="form-input"
+              placeholder="name@company.com"
+              autocomplete="email"
+              required
+              aria-required="true"
+              aria-invalid="false"
+              aria-describedby="emailError"
+              spellcheck="false"
+            >
+            <span id="emailError" class="field-error" aria-live="polite"></span>
+          </div>
+
+          <!-- Company / Organization -->
+          <div class="form-group">
+            <label for="earlyAccessCompany" class="form-label">Company <span class="required-star" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="earlyAccessCompany"
+              name="organization"
+              class="form-input"
+              placeholder="Acme Security Corp"
+              autocomplete="organization"
+              required
+              aria-required="true"
+              aria-invalid="false"
+              aria-describedby="companyError"
+              spellcheck="false"
+            >
+            <span id="companyError" class="field-error" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <!-- Submit Row -->
+        <div class="form-submit-row">
+          <button type="submit" id="earlyAccessSubmitBtn" class="vc-btn primary early-access-submit-btn">
+            <span class="btn-text">Request Early Access →</span>
+          </button>
+        </div>
+
+        <!-- Form status message (offline/error/success) -->
+        <div id="formStatusMsg" class="form-status-msg" aria-live="polite"></div>
+
+        <!-- Trust Microcopy (F4) -->
+        <p class="cta-trust-microcopy">No spam. One email when the Vendor Portal opens. We never share your details — verification is kind of our thing.</p>
+      </form>
     </div>
   </section>
 
