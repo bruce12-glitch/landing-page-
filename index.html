@@ -51,10 +51,28 @@
       </nav>
       <section class="hero" aria-labelledby="heroTitle">
         <div class="hero-cursor-glow" id="heroCursorGlow" aria-hidden="true"></div>
-        <div class="badge"><i aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3B5BFF" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></i> BUILT FOR WEB3 INNOVATION</div>
+        <div class="badge" id="heroBadge"><i aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></i> NIST SP 800-207 ZERO-TRUST ARCHITECTURE</div>
         <h1 class="h1 reveal in" id="heroTitle">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
-        <!-- coins removed -->
-        <!-- 5 chains label removed -->
+        <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to Hyperledger Fabric.</p>
+        <div class="hero-ctas reveal in" id="heroCtas">
+          <a href="/portal" class="hero-btn primary" id="launchPortalBtn">Launch Vendor Portal →</a>
+          <a href="#blockchain-ledger" class="hero-btn secondary">Explore Audit Ledger</a>
+        </div>
+        <div class="tech-pills reveal in" id="techPills" aria-label="Core tech stack">
+          <div class="tech-pill" data-tech="fabric"><span class="tech-dot ledger"></span> Hyperledger Fabric</div>
+          <div class="tech-pill" data-tech="syft"><span class="tech-dot sbom"></span> Syft SBOM</div>
+          <div class="tech-pill" data-tech="cosign"><span class="tech-dot cosign"></span> Cosign</div>
+          <div class="tech-pill" data-tech="opa"><span class="tech-dot opa"></span> OPA / Rego</div>
+          <div class="tech-pill" data-tech="claude"><span class="tech-dot claude"></span> Claude AI</div>
+        </div>
+        <div class="quick-verify-wrap reveal in" id="quickVerify" role="search" aria-label="Quick verify on-chain">
+          <div class="quick-verify-inner">
+            <svg class="qv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA0C5" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" class="quick-verify-input" placeholder="Enter Submission ID or SBOM SHA-256 Hash..." aria-label="Enter Submission ID or SBOM SHA-256 Hash" id="quickVerifyInput" autocomplete="off" spellcheck="false">
+            <button class="quick-verify-btn" id="quickVerifyBtn" type="button">Verify On-Chain ↵</button>
+          </div>
+          <div class="quick-verify-hint">Try <code>vc_sub_9f3a2c...</code> or <code>e3b0c442...</code></div>
+        </div>
         <div class="horizon" aria-hidden="true"></div>
         <div class="orbs" aria-hidden="true">
           <div class="orb-3d orb1"></div>
@@ -62,288 +80,438 @@
           <div class="orb-3d orb3"></div>
         </div>
         <canvas id="particleCanvas" aria-hidden="true" role="presentation"></canvas>
-        <!-- CTAs removed -->
-        <!-- layered boxes removed per request -->
       </section>
     </div>
   </div>
 
   <div class="spacer" aria-hidden="true"></div>
   <main id="main" class="aikido-main">
-
-  <!-- Trusted -->
-<!-- Tabs bar -->
-  <section class="ak-tabs">
-    <div class="ak-tabs-inner">
-      <div class="ak-pill" role="tablist">
-        <button class="ak-tab active" role="tab" aria-selected="true">Aikido /code</button>
-        <button class="ak-tab" role="tab" aria-selected="false">Aikido /cloud</button>
-        <button class="ak-tab" role="tab" aria-selected="false">Aikido /attack</button>
-        <button class="ak-tab" role="tab" aria-selected="false">Aikido /protect</button>
+    <div class="global-bg" aria-hidden="true">
+      <div class="global-orbs">
+        <div class="g-orb g1"></div>
+        <div class="g-orb g2"></div>
+        <div class="g-orb g3"></div>
+        <div class="g-orb g4"></div>
+        <div class="g-orb g5"></div>
       </div>
-      <h2 class="ak-h2">Secure vulnerabilities <span>inside your /code</span></h2>
-      <div class="ak-tab-actions"><a href="https://www.aikido.dev/platform/code" class="ak-btn dark">Explore Aikido /Code →</a> <a href="https://www.aikido.dev/book/demo" class="ak-btn ghost">Talk to an Expert</a></div>
+      <canvas id="globalParticles" class="global-particles"></canvas>
+      <div class="grid-overlay"></div>
     </div>
-  </section>
 
-  <!-- CODE features -->
-  <section class="ak-features">
-    <div class="ak-features-inner">
-      <div class="ak-feat-grid">
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf239c6b4018d0cfaa3_SAST.svg" alt="" width="26" height="26"></div>
-          <h4>Static code analysis (SAST)</h4>
-          <p>Scans your source code for security risks before an issue can be merged.</p>
-          <a href="https://www.aikido.dev/code/static-code-analysis-sast" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf3e29d610af61c6b0b_SCA.svg" alt="" width="26" height="26"></div>
-          <h4>Open source dependency scanning (SCA)</h4>
-          <p>Continuously monitors your code for known vulnerabilities, CVEs & other risks or generate SBOMs.</p>
-          <a href="https://www.aikido.dev/code/open-source-dependency-scanning-sca" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/6a3d4095e3d4c52711865a13_code-audit-ai-sast.svg" alt="" width="26" height="26"></div>
-          <h4>Code Audit (NEW)</h4>
-          <p>Find complex vulnerabilities hidden in your source code that static engines can't.</p>
-          <a href="https://www.aikido.dev/code/code-audit" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5f7bc5828dc66ebf1510_code-quality.svg" alt="" width="26" height="26"></div>
-          <h4>AI Code Quality</h4>
-          <p>Ship clean code faster with AI code review. Auto review code for bug risks, anti-patterns & quality issues.</p>
-          <a href="https://www.aikido.dev/code/code-quality" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf254053da1ba9ba0e8_secrets.svg" alt="" width="26" height="26"></div>
-          <h4>Secrets detection</h4>
-          <p>Checks your code for leaked and exposed API keys, passwords, certificates, encryption keys, etc.</p>
-          <a href="https://www.aikido.dev/code/secrets-detection" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf2b2386938a9907be1_malware.svg" alt="" width="26" height="26"></div>
-          <h4>Malware detection</h4>
-          <p>Prevents malicious packages from infiltrating your software supply chain. Powered by Aikido Intel.</p>
-          <a href="https://www.aikido.dev/protect/malware-detection-in-dependencies" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf3e672c8f00d179d39_eol%20software.svg" alt="" width="26" height="26"></div>
-          <h4>Outdated Software</h4>
-          <p>Checks if any frameworks & runtimes you are using are no longer maintained.</p>
-          <a href="https://www.aikido.dev/code/outdated-eol-software" class="ak-feat-link">Learn more →</a>
+  <!-- VendorChain Engine - Section 2: Zero-Trust Verification Grid -->
+  <section class="vc-engine" id="engine-spec" aria-labelledby="vcEngineTitle">
+    <div class="vc-engine-inner">
+      <div class="vc-header">
+        <h2 class="vc-h2" id="vcEngineTitle">Continuous Zero-Trust Verification <span>for B2B Supply Chains</span></h2>
+        <div class="vc-actions">
+          <a href="#engine-spec" class="vc-btn primary">Explore Verification Pipeline →</a>
+          <a href="#blockchain-ledger" class="vc-btn ghost">View On-Chain Specs</a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- CLOUD -->
-  <section class="ak-features alt">
-    <div class="ak-features-inner">
-      <div class="ak-section-head">
-        <h3 class="ak-h3">Scan the environments <span>inside your /cloud</span></h3>
-        <div class="ak-section-cta"><a href="https://www.aikido.dev/platform/cloud" class="ak-btn dark">Explore Aikido /Cloud →</a> <a href="https://www.aikido.dev/archived-pages/book-a-demo" class="ak-btn ghost">Talk to an Expert</a></div>
-      </div>
-      <div class="ak-feat-grid three">
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf2a994a78a222afb62_CSPM.svg" alt="" width="26" height="26"></div>
-          <h4>Cloud Security Posture Management (CSPM)</h4>
-          <p>Detects cloud infrastructure risks (misconfigurations, VMs, Container images) across major cloud providers.</p>
-          <a href="https://www.aikido.dev/cloud/cloud-posture-management-cspm" class="ak-feat-link">Learn more →</a>
+      <div class="vc-grid">
+        <!-- Row 1 Col 1: Vendor Identity -->
+        <div class="vc-card" data-card="vendor_identity" data-tilt>
+          <div class="vc-card-icon icon-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <h4>Zero-Trust Vendor Identity</h4>
+          <p>Verifies official business credentials (GST, PAN, bank proof) and enforces continuous behavior monitoring rather than static, one-time checks.</p>
+          <a href="/docs/identity" class="vc-card-link">Learn more →</a>
         </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf35499bebfbdbbea97_virtual-machines.svg" alt="" width="26" height="26"></div>
-          <h4>Virtual Machine Scanning</h4>
-          <p>Scans your virtual machines for vulnerable packages, outdated runtimes and risky licenses.</p>
-          <a href="https://www.aikido.dev/cloud/virtual-machine-scanning" class="ak-feat-link">Learn more →</a>
+        <!-- Row 1 Col 2: SBOM -->
+        <div class="vc-card" data-card="sbom_generation" data-tilt>
+          <div class="vc-card-icon icon-package">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/></svg>
+          </div>
+          <h4>Automated SBOM Generation (Syft)</h4>
+          <p>Automatically scans software packages using <strong>Syft</strong> to extract a complete CycloneDX Software Bill of Materials (SBOM) dependency tree.</p>
+          <a href="/docs/sbom" class="vc-card-link">Learn more →</a>
         </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf2795ef624a232924d_container-scanning.svg" alt="" width="26" height="26"></div>
-          <h4>Containers & K8 scanning</h4>
-          <p>Scans your container images for packages with security issues.</p>
-          <a href="https://www.aikido.dev/platform/cloud#scanners" class="ak-feat-link">Learn more →</a>
+        <!-- Row 1 Col 3: Cosign -->
+        <div class="vc-card" data-card="artifact_signing" data-tilt>
+          <div class="vc-card-icon icon-key">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="7.5" r="5.5"/><path d="M21 2 11 12"/><path d="M15.5 7.5 21 2"/><path d="M7 17 3 21v-4a2 2 0 0 1 2-2h4Z"/></svg>
+          </div>
+          <h4>Cryptographic Signing (Cosign)</h4>
+          <p>Stamps software artifacts and SBOM files with <strong>Cosign</strong> digital signatures, ensuring post-generation tampering is immediately detected.</p>
+          <a href="/docs/cosign" class="vc-card-link">Learn more →</a>
+        </div>
+        <!-- Row 2 Col 1: AI Risk -->
+        <div class="vc-card" data-card="ai_risk_analysis" data-tilt>
+          <div class="vc-card-icon icon-spark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2 11 5.5 14.5 7 11 8.5 9.5 12 8 8.5 4.5 7 8 5.5 9.5 2Z"/><path d="M19 8l1.5 2.5L23 12l-2.5 1.5L19 16l-1.5-2.5L15 12l2.5-1.5L19 8Z"/><path d="M5 17l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z"/></svg>
+          </div>
+          <h4>AI Vulnerability Analysis (Claude)</h4>
+          <p>Deep-scans SBOM dependencies and CVE exposures using Claude AI to produce dynamic risk scores (1–10) and summaries.</p>
+          <a href="/docs/ai-risk" class="vc-card-link">Learn more →</a>
+        </div>
+        <!-- Row 2 Col 2: OPA -->
+        <div class="vc-card" data-card="policy_gatekeeping" data-tilt>
+          <div class="vc-card-icon icon-lock">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+          </div>
+          <h4>Policy Gatekeeping (OPA & Rego)</h4>
+          <p>Automatically blocks non-compliant submissions using <strong>Open Policy Agent (OPA)</strong> rules if signatures are missing, certs expire, or risk spikes.</p>
+          <a href="/docs/opa-rego" class="vc-card-link">Learn more →</a>
+        </div>
+        <!-- Row 2 Col 3: Hyperledger -->
+        <div class="vc-card" data-card="blockchain_ledger" id="blockchain-ledger" data-tilt>
+          <div class="vc-card-icon icon-blocks">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="9" rx="2"/><path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M7 11h.01"/><path d="M12 11h.01"/><path d="M17 11h.01"/></svg>
+          </div>
+          <h4>Immutable Ledger (Hyperledger Fabric)</h4>
+          <p>Commits cryptographic SHA-256 hashes, AI risk scores, and policy verdicts permanently to Hyperledger Fabric for unalterable dispute records.</p>
+          <a href="/docs/hyperledger" class="vc-card-link">Learn more →</a>
+        </div>
+        <!-- Row 3 Col 1: Telemetry -->
+        <div class="vc-card" data-card="system_telemetry" data-tilt>
+          <div class="vc-card-icon icon-activity">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/><circle cx="12" cy="12" r="10" opacity="0.18"/></svg>
+          </div>
+          <h4>Live Operations Telemetry (Grafana)</h4>
+          <p>Tracks total vendor submissions, pass/fail rates, and average AI risk scores in real-time via Prometheus and Grafana monitoring dashboards.</p>
+          <a href="/docs/telemetry" class="vc-card-link">Learn more →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ATTACK -->
-  <section class="ak-attack">
-    <div class="ak-features-inner">
-      <h3 class="ak-h3">Pentest your applications continuously with /attack</h3>
-      <div class="ak-feat-grid three">
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb2521a1620d1698bcd319_Container_align-center.svg" alt="" width="26" height="26"></div>
-          <h4>AI pentesting</h4>
-          <p>Get a pentest done in hours. 200+ agents unleashed that outperform humans every single time. No High+ finding? Money back.</p>
-          <a href="https://www.aikido.dev/attack/aipentest" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5e20b2386938a990be7e_infinite.svg" alt="" width="26" height="26"></div>
-          <h4>Continuous autonomous pentesting</h4>
-          <p>Autonomous agents pentest every deployment, validate exploitability, generate patches, and retest the fix, all before code hits production.</p>
-          <a href="https://www.aikido.dev/attack/infinite" class="ak-feat-link">Learn more →</a>
-        </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf28ad842828c476d98_DAST.svg" alt="" width="26" height="26"></div>
-          <h4>Surface monitoring (DAST)</h4>
-          <p>Dynamically tests your web app’s front-end & APIs to find vulnerabilities through simulated attacks.</p>
-          <a href="https://www.aikido.dev/attack/surface-monitoring-dast" class="ak-feat-link">Learn more →</a>
+  <!-- STORAGE INFRASTRUCTURE - Section 3 -->
+  <section class="vc-storage" id="storage" aria-labelledby="storageTitle">
+    <div class="vc-engine-inner">
+      <div class="vc-section-head">
+        <h3 class="vc-h3" id="storageTitle">Secure vendor artifacts <span>inside your /storage</span></h3>
+        <div class="vc-actions">
+          <a href="#storage" class="vc-btn primary">Explore Artifact Storage →</a>
+          <a href="/docs/storage-specs" class="vc-btn ghost">View Storage Specs</a>
         </div>
       </div>
-      <div class="ak-section-cta"><a href="https://www.aikido.dev/platform/attack" class="ak-btn dark">Explore Aikido /Attack →</a> <a href="https://www.aikido.dev/archived-pages/book-a-demo" class="ak-btn ghost">Talk to an Expert</a></div>
-    </div>
-  </section>
-
-  <!-- PROTECT -->
-  <section class="ak-protect">
-    <div class="ak-features-inner">
-      <h3 class="ak-h3">Block attacks in your runtime <span>and devices with /protect</span></h3>
-      <div class="ak-feat-grid three">
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5ee5f24e8b7df6c1369d_device-protection.svg" alt="" width="26" height="26"></div>
-          <h4>Device Protection</h4>
-          <p>Protect every install without slowing down your developers. Block malicious browser extensions, IDE plugins, and code libraries.</p>
-          <a href="https://www.aikido.dev/protect/device-protection" class="ak-feat-link">Learn more →</a>
+      <div class="vc-grid three">
+        <div class="vc-card" data-card="supabase_storage" data-tilt>
+          <div class="vc-card-icon icon-db">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+          <h4>Private Object Storage (Supabase)</h4>
+          <p>Secures raw CycloneDX SBOM JSON files, digital signatures, and vendor onboarding documents in private bucket storage with strict access controls.</p>
+          <a href="/docs/storage" class="vc-card-link">Learn more →</a>
         </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5cf24044c24f545f9d09_kuberneties-runtime.svg" alt="" width="26" height="26"></div>
-          <h4>Runtime Protection</h4>
-          <p>Zen is your in-app firewall for peace of mind. Auto block critical injection attacks, introduce API rate limiting & more</p>
-          <a href="https://www.aikido.dev/protect/zen" class="ak-feat-link">Learn more →</a>
+        <div class="vc-card" data-card="cosign_blob_verification" data-tilt>
+          <div class="vc-card-icon icon-key">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="7.5" r="5.5"/><path d="M21 2 11 12"/><path d="M12 12l2 8"/><path d="M10 20l2-2 2 2"/></svg>
+          </div>
+          <h4>Cryptographic Blob Verification (Cosign)</h4>
+          <p>Stamps SBOM files with Cosign keypair digital signatures and verifies cryptographic seals before artifacts enter the pipeline.</p>
+          <a href="/docs/cosign-signing" class="vc-card-link">Learn more →</a>
         </div>
-        <div class="ak-feat">
-          <div class="ak-feat-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/69eb5f4b5dc8eca8ca5b1686_bot-protection.svg" alt="" width="26" height="26"></div>
-          <h4>Bot protection</h4>
-          <p>Automatically block critical injection attacks, introduce rate limiting for APIs, and more...</p>
-          <a href="https://www.aikido.dev/protect/zen#block-traffic" class="ak-feat-link">Learn more →</a>
-        </div>
-      </div>
-      <div class="ak-section-cta"><a href="https://www.aikido.dev/platform/protect" class="ak-btn dark">Explore Aikido /Protect →</a> <a href="https://www.aikido.dev/archived-pages/book-a-demo" class="ak-btn ghost">Talk to an Expert</a></div>
-    </div>
-  </section>
-
-  <!-- ONLY GET ALERTS THAT MATTER -->
-  <section class="ak-priority">
-    <div class="ak-priority-inner">
-      <div class="ak-eyebrow">FEATURES</div>
-      <div class="ak-priority-head">
-        <h3>Only get alerts <span>that matter to you.</span></h3>
-        <p>your environment.<br>your software.<br>Security tools generate a lot of alerts. Only a few are worth acting on.</p>
-      </div>
-      <h3 class="ak-h3 center" style="margin-top:18px">We prioritize alerts <span>so you don’t have to.</span></h3>
-      <div class="ak-priority-grid">
-        <div class="ak-p-card">
-          <div class="ak-p-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf3640241a5371df8e_deduplication.svg" alt="" width="28" height="28"></div>
-          <h4>Deduplication</h4>
-          <p>Related alerts are grouped together, so you can resolve more issues with less effort.</p>
-        </div>
-        <div class="ak-p-card">
-          <div class="ak-p-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf364024cd0971df98_traige-diamond.svg" alt="" width="28" height="28"></div>
-          <h4>AutoTriage</h4>
-          <p>Aikido evaluates alerts in the context of your code and infrastructure and deprioritizes issues that do not pose real risk to your application.</p>
-        </div>
-        <div class="ak-p-card">
-          <div class="ak-p-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf3640246b5171dfb8_eye.svg" alt="" width="28" height="28"></div>
-          <h4>Custom Rules</h4>
-          <p>Fine tune what is relevant for your team. Exclude specific paths, packages, or conditions while still being alerted when something critical happens.</p>
+        <div class="vc-card" data-card="relational_credential_registry" data-tilt>
+          <div class="vc-card-icon icon-server">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/><path d="M10 6h8"/><path d="M10 18h8"/></svg>
+          </div>
+          <h4>Relational Credential Registry</h4>
+          <p>Maintains vendor profiles, verified GST/PAN records, and transaction submission history backed by Supabase relational tables.</p>
+          <a href="/docs/database-schema" class="vc-card-link">Learn more →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FROM ALERT TO FIX -->
-  <section class="ak-fix">
-    <div class="ak-fix-inner">
-      <h3 class="ak-h3 center">We help you go <span>from alert to fix.</span></h3>
-      <div class="ak-fix-grid">
-        <div class="ak-f-card">
-          <div class="ak-f-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/677d4adfb62f7585d241aaaf_Icon.svg" alt="" width="28" height="28"></div>
-          <h4>AutoFix</h4>
-          <p>Generate reviewable pull requests to fix issues across code, dependencies, infrastructure, and containers, with full visibility before you merge.</p>
-        </div>
-        <div class="ak-f-card">
-          <div class="ak-f-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/678dff76aabf9b67d64a71db_bulk.svg" alt="" width="28" height="28"></div>
-          <h4>Bulk Fix with One Click</h4>
-          <p>Create ready to merge pull requests that address multiple related alerts at once, saving time and manual work.</p>
-        </div>
-        <div class="ak-f-card">
-          <div class="ak-f-icon"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/677d4ba246ad7d8c4a1c4679_Icon%20aiai.svg" alt="" width="28" height="28"></div>
-          <h4>TL;DR Summaries</h4>
-          <p>Get a short, actionable summary of what’s wrong and how to fix it. Turn it into a ticket or assign it in one click.</p>
+  <!-- POLICY ENFORCEMENT - Section 4 -->
+  <section class="vc-pipeline" id="pipeline" aria-labelledby="pipelineTitle">
+    <div class="vc-engine-inner">
+      <div class="vc-section-head">
+        <h3 class="vc-h3" id="pipelineTitle">Enforce Zero-Trust rules continuously with <span>/pipeline</span></h3>
+        <div class="vc-actions">
+          <a href="#pipeline" class="vc-btn primary">Explore CI/CD Pipeline →</a>
+          <a href="/docs/policy" class="vc-btn ghost">View Policy Docs</a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- TRUST -->
-  <section class="ak-trust">
-    <div class="ak-trust-inner">
-      <div class="ak-eyebrow">TRUST</div>
-      <h3 class="ak-h3">Taking care of your data like it’s our own</h3>
-      <div class="ak-trust-links"><a href="https://help.aikido.dev/doc/overview-aikido-docs/docCpLHBMatZ">Documentation</a> <a href="https://www.aikido.dev/trust-center">Trust center</a> <a href="https://integrations.aikido.dev/">Integrations</a></div>
-      <div class="ak-trust-grid">
-        <div class="ak-trust-step"><span>1</span><h4>Choose the repos yourself</h4><p>When you log in with your VCS we don’t get access to any repositories. You manually give read-only access to the ones you’d like to scan.</p></div>
-        <div class="ak-trust-step"><span>2</span><h4>Read-only access</h4><p>We can’t change any of your code.</p></div>
-        <div class="ak-trust-step"><span>3</span><h4>No keys on our side</h4><p>You log in with Github, Gitlab or Bitbucket so we can’t store/view keys.</p></div>
-        <div class="ak-trust-step"><span>4</span><h4>Short-lived access tokens</h4><p>Can only be generated with a certificate, stored in AWS secrets manager.</p></div>
-        <div class="ak-trust-step"><span>5</span><h4>Separate docker container</h4><p>Every scan generates a separate docker container which gets hard-deleted right after analysis is done.</p></div>
-      </div>
-      <div class="ak-testimonial-strip">
-        <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/6866951d31dc7e8ef8b7fe52_T01BMLNG7V4-U06JV8HQRKN-a41224d8996c-512.jpg" alt="Christian" width="44" height="44">
-        <div><p>“There wasn’t noise reduction in Snyk — it was more like ‘here’s everything, good luck.’ With Aikido, the triaging is just… done.”</p><span>Christian Schmidt — VP, Security & IT</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- INTEGRATIONS -->
-  <section class="ak-integrations">
-    <div class="ak-integrations-inner">
-      <h3>The flow must go on</h3>
-      <p>Instead of adding another UI to check, Aikido integrates with the tools you already use. We'll notify you when it's important.</p>
-      <div class="ak-marquee light" aria-hidden="true">
-        <div class="ak-track light">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00d0b49c04a8e596719f_GitHub.avif" alt="GitHub" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00e4c8f20d5eda573cac_Gitlab.avif" alt="GitLab" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00edbba09219b87d66b9_Jira.avif" alt="Jira" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec003e914843d11ec4ad1a_microsoft-teams.avif" alt="Teams" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec0115a2ce2b6d89b95fcb_VSCode.avif" alt="VSCode" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec0097d598b1fb055471dc_BitBucket.avif" alt="Bitbucket" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec007377c52822dfac7e5b_AzurePipeline.avif" alt="Azure" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00a9414268cea694de68_ClickUp.avif" alt="ClickUp" height="28">
-          <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/66ec00d0b49c04a8e596719f_GitHub.avif" alt="GitHub" height="28">
+      <div class="vc-grid three">
+        <div class="vc-card" data-card="ai_vulnerability_scoring" data-tilt>
+          <div class="vc-card-icon icon-spark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2 11 5.5 14.5 7 11 8.5 9.5 12 8 8.5 4.5 7 8 5.5 9.5 2Z"/><path d="M19 8l1.5 2.5L23 12l-2.5 1.5L19 16l-1.5-2.5L15 12l2.5-1.5L19 8Z"/></svg>
+          </div>
+          <h4>AI Vulnerability Scoring (Claude AI)</h4>
+          <p>Leverages Claude AI to scan dependency trees, cross-reference CVE vulnerability databases, and compute dynamic risk scores from 1 to 10.</p>
+          <a href="/docs/ai-risk" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-card="automated_rego_gatekeeping" data-tilt>
+          <div class="vc-card-icon icon-lock">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+          </div>
+          <h4>Automated Policy Gatekeeping (OPA)</h4>
+          <p>Evaluates custom Rego policy rules on every code push to automatically block submissions with missing signatures, expired certs, or high risk scores.</p>
+          <a href="/docs/opa-rego" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-card="immutable_chaincode_audit" data-tilt>
+          <div class="vc-card-icon icon-blocks">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="9" rx="2"/><path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M6 11h.01"/><path d="M10 11h.01"/><path d="M14 11h.01"/><path d="M18 11h.01"/></svg>
+          </div>
+          <h4>Immutable Chaincode Audit (Hyperledger)</h4>
+          <p>Executes smart contracts on a private Hyperledger Fabric blockchain to record unalterable submission hashes, policy verdicts, and timestamps.</p>
+          <a href="/docs/hyperledger-fabric" class="vc-card-link">Learn more →</a>
         </div>
       </div>
-      <a href="https://integrations.aikido.dev/" class="ak-btn ghost">Explore Integrations →</a>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="ak-faq-wrap">
-    <div class="ak-faq-inner">
-      <h3 class="ak-h3">Frequently Asked Questions</h3>
-      <div class="ak-faq-list">
-        <div class="ak-faq-item open"><button class="ak-faq-q">How does Aikido know which alerts are relevant? <span>+</span></button><div class="ak-faq-a">We’ve built a rule engine that takes the context of your environment into account. This allows us to easily adapt the criticality score for your environment & filter out false positives.</div></div>
-        <div class="ak-faq-item"><button class="ak-faq-q">What happens to my data? <span>+</span></button><div class="ak-faq-a">We clone the repositories inside of temporary environments (docker containers unique to you). Those containers are disposed of after analysis — 1-5 mins.</div></div>
-        <div class="ak-faq-item"><button class="ak-faq-q">Does Aikido make changes to my codebase? <span>+</span></button><div class="ak-faq-a">We can’t & won’t, this is guaranteed by read-only access.</div></div>
-        <div class="ak-faq-item"><button class="ak-faq-q">How is Aikido different? <span>+</span></button><div class="ak-faq-a">Aikido combines features from lots of different platforms in one. We contextualize vulnerabilities, filter false positives and reduce noise by 95%.</div></div>
-        <div class="ak-faq-item"><button class="ak-faq-q">How can I trust Aikido? <span>+</span></button><div class="ak-faq-a">Aikido is SOC 2 Type II & ISO 27001:2022 certified. See our Trust Center.</div></div>
+  <!-- SUPPLY CHAIN DEFENSE - Section 5 -->
+  <section class="vc-defense" id="verify" aria-labelledby="verifyTitle">
+    <div class="vc-engine-inner">
+      <div class="vc-section-head">
+        <h3 class="vc-h3" id="verifyTitle">Block non-compliant software across your supply chain with <span>/verify</span></h3>
+        <div class="vc-actions">
+          <a href="#verify" class="vc-btn primary">Explore Verification Engine →</a>
+          <a href="#blockchain-ledger" class="vc-btn ghost">View Ledger Specs</a>
+        </div>
+      </div>
+      <div class="vc-grid three">
+        <div class="vc-card" data-card="cosign_signature_seals" data-tilt>
+          <div class="vc-card-icon icon-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/><path d="M14 8h2"/><path d="M12 2v2"/></svg>
+          </div>
+          <h4>Artifact Signature Seals (Cosign)</h4>
+          <p>Validates cryptographic keypair signatures on every build. Instantly blocks tampered SBOMs, unverified binaries, and unauthorized code submissions.</p>
+          <a href="/docs/cosign-seals" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-card="opa_policy_firewall" data-tilt>
+          <div class="vc-card-icon icon-terminal">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/><rect x="3" y="3" width="18" height="18" rx="2" opacity=".18"/></svg>
+          </div>
+          <h4>In-Line Policy Gatekeeper (OPA)</h4>
+          <p>Acts as an automated firewall for your CI/CD pipeline. Evaluates Rego policy rules to deny deployments if certs expire or AI risk scores spike.</p>
+          <a href="/docs/opa-firewall" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-card="hyperledger_audit_trail" data-tilt>
+          <div class="vc-card-icon icon-blocks">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M16 3h4v4"/><path d="M4 3h4v4"/><path d="M8 11h8"/><path d="M12 7v10"/></svg>
+          </div>
+          <h4>Immutable Ledger Audit (Hyperledger)</h4>
+          <p>Permanently registers every transaction attempt, pass/fail verdict, and vendor risk score on a distributed Hyperledger Fabric network.</p>
+          <a href="/docs/ledger-audit" class="vc-card-link">Learn more →</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="ak-cta">
-    <div class="ak-cta-inner">
-      <h3>Ready to secure your code?</h3>
-      <p>See results in 30 seconds. No CC required.</p>
-      <div class="ak-cta-actions"><a href="https://app.aikido.dev/login" class="ak-btn dark">Start for Free →</a> <a href="https://www.aikido.dev/book/demo" class="ak-btn ghost">Book a Demo</a></div>
+  <!-- COMPLIANCE TELEMETRY - Section 6 -->
+  <section class="vc-telemetry" id="telemetry" aria-labelledby="telemetryTitle">
+    <div class="vc-telemetry-inner">
+      <div class="vc-eyebrow">COMPLIANCE TELEMETRY</div>
+      <div class="vc-telemetry-head">
+        <div class="vc-telemetry-title">
+          <h3 id="telemetryTitle">Only review risk scores <span>that impact your compliance.</span></h3>
+        </div>
+        <div class="vc-telemetry-copy">
+          <p class="vc-telemetry-bullets"><strong>Your vendors.</strong><br><strong>Your software supply chain.</strong></p>
+          <p>Traditional vulnerability scanners generate overwhelming dependency noise. VendorChain uses Claude AI scoring and OPA rules to highlight critical policy violations instantly.</p>
+        </div>
+      </div>
+      <div class="vc-risk-prio-header">
+        <h3 class="vc-h3">We evaluate vendor risk <span>so you don't have to.</span></h3>
+      </div>
+      <div class="vc-grid three" style="margin-top:24px">
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-layers">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <h4>Dependency Grouping & De-duplication</h4>
+          <p>Consolidates nested dependencies across multiple vendor SBOMs, eliminating redundant vulnerability flags and duplicate CVE alerts across your supply chain.</p>
+          <a href="/docs/dedup" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-spark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2 11 5.5 14.5 7 11 8.5 9.5 12 8 8.5 4.5 7 8 5.5 9.5 2Z"/><path d="M19 8l1.5 2.5L23 12l-2.5 1.5L19 16l-1.5-2.5L15 12l2.5-1.5L19 8Z"/></svg>
+          </div>
+          <h4>AI Risk Scoring (Claude AI)</h4>
+          <p>Claude AI evaluates SBOMs in the context of actual CVE exploitability, generating dynamic 1–10 risk scores that automatically filter out unexploitable dependency noise.</p>
+          <a href="/docs/ai-risk" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-custom">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg>
+          </div>
+          <h4>Custom Policy Rules (OPA & Rego)</h4>
+          <p>Fine-tune compliance rules using Open Policy Agent. Define custom threshold conditions for package licenses, expired certificates, or high risk scores while automatically approving verified builds.</p>
+          <a href="/docs/opa" class="vc-card-link">Learn more →</a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <footer class="ak-footer">
-    <div class="ak-footer-inner">
-      <div class="ak-footer-left"><img src="https://cdn.prod.website-files.com/642adcaf364024552e71df01/642adcaf364024281f71df43_Logo-Full.svg" alt="Aikido" height="22"><span style="font-size:11px; color:#6B7280; margin-left:8px">© 2026 Aikido Security</span></div>
-      <div class="ak-footer-links"><a href="https://help.aikido.dev/">Documentation</a><a href="https://www.aikido.dev/trust-center">Trust Center</a><a href="https://integrations.aikido.dev/">Integrations</a></div>
+  <!-- AUTOMATED REMEDIATION - Section 8 - Now Card Grid like Image -->
+  <section class="vc-remediation" id="remediation" aria-labelledby="remediationTitle">
+    <div class="vc-telemetry-inner">
+      <h3 class="vc-h3" id="remediationTitle">We help you go <span>from upload to verified audit.</span></h3>
+      <div class="vc-grid three" style="margin-top:24px">
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-wrench">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h4>Automated Remediation Guidance</h4>
+          <p>Automatically identifies non-compliant dependency packages within vendor SBOMs and provides step-by-step upgrade paths to clear OPA policy blocks before code hits production.</p>
+          <a href="/docs/remediation" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-layers">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h4v4"/><path d="M8 3h4v4"/><path d="M3 7h18"/><path d="M7 12h10"/><path d="M7 16h10"/></svg>
+          </div>
+          <h4>Batch On-Chain Ledgering</h4>
+          <p>Commit multiple vendor submission records, AI risk scores, and OPA compliance verdicts directly to the Hyperledger Fabric ledger in a single batch transaction.</p>
+          <a href="/docs/ledger-batch" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-file">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9.5 2 11 5.5 14.5 7 11 8.5 9.5 12 8 8.5 4.5 7 8 5.5 9.5 2Z"/></svg>
+          </div>
+          <h4>AI Risk Summaries (Claude AI)</h4>
+          <p>Generates plain-English security breakdowns of complex CycloneDX SBOMs and CVE vulnerability exposures, allowing regulators and compliance teams to review vendor risk instantly.</p>
+          <a href="/docs/summaries" class="vc-card-link">Learn more →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST CENTER - Section 9 - Card Grid like Image -->
+  <section class="vc-trust" id="trust" aria-labelledby="trustTitle">
+    <div class="vc-telemetry-inner">
+      <span class="vc-eyebrow mono" style="color:#3B82F6; letter-spacing:.14em;">ZERO-TRUST ARCHITECTURE</span>
+      <h3 class="vc-h3" id="trustTitle">Securing your supply chain data with Zero-Trust guarantees</h3>
+      <div class="vc-trust-links">
+        <a href="/docs">Documentation</a>
+        <a href="/trust-center">Trust Center</a>
+        <a href="/docs/cicd">CI/CD Integrations</a>
+      </div>
+      <div class="vc-grid three" style="margin-top:24px">
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">1</span></div>
+          <h4>Select Submitted Artifacts Yourself</h4>
+          <p>Vendors retain complete control over uploaded software artifacts. VendorChain only processes explicitly submitted package builds and SBOM JSON files, requiring no write access to source code repositories.</p>
+          <a href="/docs/artifacts" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">2</span></div>
+          <h4>Zero-Write Code Access</h4>
+          <p>We never alter, modify, or inject code into your source repositories. All verification operations run strictly on generated SBOMs and compiled artifacts.</p>
+          <a href="/docs/zero-write" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">3</span></div>
+          <h4>Cryptographic Key Privacy (Cosign)</h4>
+          <p>Private signing keys stay under vendor ownership or in secure GitHub Secrets. VendorChain only verifies public keys (cosign.pub) to validate signatures without storing private credentials.</p>
+          <a href="/docs/key-privacy" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">4</span></div>
+          <h4>Ephemeral Session Tokens & OIDC</h4>
+          <p>Authentication uses short-lived tokens and OpenID Connect (OIDC) through Supabase and GitHub Actions, ensuring no long-term static credentials exist.</p>
+          <a href="/docs/oidc" class="vc-card-link">Learn more →</a>
+        </div>
+        <div class="vc-card" data-tilt>
+          <div class="vc-card-icon icon-number"><span style="font-family:var(--font-mono); font-weight:700; font-size:13px;">5</span></div>
+          <h4>Isolated Execution Environments</h4>
+          <p>Policy evaluations (OPA) and SBOM extractions (Syft) run inside isolated Docker containers and ephemeral GitHub Actions runners, guaranteeing zero cross-vendor data leakage.</p>
+          <a href="/docs/isolated" class="vc-card-link">Learn more →</a>
+        </div>
+      </div>
+      <div class="vc-testimonial-strip" style="margin-top:24px">
+        <img src="https://cdn.prod.website-files.com/642adcaf364024654c71df23/6866951d31dc7e8ef8b7fe52_T01BMLNG7V4-U06JV8HQRKN-a41224d8996c-512.jpg" alt="Christian" width="44" height="44" style="border-radius:50%">
+        <div><p>“With VendorChain, we finally have cryptographic proof for every vendor build — no more blind trust, just verifiable supply chain integrity.”</p><span>VendorChain — Zero-Trust OS</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS - Section 10 -->
+  <section class="vc-integrations" id="integrations" aria-labelledby="integrationsTitle">
+    <div class="vc-integrations-inner">
+      <h3 class="vc-h3" id="integrationsTitle">Integrates seamlessly with your existing CI/CD & DevOps stack</h3>
+      <p>VendorChain plugs directly into GitHub Actions, Supabase, and Hyperledger Fabric. Automatically trigger SBOM generation, Cosign signing, and OPA policy evaluation on every push.</p>
+      <div class="vc-marquee" aria-hidden="true">
+        <div class="vc-track">
+          <span class="vc-marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="" width="22" height="22"> GitHub Actions</span>
+          <span class="vc-marquee-item">Supabase</span>
+          <span class="vc-marquee-item">Hyperledger Fabric</span>
+          <span class="vc-marquee-item">Cosign</span>
+          <span class="vc-marquee-item">Syft</span>
+          <span class="vc-marquee-item">OPA Rego</span>
+          <span class="vc-marquee-item">Claude AI</span>
+          <span class="vc-marquee-item">Grafana</span>
+          <span class="vc-marquee-item">Docker</span>
+          <span class="vc-marquee-item">GitHub Actions</span>
+        </div>
+      </div>
+      <a href="/docs/integrations" class="vc-btn ghost">Explore Integrations →</a>
+    </div>
+  </section>
+
+  <!-- FAQ - Section 11 -->
+  <section class="vc-faq" id="faq" aria-labelledby="faqTitle">
+    <div class="vc-faq-inner">
+      <h3 class="vc-h3" id="faqTitle">Frequently Asked Questions</h3>
+      <div class="vc-faq-list">
+        <div class="vc-faq-item open">
+          <button class="vc-faq-q" aria-expanded="true">How does VendorChain evaluate vendor risk? <span>+</span></button>
+          <div class="vc-faq-a">We combine Claude AI vulnerability scoring (1–10) with custom Open Policy Agent (OPA) Rego policies to contextualize CVEs, filter out unexploitable dependency noise, and block non-compliant builds automatically.</div>
+        </div>
+        <div class="vc-faq-item">
+          <button class="vc-faq-q" aria-expanded="false">What happens to my submitted vendor data? <span>+</span></button>
+          <div class="vc-faq-a">Submitted SBOM JSON files and signatures are stored in private Supabase Storage buckets, while analysis runs inside isolated, ephemeral Docker containers and GitHub Actions runners that are disposed of after evaluation.</div>
+        </div>
+        <div class="vc-faq-item">
+          <button class="vc-faq-q" aria-expanded="false">Does VendorChain require access to vendor source code? <span>+</span></button>
+          <div class="vc-faq-a">No. VendorChain operates strictly on compiled artifacts, binary packages, and generated CycloneDX SBOM files. We require zero write access to vendor source code repositories.</div>
+        </div>
+        <div class="vc-faq-item">
+          <button class="vc-faq-q" aria-expanded="false">How is VendorChain different from traditional vulnerability scanners? <span>+</span></button>
+          <div class="vc-faq-a">Traditional scanners only run static checks. VendorChain enforces continuous Zero-Trust by uniting Syft SBOM extraction, Cosign cryptographic signing, Claude AI risk scoring, OPA policy gates, and permanent Hyperledger Fabric audit trails.</div>
+        </div>
+        <div class="vc-faq-item">
+          <button class="vc-faq-q" aria-expanded="false">How can I verify audit ledger records? <span>+</span></button>
+          <div class="vc-faq-a">Every submission verdict, AI risk score, and cryptographic SHA-256 hash is permanently committed to a private Hyperledger Fabric blockchain, offering unalterable, tamper-proof verification for compliance teams and regulators.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA - Section 12 -->
+  <section class="vc-cta" id="cta" aria-labelledby="ctaTitle">
+    <div class="vc-cta-inner">
+      <h3 id="ctaTitle">Ready to eliminate assumed trust in your B2B supply chain?</h3>
+      <p>Automate vendor verification with cryptographically backed audit logs.</p>
+      <div class="vc-cta-actions">
+        <a href="/portal" class="vc-btn primary">Launch Vendor Portal →</a>
+        <a href="/demo" class="vc-btn ghost">Schedule Enterprise Demo</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="vc-footer" id="footer">
+    <div class="vc-footer-inner">
+      <div class="vc-footer-top">
+        <div class="vc-footer-brand">
+          <div style="display:flex; align-items:center; gap:8px">
+            <img src="./assets/logo.png" srcset="./assets/logo.png 1x, ./assets/logo@2x.png 2x" alt="VendorChain" width="28" height="28" style="border-radius:8px">
+            <span style="font-weight:700; font-size:14px; color:#F8FAFC">VendorChain</span>
+            <span style="font-size:11px; color:#6B728E; border-left:1px solid rgba(255,255,255,.08); padding-left:8px; margin-left:4px">Zero-Trust OS</span>
+          </div>
+          <span class="vc-copy">© 2026 VendorChain. Zero-Trust B2B Vendor Verification Platform.</span>
+        </div>
+        <div class="vc-footer-cols">
+          <div class="vc-footer-col">
+            <h5>Product</h5>
+            <a href="/portal">Vendor Portal</a>
+            <a href="#pipeline">Verification Pipeline</a>
+            <a href="#blockchain-ledger">Audit Ledger</a>
+            <a href="/docs">Documentation</a>
+          </div>
+          <div class="vc-footer-col">
+            <h5>Standards & Compliance</h5>
+            <a href="/docs/nist">NIST SP 800-207 Guidelines</a>
+            <a href="/docs/iso">ISO/IEC 27001</a>
+            <a href="/trust-center">Trust Center</a>
+            <a href="/docs/integrations">CI/CD Integrations</a>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 
