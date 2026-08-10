@@ -5,3 +5,12 @@ dist/
 .env
 .env.local
 .env.production
+
+# Supply-chain attestation artifacts (Module 2)
+artifacts/
+cosign.key
+cosign.key.pub
+*.sig
+*.cdx.json
+dist-tarball*
+attestation-bundle*

@@ -59,7 +59,7 @@ landing-page-/                  # one repo, two deliverables
 | Fail-closed prod boot (no Redis → process dies loudly) | ✅ Shipped | `lib/queue/boot-check.ts` |
 | Storage driver: local-encrypted / MinIO (S3-compatible) | ✅ / 🧪 local | `lib/storage/` |
 | Landing: labeled demo verifier, zero dead links, CSP, honest form | ✅ Shipped | `index.html`, `js/app.js` |
-| Syft SBOM + Cosign signing (Module 2) | 🔜 Roadmap | — |
+| Syft SBOM + Cosign signing (Module 2, Slice 1) | ✅ Shipped | `platform/scripts/sbom.sh`, `sign.sh`, `verify.sh`; `platform/src/app/api/supply-chain/latest/route.ts` |
 | Continuous trust scoring (Module 3) | 🔜 Roadmap | — |
 | Immutable transaction ledger (Module 4) | 🔜 Roadmap | — |
 
@@ -126,7 +126,7 @@ curl -X POST localhost:3000/api/vendors \
   -d '{"legalName":"Acme Pvt Ltd","gstNumber":"27ABCDE1234F1Z5","panNumber":"ABCDE1234F"}'
 #   → 201, pan: "AB******4F"  (masked, always)
 ```
-> Reqs: Node 20+, Docker. Verified by the maintainer agent: `npm ci` ✓ · `npm test` — **44/44 (12 suites)** ✓ · `npm run build` ✓ on a clean checkout of `main` (9 Aug 2026). Compose services defined and health-checked; bring Docker.
+> Reqs: Node 20+, Docker. Verified by the maintainer agent: `npm ci` ✓ · `npm test` — **50/50 (13 suites)** ✓ · `npm run build` ✓ on a clean checkout (10 Aug 2026). Compose services defined and health-checked; bring Docker.
 
 ## Proof & Reproducibility
 
@@ -135,7 +135,7 @@ This project's claims are checkable, not admirable:
 ```bash
 git archive origin/main | tar -x -C /tmp/vc && cd /tmp/vc/platform
 cp .env.example .env && npm ci
-npm test        # 44/44 — incl. forgery, DLQ, drift-guard, encryption tests
+npm test        # 50/50 — incl. forgery, DLQ, drift-guard, encryption, supply-chain tests
 npm run build   # strict TS, exit 0
 NODE_ENV=production node -e "require('./src/lib/queue/boot-check.ts')"
 #               # without REDIS_URL → fatal exit (fail-closed, by design)
@@ -147,7 +147,7 @@ Zero caret-ranged runtime deps; lockfile-committed; `git status --porcelain` cle
 
 Every phase was executed by AI agents **gated by instructor audits against the committed ref** — no summary accepted without grep-able, reproducible evidence. The full system — work orders, status board, PR-gate protocol, and the carry-over debt register — lives in [`docs/agent-prompts/`](./docs/agent-prompts/README.md).
 
-| Phase | Delivered | Proof (merge `2233edd`) |
+| Phase | Delivered | Proof |
 |---|---|---|
 | P1 Trust & Integrity | honest demo verifier · zero dead links · OG/meta | `44677be` |
 | P2 Conversion Core | accessible early-access form · honest submit pipeline | `d9f6131` |
@@ -155,6 +155,7 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 | M1-S1 Foundation | schema · envelope crypto · registration API | `06a942b` |
 | M1-S2 Verification | sandbox adapter · BullMQ pipeline · DLQ | `c76027d` |
 | M1-S3 Intelligence | OCR cross-check · storage drivers · audited retrieval | `c3ba63b` + `8af6762` |
+| M2-S1 Self-Attestation | Syft SBOM · Cosign sign/verify · honest API · CI gate | `fa70e6d` |
 
 ## API Reference
 
@@ -168,6 +169,7 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 | POST | `/api/vendors/:id/documents/:docId/verify` | admin-key | enqueue sandbox verification (idempotent) |
 | GET | `/api/vendors/:id/verification` | admin-key | append-only event timeline |
 | GET | `/api/vendors/:id/documents/:docId/bytes` | admin-key | decrypted stream, `no-store`, ADMIN_READ audit |
+| GET | `/api/supply-chain/latest` | admin-key | runtime attestation verification (computed, not stored) |
 
 ## Threat Model → Mitigation
 
@@ -176,13 +178,13 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 | T1 forged documents | magic-byte gate, OCR cross-check → FLAGGED, checksum adapter |
 | T3 cross-vendor data access | envelope encryption, masked reads, guarded routes |
 | T5 insider abuse | actor attribution, ADMIN_READ audit trail, masked PAN even for admins |
-| T6 supply-chain attack | exact-pinned deps, lockfile, SBOM on roadmap (M2) |
+| T6 supply-chain attack | exact-pinned deps, lockfile, **SBOM + Cosign signing (M2-S1)** |
 | T7 replay of verifications | idempotency keys, append-only events |
 | T8 session spoofing | timing-safe guard today; OIDC roadmap (S4) |
 
 ## Roadmap
 
-**Slice 4** (Module 1 completion): real GSTN credentials wiring, OIDC provider, image OCR. **Module 2:** Syft SBOM generation + Cosign artifact signing in CI. **Module 3:** continuous trust scoring. **Module 4:** immutable ledger for transactions & disputation.
+**Slice 4** (Module 1 completion): real GSTN credentials wiring, OIDC provider, image OCR. **Module 2, Slice 2:** vendor artifact SBOM intake (POST upload → syft scan → encrypted storage). **Module 3:** continuous trust scoring. **Module 4:** immutable ledger for transactions & disputation.
 
 ## License & Disclaimer
 

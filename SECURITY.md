@@ -39,5 +39,33 @@ const FORM_ENDPOINT = 'https://api.vendorchain.io/v1/early-access'; // Configure
 
 ---
 
-## 4. Reporting Vulnerabilities
+## 4. Supply-Chain Self-Attestation (Module 2, Slice 1)
+
+VendorChain dogfoods its own verification pipeline. Every build of the platform produces:
+
+1. **CycloneDX SBOM** (`syft scan package-lock.json`) → `artifacts/sbom/platform-<sha>.cdx.json`
+2. **Cryptographic Signature** (`cosign sign-blob`) → `.sig` + `.cert` (keyless in CI)
+3. **Runtime Verification** (`cosign verify-blob`) → computed at request time, never stored
+
+### Dev vs Keyless
+- **Local Development**: Uses `cosign.key` (gitignored) + `cosign.pub` (committed). Run `npm run sbom && npm run sign && npm run verify` from `platform/`.
+- **CI / Production**: Uses GitHub OIDC keyless signing (`id-token: write`). Identity is verified against `https://token.actions.githubusercontent.com` with a repository workflow regexp.
+
+### Why We Never Store `verified:true`
+A stored yesterday's `verified:true` is a lie because:
+- The signing key may have been rotated or revoked since attestation.
+- The artifact may have been tampered with in storage.
+- The certificate may have expired.
+
+Instead, `GET /api/supply-chain/latest` **spawns `verify.sh` at request time** and returns the actual exit code. No attestation → honest 404.
+
+### Reproduction
+```bash
+cd platform
+npm run sbom      # requires syft v1.12.2
+npm run sign      # requires cosign + cosign.key (dev) or COSIGN_KEYLESS=1 (CI)
+npm run verify    # verifies signatures against cosign.pub or GitHub OIDC
+```
+
+## 5. Reporting Vulnerabilities
 To report a vulnerability or security concern, contact the security team at **security@vendorchain.io**.
