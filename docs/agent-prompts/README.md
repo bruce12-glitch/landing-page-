@@ -13,7 +13,8 @@ One work order at a time. Each phase gates the next. Never stack prompts.
 | M1-S2 | [Govt Verification Adapter](./m1-slice-2-govt-verification-adapter.md) | ✅ **PASS** — real mod-36 checksum, deterministic, DLQ proven live; 33/33 reproduced on instructor sandbox | commit `c76027d` on PR #4 |
 | M1-S3 | [Document Intelligence](./m1-slice-3-document-intelligence.md) | 🟠 **FIX REQUIRED** — commit/worktree drift: `platform/src/lib/storage/` untracked (4 importers broken on clean clone); tracked code review-clean; F0 carets ✅ | commit `c3ba63b` on PR #4 (incomplete) |
 | R1 | [Project README — viewer edition](./project-readme.md) | 🟡 **ISSUED** — portfolio-grade, TRUTH-labeled (✅/🧪/🔜); chain-gated on S3 closure fix | — |
-| M1-S4+ | Real GSTN integration → IdP/OIDC → image OCR → M2 SBOM/Cosign → M3 Trust Scoring → M4 Ledger | ⬜ Locked | — |
+| M2-S1 | [Supply-Chain Self-Attestation](./m2-slice-1-supply-chain-self-attestation.md) | 🟡 **ISSUED** — Syft SBOM + Cosign signing + CI gate, dogfooded on platform builds before any vendor-facing M2 | — |
+| M2-S2+ | Vendor artifact SBOM intake → Grype scanning + OPA policy → M1-S4 (GSTN creds/OIDC/image OCR, credential-gated) → M3 Trust Scoring → M4 Ledger | ⬜ Locked until M2-S1 passes | — |
 
 ## Protocol v2 — STAGED PRs → SINGLE-PR CUMULATIVE (owner reviews & merges at the end)
 
