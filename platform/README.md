@@ -75,14 +75,48 @@
 
 ---
 
-## 6. Docker & Testing
+## 6. Supply-Chain Self-Attestation (Module 2, Slice 1)
+
+Every platform build is attested with a CycloneDX SBOM and cosign signature.
+
+| Command | Purpose | Tool | Mode |
+|---|---|---|---|
+| `npm run sbom` | Generate CycloneDX SBOM from `package-lock.json` | Syft v1.12.2 | CI + local |
+| `npm run sign` | Sign SBOM + dist tarball | Cosign | Dev keypair OR CI keyless |
+| `npm run verify` | Verify signatures at runtime | Cosign | Dev key OR GitHub OIDC |
+
+### Dev Setup
+```bash
+# Generate dev keypair (cosign.key is gitignored, cosign.pub is committed)
+cosign generate-key-pair
+npm run sbom && npm run sign && npm run verify
+```
+
+### Honest API
+`GET /api/supply-chain/latest` (admin-key required) returns:
+```json
+{
+  "gitSha": "abc123...",
+  "sbomSha256": "sha256:...",
+  "signaturePresent": true,
+  "verified": true,
+  "verifiedAt": "2026-08-10T10:00:00.000Z"
+}
+```
+
+**TRUTH RULE**: `verified` is computed by **spawning `verify.sh` at request time**. It is never a stored claim. No attestation → honest 404.
+
+## 7. Docker & Testing
 ```bash
 # 1. Start PostgreSQL 15, Redis 7 & MinIO
 docker compose up -d
 
-# 2. Run test suites
+# 2. Run test suites (baseline 44 + Module 2 tests)
 npm run test
 
 # 3. Build Next.js strictly
 npm run build
+
+# 4. Supply-chain attestation (requires syft + cosign)
+npm run sbom && npm run sign && npm run verify
 ```

@@ -9,15 +9,24 @@ import type {
 } from './types';
 import { logger } from '../logger';
 
-// Enforce fail-closed boot check
-assertQueueHealth();
-
 class VerificationQueueService {
   private jobs = new Map<string, VerificationJobResult>();
   private idempotencyIndex = new Map<string, string>(); // idempotencyKey -> jobId
   private dlq: DeadLetterEntry[] = [];
   public readonly maxConcurrency = 2;
   private activeConcurrency = 0;
+  private bootChecked = false;
+
+  /**
+   * Lazy fail-closed boot check — runs on first enqueue, not at module load.
+   * This allows `next build` to compile the module without requiring Redis.
+   */
+  private ensureBootHealth(): void {
+    if (!this.bootChecked) {
+      assertQueueHealth();
+      this.bootChecked = true;
+    }
+  }
 
   /**
    * Enqueues a verification job with deduplication and idempotency keys.
@@ -28,6 +37,7 @@ class VerificationQueueService {
     docType: VerificationJobPayload['docType'];
     sha256: string;
   }): Promise<VerificationJobResult> {
+    this.ensureBootHealth();
     const idempotencyKey = `${data.vendorId}:${data.documentId}:${data.sha256}`;
 
     // 1. Idempotency Check: return existing job if already queued/processing/completed

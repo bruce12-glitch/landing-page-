@@ -9,7 +9,10 @@
     "lint": "next lint",
     "test": "vitest run",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate deploy"
+    "prisma:migrate": "prisma migrate deploy",
+    "sbom": "bash scripts/sbom.sh",
+    "sign": "bash scripts/sign.sh",
+    "verify": "bash scripts/verify.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.621.0",
