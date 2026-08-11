@@ -64,6 +64,7 @@ landing-page-/                  # one repo, two deliverables
 | Continuous Behavioral Trust Scoring (Module 3, Slice 1) — 0-100 composite, TrustTier, snapshots | ✅ Shipped | `platform/src/lib/trust-scoring/calculator.ts`; `GET /api/vendors/:id/trust-score`, `POST .../evaluate` |
 | Immutable transaction ledger + Polygon L2 anchor (Module 4, Slice 1) — SHA-256 state commitments, replay protection, dispute feedback loop | ✅ Shipped | `platform/src/lib/ledger/`; `POST/GET /api/vendors/:id/transactions`, `POST .../transactions/:txId/dispute` |
 | Enterprise Procurement & Trust Dashboard (Phase 4) — control plane `/dashboard`, `/onboarding`, `/vendors/[id]` | ✅ Shipped | `platform/src/app/` (`components/`, `dashboard/`, `onboarding/`, `vendors/[id]/`); `GET /api/dashboard/summary` |
+| Production Hardening & Observability (Phase 5) — CI/CD, Docker, Prometheus metrics, OWASP headers + rate limiting | ✅ Shipped | `.github/workflows/enterprise-ci.yml`; `platform/Dockerfile`, `docker-compose.prod.yml`; `lib/telemetry/metrics.ts`; `GET /api/metrics`; `lib/security/middleware-guard.ts` |
 
 ## Request Lifecycle
 
@@ -173,6 +174,7 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 | GET | `/api/vendors/:id/documents/:docId/bytes` | admin-key | decrypted stream, `no-store`, ADMIN_READ audit |
 | GET | `/api/supply-chain/latest` | admin-key | runtime attestation verification (computed, not stored) |
 | GET | `/api/dashboard/summary` | admin-key | aggregated trust metrics, tier distribution, anomaly alerts |
+| GET | `/api/metrics` | public | Prometheus text exposition (SLIs: vendors gauge, verification duration, L2 commitments, disputes) |
 
 ## Threat Model → Mitigation
 

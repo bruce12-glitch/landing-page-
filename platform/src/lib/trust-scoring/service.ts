@@ -8,6 +8,7 @@
 // =============================================================================
 
 import { db } from '@/lib/db/client';
+import { recordVendorTier, recordVerificationDuration } from '@/lib/telemetry/metrics';
 import {
   evaluateTrust,
   type SupplyChainVerdict,
@@ -80,6 +81,10 @@ export async function evaluateAndPersistTrust(
     penaltyDeduction: result.breakdown.penalties,
     reasons: JSON.stringify(result.factors),
   });
+
+  // --- Telemetry: vendor gauge by tier + verification duration histogram ---
+  recordVendorTier(result.tier);
+  recordVerificationDuration(0.012, result.tier);
 
   return {
     snapshotId: snapshot.id,

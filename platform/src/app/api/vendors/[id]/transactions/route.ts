@@ -5,6 +5,7 @@ import { db } from '@/lib/db/client';
 import { logger } from '@/lib/logger';
 import { computeTransactionStateHash } from '@/lib/ledger/hasher';
 import { anchorStateCommitment } from '@/lib/ledger/polygon-anchor';
+import { recordL2Commitment } from '@/lib/telemetry/metrics';
 import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
@@ -95,6 +96,9 @@ export async function POST(
       l2BlockNumber: receipt.l2BlockNumber,
       status: 'COMMITTED_L2',
     });
+
+    // --- Telemetry: L2 commitment counter ---
+    recordL2Commitment(payload.currency);
 
     // --- Append an immutable, actor-stamped audit event ---
     await db.createVerificationEvent({

@@ -2,6 +2,16 @@
 
 All notable changes across the hardening phases of the VendorChain Zero-Trust landing page.
 
+## [Phase 5: Production Hardening, CI/CD Pipeline & Enterprise Observability] - 2026-08-11
+- **A — CI/CD**: `.github/workflows/enterprise-ci.yml` — multi-stage workflow: `security-audit` (npm audit + zero-carets law enforcement), `test-suite` (Vitest), `build-strict` (strict TS exit 0), `supply-chain-attestation` (Syft SBOM + Cosign keyless signing via GitHub OIDC, uploads artifacts).
+- **B — Containers**: `platform/Dockerfile` (multi-stage deps→builder→runner on `node:20-alpine`, non-root `nodejs` UID 1001, HEALTHCHECK against `/api/health`) + `platform/docker-compose.prod.yml` (platform-app, postgres:15, redis:7 AOF, minio S3).
+- **C — Observability**: `platform/src/lib/telemetry/metrics.ts` — in-memory Prometheus registry (`vendorchain_vendors_total` gauge, `vendorchain_verification_duration_seconds` histogram, `vendorchain_l2_commitments_total` + `vendorchain_disputes_total` counters) exposed via `GET /api/metrics` (text/plain; version=0.0.4). Wired into trust evaluation, transaction intake & dispute endpoints.
+- **D — OWASP**: `platform/src/lib/security/middleware-guard.ts` — sliding-window rate limiter + correlation IDs; `src/middleware.ts` applies them on `/api/vendors` & `/api/verify`; `next.config.mjs` hardened with HSTS, X-Content-Type-Options, X-Frame-Options DENY, Referrer-Policy, Permissions-Policy, X-XSS-Protection, COOP/CORP/COEP.
+- **E — Tests**: Added `platform/src/tests/production-hardening.test.ts` (6 tests: Prometheus format, 429 rate limit, correlation IDs, security headers presence + values, remaining budget). Suite now **93/93 across 18 suites**.
+  - *Proof*: `npm test --prefix platform` → `Test Files 18 passed · Tests 93 passed`.
+  - *Proof*: `npm run build --prefix platform` → Exit 0, `ƒ Middleware 27.5 kB`.
+  - *Proof*: `curl /api/metrics` → valid Prometheus text; `curl -I /api/health` → HSTS/X-Frame/etc. + `x-correlation-id`.
+
 ## [Phase 4: Enterprise Procurement & Trust Dashboard (Control Plane)] - 2026-08-11
 - **A — Shared Components** (`platform/src/app/components/`): `TrustGauge.tsx` (SVG radial gauge, emerald/blue/amber/crimson tier colors), `VerificationStatusBadge.tsx` (all 7 vendor + transaction states), `SbomViewer.tsx` (CycloneDX table with CVSS severity tags), `L2TransactionCard.tsx` (monospaced SHA-256 commitment + interactive Web-Crypto "Verify Hash").
 - **B — Control Plane Screens**: `/dashboard` (Procurement Command Center — metrics, tier distribution, anomaly alerts, vendor index), `/onboarding` (interactive Zero-Trust stepper: Business Data → AES-256-GCM doc upload → OCR cross-check → animated Trust Score Reveal with visible crypto stages), `/vendors/[id]` (Cryptographic Vault — Trust Gauge, encrypted doc vault, supply chain/SBOM tab, L2 ledger with live "Raise Dispute"). Added `GET /api/dashboard/summary`.

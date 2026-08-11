@@ -4,6 +4,7 @@ import { checkRateLimit } from '@/lib/rate-limiter';
 import { db } from '@/lib/db/client';
 import { logger } from '@/lib/logger';
 import { evaluateAndPersistTrust } from '@/lib/trust-scoring/service';
+import { recordDispute } from '@/lib/telemetry/metrics';
 import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
@@ -79,6 +80,9 @@ export async function POST(
         { status: 500 }
       );
     }
+
+    // --- Telemetry: dispute counter ---
+    recordDispute(tx.currency);
 
     // --- DISPUTE FEEDBACK LOOP: automatic trust re-evaluation (-25 penalty) ---
     const evaluation = await evaluateAndPersistTrust(vendor.id, {}, DISPUTE_TRUST_PENALTY);
