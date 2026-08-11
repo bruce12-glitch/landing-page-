@@ -31,6 +31,21 @@ enum DocumentStatus {
   FLAGGED
 }
 
+enum TrustTier {
+  TIER_1_CRITICAL
+  TIER_2_STANDARD
+  TIER_3_RESTRICTED
+  TIER_4_SUSPENDED
+}
+
+enum TransactionStatus {
+  RECORDED
+  COMMITTED_L2
+  SETTLED
+  DISPUTED
+  RESOLVED
+}
+
 model Vendor {
   id           String              @id @default(cuid())
   legalName    String
@@ -41,9 +56,59 @@ model Vendor {
   updatedAt    DateTime            @updatedAt
   documents    Document[]
   events       VerificationEvent[]
+  trustScores  TrustScoreSnapshot[]
+  transactions VendorTransaction[]
 
   @@index([gstNumber])
   @@index([status])
+}
+
+// Commercial transaction with a cryptographic L2 state commitment.
+// COMMERCIAL CONFIDENTIALITY INVARIANT: only the SHA-256 `stateHash` (a
+// one-way commitment) and non-sensitive references are ever exposed to the
+// ledger — proprietary invoice amounts, unit pricing, and terms remain
+// stored privately and locally, never written to the Polygon L2 chain.
+model VendorTransaction {
+  id              String            @id @default(cuid())
+  vendorId        String
+  vendor          Vendor            @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  invoiceRef      String            // e.g. "INV-2026-104"
+  amountCents     Int               // stored locally/privately only — never anchored
+  currency        String            // "USD" | "EUR" | "INR"
+  stateHash       String            // SHA-256 cryptographic commitment
+  nonce           String            // CSPRNG nonce used in the commitment
+  anchorTimestamp String            // ISO timestamp used in the commitment
+  l2TxHash        String?           // Polygon L2 transaction receipt
+  l2BlockNumber   Int?
+  status          TransactionStatus @default(RECORDED)
+  disputeReason   String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([vendorId])
+  @@index([stateHash])
+  @@index([status])
+}
+
+// Append-only, time-series snapshot of a vendor's continuously computed
+// behavioral trust score (0-100). Persisted on every evaluation so the GET
+// endpoint can surface the latest snapshot and a 30-day historical trend.
+// No update or delete operations are permitted on this table.
+model TrustScoreSnapshot {
+  id                String       @id @default(cuid())
+  vendorId          String
+  vendor            Vendor       @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  compositeScore    Int          // 0-100
+  tier              TrustTier
+  identityScore     Int          // 0-100, weight 35%
+  supplyChainScore  Int          // 0-100, weight 45%
+  behaviorScore     Int          // 0-100, weight 20%
+  penaltyDeduction  Int          // aggregated anomaly/audit deductions
+  reasons           String       // JSON array of human-readable contributing factors
+  calculatedAt      DateTime     @default(now())
+
+  @@index([vendorId])
+  @@index([calculatedAt])
 }
 
 model Document {

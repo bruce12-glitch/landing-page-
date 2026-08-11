@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
+import './globals.css';
 
 export const metadata = {
-  title: 'VendorChain Platform API',
-  description: 'Zero-Trust B2B Vendor Verification Core',
+  title: 'VendorChain Platform — Control Plane',
+  description: 'Zero-Trust B2B Vendor Verification — Enterprise Procurement & Trust Dashboard',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

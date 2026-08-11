@@ -1,6 +1,45 @@
 import crypto from 'node:crypto';
 import type { VendorStatus, DocumentType, DocumentStatus } from '../validation/vendor';
 
+export type TrustTier = 'TIER_1_CRITICAL' | 'TIER_2_STANDARD' | 'TIER_3_RESTRICTED' | 'TIER_4_SUSPENDED';
+
+export type TransactionStatus =
+  | 'RECORDED'
+  | 'COMMITTED_L2'
+  | 'SETTLED'
+  | 'DISPUTED'
+  | 'RESOLVED';
+
+export interface VendorTransactionRecord {
+  id: string;
+  vendorId: string;
+  invoiceRef: string;
+  amountCents: number;
+  currency: string;
+  stateHash: string;
+  nonce: string;
+  anchorTimestamp: string;
+  l2TxHash: string | null;
+  l2BlockNumber: number | null;
+  status: TransactionStatus;
+  disputeReason: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TrustScoreSnapshotRecord {
+  id: string;
+  vendorId: string;
+  compositeScore: number;
+  tier: TrustTier;
+  identityScore: number;
+  supplyChainScore: number;
+  behaviorScore: number;
+  penaltyDeduction: number;
+  reasons: string; // JSON array of contributing factors
+  calculatedAt: Date;
+}
+
 export interface VendorRecord {
   id: string;
   legalName: string;
@@ -41,6 +80,8 @@ class DatabaseStore {
   private vendors = new Map<string, VendorRecord>();
   private documents = new Map<string, DocumentRecord>();
   private events: VerificationEventRecord[] = [];
+  private trustScores = new Map<string, TrustScoreSnapshotRecord>();
+  private transactions = new Map<string, VendorTransactionRecord>();
 
   // Vendor Operations
   public async findVendorById(id: string): Promise<VendorRecord | null> {
@@ -55,6 +96,10 @@ class DatabaseStore {
       }
     }
     return null;
+  }
+
+  public async findAllVendors(): Promise<VendorRecord[]> {
+    return [...this.vendors.values()];
   }
 
   public async createVendor(data: {
@@ -192,11 +237,157 @@ class DatabaseStore {
       .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
 
+  // Append-only Trust Score Snapshots (Module 3)
+  public async createTrustScoreSnapshot(data: {
+    vendorId: string;
+    compositeScore: number;
+    tier: TrustTier;
+    identityScore: number;
+    supplyChainScore: number;
+    behaviorScore: number;
+    penaltyDeduction: number;
+    reasons: string;
+  }): Promise<TrustScoreSnapshotRecord> {
+    const vendor = await this.findVendorById(data.vendorId);
+    if (!vendor) {
+      throw new Error('Foreign key constraint failed on vendorId');
+    }
+
+    const id = `trust_${crypto.randomBytes(12).toString('hex')}`;
+    const record: TrustScoreSnapshotRecord = {
+      id,
+      vendorId: data.vendorId,
+      compositeScore: data.compositeScore,
+      tier: data.tier,
+      identityScore: data.identityScore,
+      supplyChainScore: data.supplyChainScore,
+      behaviorScore: data.behaviorScore,
+      penaltyDeduction: data.penaltyDeduction,
+      reasons: data.reasons,
+      calculatedAt: new Date(),
+    };
+    this.trustScores.set(id, record);
+    return record;
+  }
+
+  public async findTrustSnapshotsByVendorId(vendorId: string): Promise<TrustScoreSnapshotRecord[]> {
+    const results: TrustScoreSnapshotRecord[] = [];
+    for (const snapshot of this.trustScores.values()) {
+      if (snapshot.vendorId === vendorId) results.push(snapshot);
+    }
+    return results.sort((a, b) => b.calculatedAt.getTime() - a.calculatedAt.getTime());
+  }
+
+  public async findLatestTrustSnapshotByVendorId(
+    vendorId: string
+  ): Promise<TrustScoreSnapshotRecord | null> {
+    const all = await this.findTrustSnapshotsByVendorId(vendorId);
+    return all.length && all[0] ? all[0] : null;
+  }
+
+  // Commercial Transactions & L2 Ledger Anchors (Module 4)
+  public async createVendorTransaction(data: {
+    vendorId: string;
+    invoiceRef: string;
+    amountCents: number;
+    currency: string;
+    stateHash: string;
+    nonce: string;
+    anchorTimestamp: string;
+    l2TxHash?: string;
+    l2BlockNumber?: number;
+    status?: TransactionStatus;
+  }): Promise<VendorTransactionRecord> {
+    const vendor = await this.findVendorById(data.vendorId);
+    if (!vendor) {
+      throw new Error('Foreign key constraint failed on vendorId');
+    }
+    const existing = await this.findTransactionByInvoiceRef(data.vendorId, data.invoiceRef);
+    if (existing) {
+      const error = new Error(
+        'Unique constraint failed on (vendorId, invoiceRef) — duplicate transaction'
+      );
+      (error as Error & { code: string }).code = 'P2002';
+      throw error;
+    }
+
+    const id = `tx_${crypto.randomBytes(12).toString('hex')}`;
+    const now = new Date();
+    const record: VendorTransactionRecord = {
+      id,
+      vendorId: data.vendorId,
+      invoiceRef: data.invoiceRef,
+      amountCents: data.amountCents,
+      currency: data.currency,
+      stateHash: data.stateHash,
+      nonce: data.nonce,
+      anchorTimestamp: data.anchorTimestamp,
+      l2TxHash: data.l2TxHash ?? null,
+      l2BlockNumber: data.l2BlockNumber ?? null,
+      status: data.status || 'RECORDED',
+      disputeReason: null,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.transactions.set(id, record);
+    return record;
+  }
+
+  public async findTransactionById(id: string): Promise<VendorTransactionRecord | null> {
+    return this.transactions.get(id) || null;
+  }
+
+  public async findTransactionByInvoiceRef(
+    vendorId: string,
+    invoiceRef: string
+  ): Promise<VendorTransactionRecord | null> {
+    for (const tx of this.transactions.values()) {
+      if (tx.vendorId === vendorId && tx.invoiceRef === invoiceRef) return tx;
+    }
+    return null;
+  }
+
+  public async findTransactionsByVendorId(
+    vendorId: string,
+    limit = 50,
+    offset = 0
+  ): Promise<VendorTransactionRecord[]> {
+    const results: VendorTransactionRecord[] = [];
+    for (const tx of this.transactions.values()) {
+      if (tx.vendorId === vendorId) results.push(tx);
+    }
+    results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return results.slice(offset, offset + limit);
+  }
+
+  public async findAllTransactions(): Promise<VendorTransactionRecord[]> {
+    return [...this.transactions.values()];
+  }
+
+  public async updateTransactionStatus(
+    id: string,
+    status: TransactionStatus,
+    disputeReason?: string
+  ): Promise<VendorTransactionRecord | null> {
+    const tx = this.transactions.get(id);
+    if (!tx) return null;
+    const updated: VendorTransactionRecord = {
+      ...tx,
+      status,
+      disputeReason: disputeReason !== undefined ? disputeReason : tx.disputeReason,
+      updatedAt: new Date(),
+    };
+    this.transactions.set(id, updated);
+    return updated;
+  }
+
   // Testing & Reset Helper
   public async reset(): Promise<void> {
     this.vendors.clear();
     this.documents.clear();
     this.events = [];
+    this.trustScores = new Map();
+    this.transactions = new Map();
   }
 }
 

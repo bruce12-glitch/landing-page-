@@ -60,8 +60,11 @@ landing-page-/                  # one repo, two deliverables
 | Storage driver: local-encrypted / MinIO (S3-compatible) | ✅ / 🧪 local | `lib/storage/` |
 | Landing: labeled demo verifier, zero dead links, CSP, honest form | ✅ Shipped | `index.html`, `js/app.js` |
 | Syft SBOM + Cosign signing (Module 2, Slice 1) | ✅ Shipped | `platform/scripts/sbom.sh`, `sign.sh`, `verify.sh`; `platform/src/app/api/supply-chain/latest/route.ts` |
-| Continuous trust scoring (Module 3) | 🔜 Roadmap | — |
-| Immutable transaction ledger (Module 4) | 🔜 Roadmap | — |
+| Automated Vulnerability Policy Engine (Module 2, Slice 2) — CycloneDX scan → PASS/WARN/BLOCK | ✅ Shipped | `platform/src/lib/supply-chain/cve-scanner.ts`, `vulnerability-catalog.ts`; `scanResult` in `/api/supply-chain/latest` |
+| Continuous Behavioral Trust Scoring (Module 3, Slice 1) — 0-100 composite, TrustTier, snapshots | ✅ Shipped | `platform/src/lib/trust-scoring/calculator.ts`; `GET /api/vendors/:id/trust-score`, `POST .../evaluate` |
+| Immutable transaction ledger + Polygon L2 anchor (Module 4, Slice 1) — SHA-256 state commitments, replay protection, dispute feedback loop | ✅ Shipped | `platform/src/lib/ledger/`; `POST/GET /api/vendors/:id/transactions`, `POST .../transactions/:txId/dispute` |
+| Enterprise Procurement & Trust Dashboard (Phase 4) — control plane `/dashboard`, `/onboarding`, `/vendors/[id]` | ✅ Shipped | `platform/src/app/` (`components/`, `dashboard/`, `onboarding/`, `vendors/[id]/`); `GET /api/dashboard/summary` |
+| Production Hardening & Observability (Phase 5) — CI/CD, Docker, Prometheus metrics, OWASP headers + rate limiting | ✅ Shipped | `.github/workflows/enterprise-ci.yml`; `platform/Dockerfile`, `docker-compose.prod.yml`; `lib/telemetry/metrics.ts`; `GET /api/metrics`; `lib/security/middleware-guard.ts` |
 
 ## Request Lifecycle
 
@@ -170,6 +173,8 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 | GET | `/api/vendors/:id/verification` | admin-key | append-only event timeline |
 | GET | `/api/vendors/:id/documents/:docId/bytes` | admin-key | decrypted stream, `no-store`, ADMIN_READ audit |
 | GET | `/api/supply-chain/latest` | admin-key | runtime attestation verification (computed, not stored) |
+| GET | `/api/dashboard/summary` | admin-key | aggregated trust metrics, tier distribution, anomaly alerts |
+| GET | `/api/metrics` | public | Prometheus text exposition (SLIs: vendors gauge, verification duration, L2 commitments, disputes) |
 
 ## Threat Model → Mitigation
 
@@ -184,7 +189,7 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 
 ## Roadmap
 
-**Slice 4** (Module 1 completion): real GSTN credentials wiring, OIDC provider, image OCR. **Module 2, Slice 2:** vendor artifact SBOM intake (POST upload → syft scan → encrypted storage). **Module 3:** continuous trust scoring. **Module 4:** immutable ledger for transactions & disputation.
+**Slice 4** (Module 1 completion): real GSTN credentials wiring, OIDC provider, image OCR. **Module 2, Slice 2:** vendor artifact SBOM intake (POST upload → syft scan → encrypted storage). **Module 3, Slice 2:** trust scoring expansion (probation curve, SLA telemetry feed). **Module 4, Slice 2:** live Polygon L2 RPC submission (real `eth_sendRawTransaction`), settlement & resolution lifecycle.
 
 ## License & Disclaimer
 

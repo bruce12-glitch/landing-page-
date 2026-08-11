@@ -10,6 +10,11 @@ export default defineConfig({
     // @ts-ignore
     allowedHosts: true,
     hmr: false,
+    proxy: {
+      // Dev-only: proxy platform API to the backend so the verifier can
+      // dogfood /api/supply-chain/latest same-origin (keeps CSP connect-src 'self').
+      '/api': { target: 'http://localhost:3001', changeOrigin: true },
+    },
     headers: {
       'X-Frame-Options': 'ALLOWALL',
       'Access-Control-Allow-Origin': '*',
