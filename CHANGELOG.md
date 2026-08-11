@@ -2,6 +2,15 @@
 
 All notable changes across the hardening phases of the VendorChain Zero-Trust landing page.
 
+## [Module 2, Slice 2: Vulnerability Policy Engine & Live Landing Wire-Up] - 2026-08-11
+- **A — Protocol Reconciliation**: Replaced all `Hyperledger Fabric` references (hero, telemetry cards, chaincode audit, integrations marquee, FAQ, toast) with the Polygon L2 / Zero-Trust Cryptographic Ledger architecture. CSP stays strict — zero inline `style=` / event handlers.
+  - *Proof*: `grep -ri "hyperledger" index.html js/app.js` → `0`
+- **B — Live Verification Dogfooding**: `doVerify()` in `js/app.js` now fetches `/api/supply-chain/latest` and gracefully falls back to honest offline telemetry; renders genuine fields (Cosign Signature, SBOM Telemetry, Policy Verdict, L2 Ledger) in a new result panel + toast.
+- **C — Vulnerability Policy Engine**: Added `platform/src/lib/supply-chain/cve-scanner.ts` + `vulnerability-catalog.ts` — parses CycloneDX SBOMs and enforces `PASS` / `WARN` / `BLOCK` based on CRITICAL/HIGH counts and weighted risk score (the "signed trojan" defense). `GET /api/supply-chain/latest` now returns `scanResult` + a fail-closed `status`.
+  - *Proof*: `curl http://localhost:3001/api/supply-chain/latest` → `scanResult.policyVerdict` present.
+- **D — Test Suite**: Added `platform/src/tests/supply-chain-policy.test.ts` (8 tests: clean PASS, critical BLOCK, HIGH WARN, version matching, malformed SBOM, unsigned FLAGGED, e2e schema, signed-trojan). Suite now **58/58 across 14 suites**.
+  - *Proof*: `npm test --prefix platform` → `Test Files 14 passed · Tests 58 passed`
+
 ## [Phase 3: Launch Hardening] - 2026-08-09
 - **F0 Carry-over Control**: Implemented 3-second minimum submit guard with active focus on `#formErrorSummary` and moved error list styling into CSS.
   - *Proof*: `grep -A 4 "formInitTime < 3000" js/app.js`

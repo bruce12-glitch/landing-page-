@@ -65,13 +65,13 @@
         <div class="hero-cursor-glow" id="heroCursorGlow" aria-hidden="true"></div>
         <div class="badge" id="heroBadge"><i aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></i> NIST SP 800-207 ZERO-TRUST ARCHITECTURE</div>
         <h1 class="h1 reveal in" id="heroTitle">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
-        <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to Hyperledger Fabric.</p>
+        <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to a Polygon L2 / Zero-Trust Cryptographic Ledger.</p>
         <div class="hero-ctas reveal in" id="heroCtas">
           <a href="#cta" class="hero-btn primary" id="launchPortalBtn">Request Early Access →</a>
           <a href="#quickVerify" class="hero-btn secondary">Try Demo Verifier</a>
         </div>
         <div class="tech-pills reveal in" id="techPills" aria-label="Core tech stack">
-          <div class="tech-pill" data-tech="fabric"><span class="tech-dot ledger"></span> Hyperledger Fabric</div>
+          <div class="tech-pill" data-tech="polygon"><span class="tech-dot ledger"></span> Polygon L2</div>
           <div class="tech-pill" data-tech="syft"><span class="tech-dot sbom"></span> Syft SBOM</div>
           <div class="tech-pill" data-tech="cosign"><span class="tech-dot cosign"></span> Cosign</div>
           <div class="tech-pill" data-tech="opa"><span class="tech-dot opa"></span> OPA / Rego</div>
@@ -90,6 +90,15 @@
           <div class="quick-verify-hint">
             <span>Demo artifact: <code>e3b0c442...b855</code></span>
             <button type="button" class="quick-verify-sample-btn" id="useSampleBtn">Use sample artifact</button>
+          </div>
+          <div class="quick-verify-result" id="quickVerifyResult" role="status" aria-live="polite" hidden>
+            <div class="qv-result-src" id="qvResultSrc"></div>
+            <dl class="qv-result-grid">
+              <div class="qv-row"><dt>Cosign Signature</dt><dd id="qvCosign"></dd></div>
+              <div class="qv-row"><dt>SBOM Telemetry</dt><dd id="qvSbom"></dd></div>
+              <div class="qv-row"><dt>Policy Verdict</dt><dd id="qvPolicy"></dd></div>
+              <div class="qv-row"><dt>L2 Ledger</dt><dd id="qvLedger"></dd></div>
+            </dl>
           </div>
         </div>
         <div class="horizon" aria-hidden="true"></div>
@@ -173,13 +182,13 @@
           <p>Automatically blocks non-compliant submissions using <strong>Open Policy Agent (OPA)</strong> rules if signatures are missing, certs expire, or risk spikes.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
-        <!-- Row 2 Col 3: Hyperledger -->
+        <!-- Row 2 Col 3: Polygon L2 / Zero-Trust Cryptographic Ledger -->
         <div class="vc-card" data-card="blockchain_ledger" id="blockchain-ledger" data-tilt>
           <div class="vc-card-icon icon-blocks">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="9" rx="2"/><path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M7 11h.01"/><path d="M12 11h.01"/><path d="M17 11h.01"/></svg>
           </div>
-          <h4>Immutable Ledger (Hyperledger Fabric)</h4>
-          <p>Commits cryptographic SHA-256 hashes, AI risk scores, and policy verdicts permanently to Hyperledger Fabric for unalterable dispute records.</p>
+          <h4>Immutable Ledger (Polygon L2 / Zero-Trust Cryptographic Ledger)</h4>
+          <p>Commits cryptographic SHA-256 hashes, AI risk scores, and policy verdicts permanently to a Polygon L2 / Zero-Trust Cryptographic Ledger for unalterable dispute records.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
         <!-- Row 3 Col 1: Telemetry -->
@@ -265,8 +274,8 @@
           <div class="vc-card-icon icon-blocks">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="9" rx="2"/><path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M6 11h.01"/><path d="M10 11h.01"/><path d="M14 11h.01"/><path d="M18 11h.01"/></svg>
           </div>
-          <h4>Immutable Chaincode Audit (Hyperledger)</h4>
-          <p>Executes smart contracts on a private Hyperledger Fabric blockchain to record unalterable submission hashes, policy verdicts, and timestamps.</p>
+          <h4>Immutable Smart Contract Audit (Polygon L2)</h4>
+          <p>Executes smart contracts on a private Polygon L2 / Zero-Trust Cryptographic Ledger to record unalterable submission hashes, policy verdicts, and timestamps.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
       </div>
@@ -300,12 +309,12 @@
           <p>Acts as an automated firewall for your CI/CD pipeline. Evaluates Rego policy rules to deny deployments if certs expire or AI risk scores spike.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
-        <div class="vc-card" data-card="hyperledger_audit_trail" data-tilt>
+        <div class="vc-card" data-card="polygon_ledger_audit_trail" data-tilt>
           <div class="vc-card-icon icon-blocks">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M16 3h4v4"/><path d="M4 3h4v4"/><path d="M8 11h8"/><path d="M12 7v10"/></svg>
           </div>
-          <h4>Immutable Ledger Audit (Hyperledger)</h4>
-          <p>Permanently registers every transaction attempt, pass/fail verdict, and vendor risk score on a distributed Hyperledger Fabric network.</p>
+          <h4>Immutable Ledger Audit (Polygon L2)</h4>
+          <p>Permanently registers every transaction attempt, pass/fail verdict, and vendor risk score on a distributed Polygon L2 / Zero-Trust Cryptographic Ledger network.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
       </div>
@@ -375,7 +384,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h4v4"/><path d="M8 3h4v4"/><path d="M3 7h18"/><path d="M7 12h10"/><path d="M7 16h10"/></svg>
           </div>
           <h4>Batch On-Chain Ledgering</h4>
-          <p>Commit multiple vendor submission records, AI risk scores, and OPA compliance verdicts directly to the Hyperledger Fabric ledger in a single batch transaction.</p>
+          <p>Commit multiple vendor submission records, AI risk scores, and OPA compliance verdicts directly to the Polygon L2 / Zero-Trust Cryptographic Ledger in a single batch transaction.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
         <div class="vc-card" data-tilt>
@@ -443,12 +452,12 @@
   <section class="vc-integrations" id="integrations" aria-labelledby="integrationsTitle">
     <div class="vc-integrations-inner">
       <h3 class="vc-h3" id="integrationsTitle">Integrates seamlessly with your existing CI/CD & DevOps stack</h3>
-      <p>VendorChain plugs directly into GitHub Actions, Supabase, and Hyperledger Fabric. Automatically trigger SBOM generation, Cosign signing, and OPA policy evaluation on every push.</p>
+      <p>VendorChain plugs directly into GitHub Actions, Supabase, and Polygon L2 / Zero-Trust Cryptographic Ledger. Automatically trigger SBOM generation, Cosign signing, and OPA policy evaluation on every push.</p>
       <div class="vc-marquee" aria-hidden="true">
         <div class="vc-track">
           <span class="vc-marquee-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> GitHub Actions</span>
           <span class="vc-marquee-item">Supabase</span>
-          <span class="vc-marquee-item">Hyperledger Fabric</span>
+          <span class="vc-marquee-item">Polygon L2</span>
           <span class="vc-marquee-item">Cosign</span>
           <span class="vc-marquee-item">Syft</span>
           <span class="vc-marquee-item">OPA Rego</span>
@@ -481,11 +490,11 @@
         </div>
         <div class="vc-faq-item">
           <button class="vc-faq-q" aria-expanded="false">How is VendorChain different from traditional vulnerability scanners? <span>+</span></button>
-          <div class="vc-faq-a">Traditional scanners only run static checks. VendorChain enforces continuous Zero-Trust by uniting Syft SBOM extraction, Cosign cryptographic signing, Claude AI risk scoring, OPA policy gates, and permanent Hyperledger Fabric audit trails.</div>
+          <div class="vc-faq-a">Traditional scanners only run static checks. VendorChain enforces continuous Zero-Trust by uniting Syft SBOM extraction, Cosign cryptographic signing, Claude AI risk scoring, OPA policy gates, and permanent Polygon L2 / Zero-Trust Cryptographic Ledger audit trails.</div>
         </div>
         <div class="vc-faq-item">
           <button class="vc-faq-q" aria-expanded="false">How can I verify audit ledger records? <span>+</span></button>
-          <div class="vc-faq-a">Every submission verdict, AI risk score, and cryptographic SHA-256 hash is permanently committed to a private Hyperledger Fabric blockchain, offering unalterable, tamper-proof verification for compliance teams and regulators.</div>
+          <div class="vc-faq-a">Every submission verdict, AI risk score, and cryptographic SHA-256 hash is permanently committed to a private Polygon L2 / Zero-Trust Cryptographic Ledger, offering unalterable, tamper-proof verification for compliance teams and regulators.</div>
         </div>
       </div>
     </div>

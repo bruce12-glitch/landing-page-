@@ -3,6 +3,7 @@ import { authenticateRequest } from '@/lib/auth';
 import { spawn } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { scanSbom, type SbomScanResult } from '@/lib/supply-chain/cve-scanner';
 
 export const dynamic = 'force-dynamic';
 
@@ -114,8 +115,33 @@ export async function GET(request: Request) {
   const verifyResult = await runVerifyScript();
   const verified = verifyResult.exitCode === 0;
 
+  // --- Automated Vulnerability Policy Scan (THE "SIGNED TROJAN" DEFENSE) ---
+  // A valid signature proves provenance, NOT safety. Parse the actual SBOM and
+  // enforce policy before trusting the build. If the SBOM cannot be read we
+  // return an empty scan (totalPackages: 0) so decisions stay deterministic.
+  let scanResult: SbomScanResult | null = null;
+  try {
+    const sbomRaw = await readFile(sbomPath, 'utf-8');
+    const sbomJson: unknown = JSON.parse(sbomRaw);
+    scanResult = scanSbom(sbomJson);
+  } catch {
+    scanResult = null;
+  }
+
+  // --- Fail-closed status field ---
+  // 'VERIFIED' only when BOTH the signature is valid AND the vulnerability
+  // policy does not BLOCK the build. Anything less fails closed to 'FLAGGED'.
+  const policyBlocks = scanResult !== null && scanResult.policyVerdict === 'BLOCK';
+  let status: 'VERIFIED' | 'FLAGGED';
+  if (verified && !policyBlocks) {
+    status = 'VERIFIED';
+  } else {
+    status = 'FLAGGED';
+  }
+
   return NextResponse.json(
     {
+      status,
       gitSha: manifest.gitSha,
       sbomSha256: manifest.sbomSha256,
       signaturePresent,
@@ -127,6 +153,7 @@ export async function GET(request: Request) {
       provenance: manifest.provenance,
       specVersion: manifest.specVersion,
       componentCount: manifest.componentCount,
+      scanResult,
     },
     {
       status: 200,

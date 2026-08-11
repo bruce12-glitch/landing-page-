@@ -60,6 +60,7 @@ landing-page-/                  # one repo, two deliverables
 | Storage driver: local-encrypted / MinIO (S3-compatible) | ✅ / 🧪 local | `lib/storage/` |
 | Landing: labeled demo verifier, zero dead links, CSP, honest form | ✅ Shipped | `index.html`, `js/app.js` |
 | Syft SBOM + Cosign signing (Module 2, Slice 1) | ✅ Shipped | `platform/scripts/sbom.sh`, `sign.sh`, `verify.sh`; `platform/src/app/api/supply-chain/latest/route.ts` |
+| Automated Vulnerability Policy Engine (Module 2, Slice 2) — CycloneDX scan → PASS/WARN/BLOCK | ✅ Shipped | `platform/src/lib/supply-chain/cve-scanner.ts`, `vulnerability-catalog.ts`; `scanResult` in `/api/supply-chain/latest` |
 | Continuous trust scoring (Module 3) | 🔜 Roadmap | — |
 | Immutable transaction ledger (Module 4) | 🔜 Roadmap | — |
 
