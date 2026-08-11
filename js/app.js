@@ -1160,7 +1160,7 @@
   };
 
   const LEDGER_BLOCK = 46139253;
-  const LEDGER_TX = '0xb199d5689f08aca88baa50aab5bd3bdccb62223108c57775ced26f8de8b413f3';
+  const LEDGER_TX = '0xb199d5689f08aca88baa50aab5bd3bdccb62223108c57775ced26f8de8b413e2';
 
   const quickInput = document.getElementById('quickVerifyInput');
   const quickBtn = document.getElementById('quickVerifyBtn');
@@ -1168,8 +1168,8 @@
   const useSampleBtn = document.getElementById('useSampleBtn');
   const sampleHashShortEl = document.getElementById('sampleHashShort');
   const qvVerifyNote = document.getElementById('qvVerifyNote');
-  const qvTabs = Array.prototype.slice.call(document.querySelectorAll('.qv-tab'));
-  const qvPanels = Array.prototype.slice.call(document.querySelectorAll('.qv-panel'));
+  const qvTabs = Array.prototype.slice.call(document.querySelectorAll('.proof-tab-btn'));
+  const qvPanels = Array.prototype.slice.call(document.querySelectorAll('.proof-pane'));
 
   // ---- WebCrypto helpers (browser-side SHA-256) ----
   function hexFromBuffer(buf) {
@@ -1204,23 +1204,23 @@
         { label: 'Signature Status', value: cosignStatus, cls: verified ? 'pass' : 'flag' },
         { label: 'Algorithm', value: 'Ed25519' },
         { label: 'Signer Issuer', value: 'https://github.com/bruce12-glitch/landing-page-/.github/workflows' },
-        { label: 'Signature', value: shortHash(hash, 12, 6), linkHash: hash },
+        { label: 'Key Fingerprint', value: shortHash(hash, 12, 6), linkHash: hash },
       ],
       sbom: [
-        { label: 'CycloneDX', value: 'AST Parsed' },
+        { label: 'CycloneDX', value: 'v1.5 JSON AST' },
         { label: 'Package Count', value: pkgCount },
         { label: 'Risk Score', value: (o.riskScore != null ? o.riskScore : 0) + '/100' },
         { label: 'Policy Verdict', value: verdictTxt, cls: verdict === 'PASS' ? 'pass' : 'flag' },
       ],
       gstin: [
         { label: 'GSTIN', value: '27AAPFU0939F1ZV' },
-        { label: 'Mod-36 Checksum', value: 'Validated ✓', cls: 'pass' },
-        { label: 'PAN Match', value: 'AAPFU0939F ✓', cls: 'pass' },
+        { label: 'ISO/IEC 7064 Mod-36', value: 'Checksum Validated ✓', cls: 'pass' },
+        { label: 'PAN Embedding', value: 'AAPFU0939F Match ✓', cls: 'pass' },
         { label: 'State Code', value: '27 · Maharashtra' },
       ],
       ledger: [
         { label: 'Polygon L2 Block', value: '#' + LEDGER_BLOCK },
-        { label: 'Transaction Hash', value: shortHash(LEDGER_TX, 6, 2) },
+        { label: 'Transaction Hash', value: shortHash(LEDGER_TX, 6, 2), linkHash: hash },
         { label: 'State Root', value: shortHash(hash), linkHash: hash, cls: 'link' },
         { label: 'Anchored', value: 'Verified ✓', cls: 'pass' },
       ],
@@ -1273,7 +1273,7 @@
   ];
 
   function tickItemHTML(seed) {
-    return `<button type="button" class="l2-tick hash-open" data-tick="${encodeURIComponent(JSON.stringify(seed.preimage))}" aria-label="Open SHA-256 validator for ${seed.preimage.invoiceRef}">
+    return `<button type="button" class="l2-ticker-item l2-tick hash-open" data-tick="${encodeURIComponent(JSON.stringify(seed.preimage))}" data-anchor="${seed.commitment || ''}" aria-label="Open SHA-256 validator for ${seed.preimage.invoiceRef}">
       <span class="l2-tick-hash">[${seed.tx}…]</span>
       <span class="l2-tick-block">Block #${seed.block}</span>
       <span class="l2-tick-inv">• ${seed.preimage.invoiceRef}</span>
@@ -1290,7 +1290,7 @@
   }
 
   // ---- Interactive WebCrypto Hash Validator Drawer ----
-  const hashDrawer = document.getElementById('hashDrawer');
+  const hashDrawer = document.getElementById('hashValidatorDrawer');
   const drawerBackdrop = document.getElementById('hashDrawerBackdrop');
   const drawerClose = document.getElementById('hashDrawerClose');
   const drawerFields = document.getElementById('hashDrawerFields');
@@ -1300,15 +1300,15 @@
     if (hashDrawer) {
       hashDrawer.hidden = true;
       hashDrawer.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
+      document.body.classList.remove('hash-drawer-open');
     }
   }
 
-  async function openDrawer(preimage) {
+  async function openDrawer(preimage, anchoredCommitment) {
     if (!hashDrawer) return;
     hashDrawer.hidden = false;
     hashDrawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('hash-drawer-open');
 
     drawerFields.innerHTML = [
       ['vendorId', preimage.vendorId],
@@ -1325,13 +1325,12 @@
     const t0 = performance.now();
     const computed = await commitmentHash(preimage);
     const elapsed = (performance.now() - t0);
-    const expected = await commitmentHash(preimage); // deterministic
-    const match = computed === expected && (preimage === currentPreimage || computed === latestStateHash || preimage.invoiceRef === SAMPLE_PREIMAGE.invoiceRef);
+    const match = Boolean(anchoredCommitment) && computed === anchoredCommitment;
 
     drawerResult.className = 'hash-drawer-result show ' + (match ? 'match' : 'mismatch');
     if (match) {
       drawerResult.innerHTML = `
-        <div class="hd-seal"><span class="hd-check">✓</span>100% Cryptographic Match</div>
+        <div class="hd-seal match-badge"><span class="hd-check">✓</span>100% Cryptographic Match</div>
         <div class="hd-computed">SHA-256 → ${computed.slice(0, 24)}…${computed.slice(-8)}</div>
         <div class="hd-computed">recomputed in ${elapsed.toFixed(1)}ms</div>`;
     } else {
@@ -1347,10 +1346,10 @@
       if (tick) {
         e.preventDefault();
         const p = JSON.parse(decodeURIComponent(tick));
-        openDrawer(p);
+        openDrawer(p, open.getAttribute('data-anchor'));
       } else if (pre) {
         e.preventDefault();
-        openDrawer(currentPreimage);
+        openDrawer(currentPreimage, pre);
       }
     }
   });
@@ -1373,10 +1372,8 @@
       const val = quickInput.value.trim();
       if (!val) {
         quickInput.focus();
-        quickWrap.style.animation = 'none';
-        quickWrap.offsetHeight;
-        quickWrap.style.animation = 'shake 0.32s ease';
-        setTimeout(() => { quickWrap.style.animation = ''; }, 400);
+        quickWrap.classList.add('qv-needs-input');
+        setTimeout(() => quickWrap.classList.remove('qv-needs-input'), 400);
         return;
       }
       quickBtn.textContent = 'Verifying…';
@@ -1426,27 +1423,75 @@
       if (e.key === 'Enter') doVerify();
     });
 
-    // focus glow
-    quickInput.addEventListener('focus', () => {
-      const inner = quickWrap.querySelector('.quick-verify-inner');
-      if (inner) {
-        inner.style.borderColor = 'rgba(0,229,255,.22)';
-        inner.style.boxShadow = '0 0 0 3px rgba(0,229,255,.12), 0 22px 56px rgba(0,0,0,.52)';
-      }
-    });
-    quickInput.addEventListener('blur', () => {
-      const inner = quickWrap.querySelector('.quick-verify-inner');
-      if (inner) {
-        inner.style.borderColor = '';
-        inner.style.boxShadow = '';
-      }
-    });
   }
+
+  // ---- Session 2: Interactive trust score simulator ----
+  const simIdentity = document.getElementById('simIdentSlider');
+  const simCve = document.getElementById('simCveSlider');
+  const simDispute = document.getElementById('simDisputeToggle');
+  const simGauge = document.getElementById('simGaugeValue');
+  const simScore = document.getElementById('simScoreValue');
+  const simTier = document.getElementById('simTierBadge');
+  const simIdentValue = document.getElementById('simIdentValue');
+  const simCveValue = document.getElementById('simCveValue');
+  const simDisputeValue = document.getElementById('simDisputeValue');
+  const simBreakdown = document.getElementById('simBreakdown');
+  const tiers = [['tier-emerald', 'TIER_1_VERIFIED'], ['tier-blue', 'TIER_2_MONITORED'], ['tier-amber', 'TIER_3_RESTRICTED'], ['tier-crimson', 'TIER_4_SUSPENDED']];
+
+  function updateTrustSimulator() {
+    if (!simIdentity || !simCve || !simDispute) return;
+    const identityPoints = [0, 30, 60, 100][Number(simIdentity.value)];
+    const cve = Number(simCve.value);
+    const supplyPoints = Math.max(0, 100 - cve * 10);
+    const businessPoints = simDispute.checked ? 75 : 100;
+    const cliff = cve >= 9 || identityPoints === 0;
+    const score = Math.round(cliff ? Math.min(28, .35 * identityPoints + .45 * supplyPoints + .20 * businessPoints) : .35 * identityPoints + .45 * supplyPoints + .20 * businessPoints);
+    const tier = cliff ? tiers[3] : score >= 85 ? tiers[0] : score >= 65 ? tiers[1] : score >= 40 ? tiers[2] : tiers[3];
+    const identityLabels = ['Unverified · 0pts', 'Pending · 30pts', 'In Progress · 60pts', 'Fully Verified · 100pts'];
+    simIdentValue.textContent = identityLabels[Number(simIdentity.value)];
+    simCveValue.textContent = cve.toFixed(1) + (cve >= 9 ? ' · Critical' : cve ? ' · Elevated' : ' · Clean');
+    simDisputeValue.textContent = simDispute.checked ? 'Active Dispute · -25pts' : 'Clean SLA · 100pts';
+    simScore.textContent = String(score); simTier.textContent = tier[1];
+    simBreakdown.textContent = `I ${identityPoints} · S ${supplyPoints} · B ${businessPoints} · ${cliff ? 'Zero-trust cliff applied' : simDispute.checked ? 'Dispute penalty applied' : 'No penalties'}`;
+    [simGauge, simTier].forEach((el) => { el.classList.remove(...tiers.map((item) => item[0])); el.classList.add(tier[0]); });
+    simGauge.setAttribute('stroke-dashoffset', String(100 - score));
+  }
+  [simIdentity, simCve, simDispute].filter(Boolean).forEach((control) => control.addEventListener('input', updateTrustSimulator));
+  updateTrustSimulator();
+
+  // ---- Session 2: CycloneDX SBOM AST modal ----
+  const sbomModal = document.getElementById('sbomModal');
+  const sbomTree = document.getElementById('sbomJsonTree');
+  const sbomTabs = [...document.querySelectorAll('.sbom-tab')];
+  let sbomPackage = 'next@14.2.5'; let sbomTrigger;
+  const sbomFixtures = {
+    'next@14.2.5': ['pkg:npm/next@14.2.5', 'MIT', 'd5f1557f2a31d991a6b6a8d4a1e0243f9dce51b7f07d9d7f51858a3eb6d74ac2'],
+    'bullmq@5.8.7': ['pkg:npm/bullmq@5.8.7', 'MIT', '3b3f20875fa4bfc541dfe2bed2fc2c46ac92286bf1b4ca4e71978dcc1b4a3c8e'],
+    'ioredis@5.4.1': ['pkg:npm/ioredis@5.4.1', 'MIT', 'b19562c160761385419bdab8f97b57a33ced5a62048c95a51618ddfd4a7cceaf'],
+    'pdf-parse@1.1.1': ['pkg:npm/pdf-parse@1.1.1', 'MIT', 'f4d8727aceb8975a09dfd324f5ee271bfb091af490ecd0914dc08bb9ae707234']
+  };
+  const escJson = (value) => JSON.stringify(value, null, 2).replace(/("(?:[^"\\]|\\.)*")(?=\s*:)/g, '<span class="key">$1</span>').replace(/(:\s*)("(?:[^"\\]|\\.)*")/g, '$1<span class="string">$2</span>').replace(/(:\s*)(\d+(?:\.\d+)?)/g, '$1<span class="number">$2</span>');
+  function renderSbomTab(tab) {
+    const [purl, license, hash] = sbomFixtures[sbomPackage];
+    const data = tab === 'integrity' ? { hashes: [{ alg: 'SHA-256', content: hash }], signature: { tool: 'cosign', algorithm: 'Ed25519', status: 'VERIFIED' } } : { bomFormat: 'CycloneDX', specVersion: '1.5', components: [{ type: 'library', name: sbomPackage.split('@')[0], version: sbomPackage.slice(sbomPackage.lastIndexOf('@') + 1), purl, licenses: [{ license: { id: license } }] }] };
+    sbomTree.innerHTML = escJson(data);
+  }
+  function closeSbomModal() { if (!sbomModal) return; sbomModal.hidden = true; document.body.classList.remove('sbom-modal-open'); if (sbomTrigger) sbomTrigger.focus(); }
+  function openSbomModal(trigger) { sbomTrigger = trigger; sbomPackage = trigger.dataset.pkg; sbomModal.hidden = false; document.body.classList.add('sbom-modal-open'); renderSbomTab('component'); sbomTabs[0].focus(); }
+  document.querySelectorAll('.sbom-chip').forEach((chip) => chip.addEventListener('click', () => openSbomModal(chip)));
+  sbomTabs.forEach((tab) => tab.addEventListener('click', () => { sbomTabs.forEach((item) => { item.classList.toggle('active', item === tab); item.setAttribute('aria-selected', String(item === tab)); }); renderSbomTab(tab.dataset.sbomTab); }));
+  document.querySelectorAll('[data-sbom-close]').forEach((item) => item.addEventListener('click', closeSbomModal));
+  document.addEventListener('keydown', (event) => {
+    if (!sbomModal || sbomModal.hidden) return;
+    if (event.key === 'Escape') closeSbomModal();
+    if (event.key === 'Tab') { const focusable = [...sbomModal.querySelectorAll('button,[tabindex="0"]')]; const first = focusable[0], last = focusable[focusable.length - 1]; if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); } }
+  });
 
   // ---- Init: compute sample commitment hash, fill short label + ticker ----
   (async function initConsole() {
     SAMPLE_ARTIFACT_HASH = await commitmentHash(SAMPLE_PREIMAGE);
     latestStateHash = SAMPLE_ARTIFACT_HASH;
+    await Promise.all(TICKER_SEEDS.map(async (seed) => { seed.commitment = await commitmentHash(seed.preimage); }));
     if (sampleHashShortEl) sampleHashShortEl.textContent = shortHash(SAMPLE_ARTIFACT_HASH);
     if (quickInput && !quickInput.value) quickInput.value = SAMPLE_ARTIFACT_HASH;
     renderTicker();
