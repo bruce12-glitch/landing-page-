@@ -70,6 +70,12 @@
           <a href="#cta" class="hero-btn primary" id="launchPortalBtn">Request Early Access →</a>
           <a href="#quickVerify" class="hero-btn secondary">Try Demo Verifier</a>
         </div>
+        <div class="l2-ticker-wrap reveal in" id="l2LiveTicker" aria-label="Live Polygon L2 commitment stream">
+          <span class="l2-ticker-label"><span class="l2-live-dot" aria-hidden="true"></span>LIVE L2</span>
+          <div class="l2-ticker-viewport" id="l2TickerViewport">
+            <div class="l2-ticker-track" id="l2TickerTrack" aria-hidden="false"></div>
+          </div>
+        </div>
         <div class="tech-pills reveal in" id="techPills" aria-label="Core tech stack">
           <div class="tech-pill" data-tech="polygon"><span class="tech-dot ledger"></span> Polygon L2</div>
           <div class="tech-pill" data-tech="syft"><span class="tech-dot sbom"></span> Syft SBOM</div>
@@ -77,28 +83,38 @@
           <div class="tech-pill" data-tech="opa"><span class="tech-dot opa"></span> OPA / Rego</div>
           <div class="tech-pill" data-tech="claude"><span class="tech-dot claude"></span> Claude AI</div>
         </div>
-        <div class="quick-verify-wrap reveal in" id="quickVerify" role="search" aria-label="Quick verify on-chain demo">
+        <div class="quick-verify-wrap reveal in" id="quickVerify" role="search" aria-label="Zero-trust verification proof console">
           <div class="quick-verify-header">
             <span class="quick-verify-demo-badge"><span class="demo-dot" aria-hidden="true"></span>DEMO</span>
-            <span class="quick-verify-demo-title">Zero-Trust Artifact Verifier</span>
+            <span class="quick-verify-demo-title">Zero-Trust Proof Console</span>
           </div>
-          <div class="quick-verify-inner">
-            <svg class="qv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA0C5" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
-            <input type="text" class="quick-verify-input" placeholder="Enter SBOM SHA-256 Hash..." aria-label="Enter SBOM SHA-256 Hash" id="quickVerifyInput" autocomplete="off" spellcheck="false">
-            <button class="quick-verify-btn" id="quickVerifyBtn" type="button">Verify On-Chain ↵</button>
-          </div>
-          <div class="quick-verify-hint">
-            <span>Demo artifact: <code>e3b0c442...b855</code></span>
-            <button type="button" class="quick-verify-sample-btn" id="useSampleBtn">Use sample artifact</button>
-          </div>
-          <div class="quick-verify-result" id="quickVerifyResult" role="status" aria-live="polite" hidden>
-            <div class="qv-result-src" id="qvResultSrc"></div>
-            <dl class="qv-result-grid">
-              <div class="qv-row"><dt>Cosign Signature</dt><dd id="qvCosign"></dd></div>
-              <div class="qv-row"><dt>SBOM Telemetry</dt><dd id="qvSbom"></dd></div>
-              <div class="qv-row"><dt>Policy Verdict</dt><dd id="qvPolicy"></dd></div>
-              <div class="qv-row"><dt>L2 Ledger</dt><dd id="qvLedger"></dd></div>
-            </dl>
+          <div class="qv-console">
+            <div class="qv-console-left">
+              <div class="quick-verify-inner">
+                <svg class="qv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA0C5" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
+                <input type="text" class="quick-verify-input" placeholder="Enter SBOM SHA-256 Hash..." aria-label="Enter SBOM SHA-256 Hash" id="quickVerifyInput" autocomplete="off" spellcheck="false">
+                <button class="quick-verify-btn" id="quickVerifyBtn" type="button">Verify On-Chain ↵</button>
+              </div>
+              <div class="quick-verify-hint">
+                <span>Demo artifact: <code id="sampleHashShort">…</code></span>
+                <button type="button" class="quick-verify-sample-btn" id="useSampleBtn">Use sample artifact</button>
+              </div>
+              <div class="qv-verify-note" id="qvVerifyNote" role="status" aria-live="polite"></div>
+            </div>
+            <div class="qv-console-right">
+              <div class="qv-tabs" role="tablist" aria-label="Proof inspector">
+                <button type="button" class="qv-tab active" data-tab="cosign" role="tab" aria-selected="true">Cosign</button>
+                <button type="button" class="qv-tab" data-tab="sbom" role="tab" aria-selected="false">SBOM</button>
+                <button type="button" class="qv-tab" data-tab="gstin" role="tab" aria-selected="false">GSTIN</button>
+                <button type="button" class="qv-tab" data-tab="ledger" role="tab" aria-selected="false">Ledger</button>
+              </div>
+              <div class="qv-panels">
+                <div class="qv-panel active" data-panel="cosign" role="tabpanel"></div>
+                <div class="qv-panel" data-panel="sbom" role="tabpanel"></div>
+                <div class="qv-panel" data-panel="gstin" role="tabpanel"></div>
+                <div class="qv-panel" data-panel="ledger" role="tabpanel"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="horizon" aria-hidden="true"></div>
@@ -629,6 +645,18 @@
 <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <div id="customCursor" class="custom-cursor" aria-hidden="true">
   <div class="cursor-ball"></div>
+</div>
+
+<!-- Session 1: Interactive WebCrypto SHA-256 Commitment Validator Drawer -->
+<div class="hash-drawer" id="hashDrawer" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="SHA-256 commitment validator">
+  <div class="hash-drawer-backdrop" id="hashDrawerBackdrop"></div>
+  <div class="hash-drawer-card">
+    <button type="button" class="hash-drawer-close" id="hashDrawerClose" aria-label="Close validator">×</button>
+    <h4 class="hash-drawer-title">SHA-256 Commitment Validator</h4>
+    <p class="hash-drawer-sub">Recomputing digest in-browser via <code>crypto.subtle.digest('SHA-256')</code></p>
+    <div class="hash-drawer-fields" id="hashDrawerFields"></div>
+    <div class="hash-drawer-result" id="hashDrawerResult"></div>
+  </div>
 </div>
 
 <script type="module" src="./js/app.js"></script>

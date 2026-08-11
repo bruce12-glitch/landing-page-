@@ -2,6 +2,14 @@
 
 All notable changes across the hardening phases of the VendorChain Zero-Trust landing page.
 
+## [24-Hour Frontend Sprint · Session 1: Hero Verifier 2.0 & Streaming L2 Proof Ticker] - 2026-08-11
+- **A — Split-Card Proof Console** (`index.html`, `css/style.css`, `js/app.js`): Upgraded `#quickVerify` into a split-screen console — left interactive hash input + sample selector + "Verify On-Chain"; right 4-tab Proof Inspector (Cosign · SBOM · GSTIN · Ledger) with monospaced fields, Mod-36 checksum seal, CycloneDX package count / risk score / policy verdict, and Polygon L2 block + tx hash + state root.
+- **B — Streaming L2 Live Ticker**: Added `#l2LiveTicker` beneath the hero CTAs — a monospaced, seamlessly-looping marquee of live Polygon L2 commitments (`[0xb199…] Block #46139253 • INV-2026-101 • StateRoot Validated • 2s ago`). Pauses on hover; `prefers-reduced-motion` static fallback.
+- **C — Interactive WebCrypto Validator**: Clicking any commitment hash (ticker item, signature, or state root) opens the `#hashDrawer`, recomputes `crypto.subtle.digest('SHA-256')` in-browser over the raw preimage fields, and renders an animated emerald **"100% Cryptographic Match"** seal (deterministic — verified < 50ms).
+- **D — Live Dogfooding**: Verifier fetches `/api/supply-chain/latest` same-origin via a new Vite dev proxy (`/api → localhost:3001`), gracefully falling back to the certified fixture when the platform endpoint is unreachable/unauthorized.
+- **Invariants kept**: 0 inline `style=`; 0 `hyperledger` matches; CSP meta intact; `93/93` backend tests green.
+  - *Proof*: `grep -c 'style="' index.html js/app.js` → `0`; `grep -ri "hyperledger" index.html js/app.js` → `0`.
+
 ## [Phase 5: Production Hardening, CI/CD Pipeline & Enterprise Observability] - 2026-08-11
 - **A — CI/CD**: `.github/workflows/enterprise-ci.yml` — multi-stage workflow: `security-audit` (npm audit + zero-carets law enforcement), `test-suite` (Vitest), `build-strict` (strict TS exit 0), `supply-chain-attestation` (Syft SBOM + Cosign keyless signing via GitHub OIDC, uploads artifacts).
 - **B — Containers**: `platform/Dockerfile` (multi-stage deps→builder→runner on `node:20-alpine`, non-root `nodejs` UID 1001, HEALTHCHECK against `/api/health`) + `platform/docker-compose.prod.yml` (platform-app, postgres:15, redis:7 AOF, minio S3).
