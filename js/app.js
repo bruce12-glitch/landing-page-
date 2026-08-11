@@ -1,3 +1,4 @@
+import './live-chat.js';
 // VendorChain - Premium Landing Interactions
 // Fixed version: reduced-motion, throttled rAF, visibility handling, accessible nav + form
 
@@ -1499,3 +1500,5 @@
     renderPanels(buildPanelData(SAMPLE_ARTIFACT_HASH, { verified: true }));
   })();
 })();
+
+
