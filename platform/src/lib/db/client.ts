@@ -17,6 +17,8 @@ export interface VendorTransactionRecord {
   amountCents: number;
   currency: string;
   stateHash: string;
+  nonce: string;
+  anchorTimestamp: string;
   l2TxHash: string | null;
   l2BlockNumber: number | null;
   status: TransactionStatus;
@@ -94,6 +96,10 @@ class DatabaseStore {
       }
     }
     return null;
+  }
+
+  public async findAllVendors(): Promise<VendorRecord[]> {
+    return [...this.vendors.values()];
   }
 
   public async createVendor(data: {
@@ -286,6 +292,8 @@ class DatabaseStore {
     amountCents: number;
     currency: string;
     stateHash: string;
+    nonce: string;
+    anchorTimestamp: string;
     l2TxHash?: string;
     l2BlockNumber?: number;
     status?: TransactionStatus;
@@ -312,6 +320,8 @@ class DatabaseStore {
       amountCents: data.amountCents,
       currency: data.currency,
       stateHash: data.stateHash,
+      nonce: data.nonce,
+      anchorTimestamp: data.anchorTimestamp,
       l2TxHash: data.l2TxHash ?? null,
       l2BlockNumber: data.l2BlockNumber ?? null,
       status: data.status || 'RECORDED',
@@ -348,6 +358,10 @@ class DatabaseStore {
     }
     results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     return results.slice(offset, offset + limit);
+  }
+
+  public async findAllTransactions(): Promise<VendorTransactionRecord[]> {
+    return [...this.transactions.values()];
   }
 
   public async updateTransactionStatus(

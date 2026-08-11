@@ -63,6 +63,7 @@ landing-page-/                  # one repo, two deliverables
 | Automated Vulnerability Policy Engine (Module 2, Slice 2) — CycloneDX scan → PASS/WARN/BLOCK | ✅ Shipped | `platform/src/lib/supply-chain/cve-scanner.ts`, `vulnerability-catalog.ts`; `scanResult` in `/api/supply-chain/latest` |
 | Continuous Behavioral Trust Scoring (Module 3, Slice 1) — 0-100 composite, TrustTier, snapshots | ✅ Shipped | `platform/src/lib/trust-scoring/calculator.ts`; `GET /api/vendors/:id/trust-score`, `POST .../evaluate` |
 | Immutable transaction ledger + Polygon L2 anchor (Module 4, Slice 1) — SHA-256 state commitments, replay protection, dispute feedback loop | ✅ Shipped | `platform/src/lib/ledger/`; `POST/GET /api/vendors/:id/transactions`, `POST .../transactions/:txId/dispute` |
+| Enterprise Procurement & Trust Dashboard (Phase 4) — control plane `/dashboard`, `/onboarding`, `/vendors/[id]` | ✅ Shipped | `platform/src/app/` (`components/`, `dashboard/`, `onboarding/`, `vendors/[id]/`); `GET /api/dashboard/summary` |
 
 ## Request Lifecycle
 
@@ -171,6 +172,7 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 | GET | `/api/vendors/:id/verification` | admin-key | append-only event timeline |
 | GET | `/api/vendors/:id/documents/:docId/bytes` | admin-key | decrypted stream, `no-store`, ADMIN_READ audit |
 | GET | `/api/supply-chain/latest` | admin-key | runtime attestation verification (computed, not stored) |
+| GET | `/api/dashboard/summary` | admin-key | aggregated trust metrics, tier distribution, anomaly alerts |
 
 ## Threat Model → Mitigation
 

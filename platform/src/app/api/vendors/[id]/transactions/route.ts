@@ -71,12 +71,13 @@ export async function POST(
     }
 
     // --- Deterministic SHA-256 state commitment (commercial confidentiality) ---
-    const { stateHash, nonce } = computeTransactionStateHash({
+    const commitment = computeTransactionStateHash({
       vendorId: vendor.id,
       invoiceRef: payload.invoiceRef,
       amountCents: payload.amountCents,
       currency: payload.currency,
     });
+    const { stateHash, nonce, timestamp } = commitment;
 
     // --- Anchor commitment to the Polygon L2 ledger ---
     const receipt = await anchorStateCommitment(stateHash, vendor.id);
@@ -88,6 +89,8 @@ export async function POST(
       amountCents: payload.amountCents,
       currency: payload.currency,
       stateHash,
+      nonce,
+      anchorTimestamp: timestamp,
       l2TxHash: receipt.l2TxHash,
       l2BlockNumber: receipt.l2BlockNumber,
       status: 'COMMITTED_L2',
@@ -111,7 +114,8 @@ export async function POST(
         currency: tx.currency,
         status: tx.status,
         stateHash: tx.stateHash,
-        nonce,
+        nonce: tx.nonce,
+        anchorTimestamp: tx.anchorTimestamp,
         l2: {
           txHash: receipt.l2TxHash,
           blockNumber: receipt.l2BlockNumber,

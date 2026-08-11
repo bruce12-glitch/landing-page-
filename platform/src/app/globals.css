@@ -1,0 +1,112 @@
+/* ============================================================
+   VendorChain — Control Plane (Phase 4) Global Styles
+   Dark, high-density, zero-trust aesthetic.
+   ============================================================ */
+:root {
+  --bg: #050507;
+  --panel: #0f1116;
+  --panel-2: #12141c;
+  --border: #1d222e;
+  --border-2: #242a36;
+  --text: #f6f7fa;
+  --muted: #8b93a7;
+  --muted-2: #6b728e;
+  --cyan: #00e5ff;
+  --blue: #3b5bff;
+  --emerald: #34d399;
+  --amber: #fbbf24;
+  --crimson: #f87171;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.cp-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px 28px 80px;
+}
+
+.cp-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 22px;
+}
+.cp-brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .01em; }
+.cp-brand .mark { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, var(--cyan), var(--blue)); display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 800; }
+.cp-brand .sub { color: var(--muted); font-size: 12px; font-weight: 500; }
+.cp-topbar nav { display: flex; gap: 6px; }
+.cp-topbar nav a { color: var(--muted); text-decoration: none; font-size: 13px; padding: 7px 12px; border-radius: 8px; }
+.cp-topbar nav a:hover, .cp-topbar nav a.active { color: var(--text); background: var(--panel-2); }
+
+h1.cp-h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -.02em; }
+h2.cp-h2 { font-size: 18px; margin: 28px 0 12px; letter-spacing: -.01em; }
+.cp-sub { color: var(--muted); font-size: 13px; margin: 0 0 22px; }
+
+.cp-grid { display: grid; gap: 14px; }
+.cp-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.cp-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cp-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 900px) { .cp-grid.cols-4, .cp-grid.cols-3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .cp-grid.cols-4, .cp-grid.cols-3, .cp-grid.cols-2 { grid-template-columns: 1fr; } }
+
+.cp-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+.cp-card h4 { margin: 0 0 4px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.cp-card .metric { font-size: 30px; font-weight: 800; font-family: var(--mono); }
+.cp-card .metric small { font-size: 13px; color: var(--muted); font-family: var(--sans); font-weight: 500; }
+
+.cp-mono { font-family: var(--mono); }
+.cp-hash { font-family: var(--mono); font-size: 11.5px; color: var(--cyan); word-break: break-all; }
+
+.cp-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; border: 1px solid transparent; }
+
+.cp-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.cp-table th { text-align: left; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.cp-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+
+.cp-btn { appearance: none; border: 1px solid var(--border-2); background: var(--panel-2); color: var(--text); font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 9px; cursor: pointer; }
+.cp-btn:hover { border-color: var(--cyan); }
+.cp-btn.primary { background: linear-gradient(135deg, var(--blue), #7c3aed); border: none; }
+.cp-btn.danger { border-color: var(--crimson); color: var(--crimson); background: rgba(248,113,113,.08); }
+.cp-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.cp-alert { display: flex; gap: 10px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-2); margin-bottom: 10px; }
+.cp-alert .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+/* Onboarding stepper */
+.cp-step-row { display: flex; gap: 8px; margin-bottom: 24px; }
+.cp-step { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); font-size: 12px; color: var(--muted); }
+.cp-step .num { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--border-2); margin-right: 8px; font-family: var(--mono); font-size: 11px; }
+.cp-step.active { border-color: var(--cyan); color: var(--text); }
+.cp-step.active .num { background: var(--cyan); color: #000; }
+.cp-step.done { border-color: var(--emerald); color: var(--emerald); }
+.cp-step.done .num { background: var(--emerald); color: #000; }
+
+.cp-field { margin-bottom: 14px; }
+.cp-field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.cp-input { width: 100%; background: var(--panel-2); border: 1px solid var(--border-2); color: var(--text); padding: 10px 12px; border-radius: 8px; font-family: var(--mono); font-size: 13px; }
+.cp-stage { font-family: var(--mono); font-size: 12px; color: var(--cyan); display: flex; align-items: center; gap: 8px; }
+.cp-stage .spin { width: 10px; height: 10px; border: 2px solid var(--border-2); border-top-color: var(--cyan); border-radius: 50%; display: inline-block; }
+
+.gauge-wrap { position: relative; width: 168px; height: 168px; margin: 0 auto; }
+.gauge-center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+.gauge-center .score { font-family: var(--mono); font-size: 40px; font-weight: 800; line-height: 1; }
+.gauge-center .tier { font-size: 11px; color: var(--muted); margin-top: 4px; }

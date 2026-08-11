@@ -69,19 +69,21 @@ model Vendor {
 // ledger — proprietary invoice amounts, unit pricing, and terms remain
 // stored privately and locally, never written to the Polygon L2 chain.
 model VendorTransaction {
-  id            String            @id @default(cuid())
-  vendorId      String
-  vendor        Vendor            @relation(fields: [vendorId], references: [id], onDelete: Restrict)
-  invoiceRef    String            // e.g. "INV-2026-104"
-  amountCents   Int               // stored locally/privately only — never anchored
-  currency      String            // "USD" | "EUR" | "INR"
-  stateHash     String            // SHA-256 cryptographic commitment
-  l2TxHash      String?           // Polygon L2 transaction receipt
-  l2BlockNumber Int?
-  status        TransactionStatus @default(RECORDED)
-  disputeReason String?
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  id              String            @id @default(cuid())
+  vendorId        String
+  vendor          Vendor            @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  invoiceRef      String            // e.g. "INV-2026-104"
+  amountCents     Int               // stored locally/privately only — never anchored
+  currency        String            // "USD" | "EUR" | "INR"
+  stateHash       String            // SHA-256 cryptographic commitment
+  nonce           String            // CSPRNG nonce used in the commitment
+  anchorTimestamp String            // ISO timestamp used in the commitment
+  l2TxHash        String?           // Polygon L2 transaction receipt
+  l2BlockNumber   Int?
+  status          TransactionStatus @default(RECORDED)
+  disputeReason   String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   @@index([vendorId])
   @@index([stateHash])

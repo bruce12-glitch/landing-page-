@@ -2,6 +2,14 @@
 
 All notable changes across the hardening phases of the VendorChain Zero-Trust landing page.
 
+## [Phase 4: Enterprise Procurement & Trust Dashboard (Control Plane)] - 2026-08-11
+- **A — Shared Components** (`platform/src/app/components/`): `TrustGauge.tsx` (SVG radial gauge, emerald/blue/amber/crimson tier colors), `VerificationStatusBadge.tsx` (all 7 vendor + transaction states), `SbomViewer.tsx` (CycloneDX table with CVSS severity tags), `L2TransactionCard.tsx` (monospaced SHA-256 commitment + interactive Web-Crypto "Verify Hash").
+- **B — Control Plane Screens**: `/dashboard` (Procurement Command Center — metrics, tier distribution, anomaly alerts, vendor index), `/onboarding` (interactive Zero-Trust stepper: Business Data → AES-256-GCM doc upload → OCR cross-check → animated Trust Score Reveal with visible crypto stages), `/vendors/[id]` (Cryptographic Vault — Trust Gauge, encrypted doc vault, supply chain/SBOM tab, L2 ledger with live "Raise Dispute"). Added `GET /api/dashboard/summary`.
+- **C — Tests**: Added `platform/src/tests/dashboard-e2e.test.ts` (6 tests: full-stack register→3 docs→Tier 1 + dashboard summary, dispute E2E → DISPUTED + trust drop, TrustGauge colors, StatusBadge mapping, SbomViewer rendering, summary aggregation). Suite now **87/87 across 17 suites**.
+  - *Proof*: `npm test --prefix platform` → `Test Files 17 passed · Tests 87 passed`.
+  - *Proof*: `npm run build --prefix platform` → strict TS compile with **0 errors**.
+  - *Proof*: live `GET /dashboard`, `/onboarding`, `/vendors/[id]` render on `:3001`; `/api/dashboard/summary` returns metrics.
+
 ## [Module 4, Slice 1: Transaction Management & Immutable Ledger Anchor] - 2026-08-11
 - **A — Schema**: Added `TransactionStatus` enum (RECORDED, COMMITTED_L2, SETTLED, DISPUTED, RESOLVED) + `VendorTransaction` model (invoiceRef, amountCents, currency, stateHash, l2TxHash, l2BlockNumber, status, disputeReason; indexed by vendorId/stateHash/status); wired `transactions VendorTransaction[]` into `Vendor`. Mirrored in `db/client.ts`.
 - **B — Ledger Engine**: `platform/src/lib/ledger/hasher.ts` — deterministic `computeTransactionStateHash()` (SHA-256 of vendorId ∥ invoiceRef ∥ amountCents ∥ currency ∥ nonce ∥ timestamp) + `verifyTransactionStateHash()`. `platform/src/lib/ledger/polygon-anchor.ts` — deterministic L2 tx hash + block via `anchorStateCommitment()` (simulated latency + receipts). **Commercial confidentiality:** only the hash is anchored — amount/terms never on-chain.
