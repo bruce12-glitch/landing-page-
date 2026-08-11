@@ -2,6 +2,14 @@
 
 All notable changes across the hardening phases of the VendorChain Zero-Trust landing page.
 
+## [Module 4, Slice 1: Transaction Management & Immutable Ledger Anchor] - 2026-08-11
+- **A — Schema**: Added `TransactionStatus` enum (RECORDED, COMMITTED_L2, SETTLED, DISPUTED, RESOLVED) + `VendorTransaction` model (invoiceRef, amountCents, currency, stateHash, l2TxHash, l2BlockNumber, status, disputeReason; indexed by vendorId/stateHash/status); wired `transactions VendorTransaction[]` into `Vendor`. Mirrored in `db/client.ts`.
+- **B — Ledger Engine**: `platform/src/lib/ledger/hasher.ts` — deterministic `computeTransactionStateHash()` (SHA-256 of vendorId ∥ invoiceRef ∥ amountCents ∥ currency ∥ nonce ∥ timestamp) + `verifyTransactionStateHash()`. `platform/src/lib/ledger/polygon-anchor.ts` — deterministic L2 tx hash + block via `anchorStateCommitment()` (simulated latency + receipts). **Commercial confidentiality:** only the hash is anchored — amount/terms never on-chain.
+- **C — API**: `POST /transactions` (Zod validation, L2 anchor → COMMITTED_L2, actor-stamped event, replay protection 409), `GET /transactions` (paginated history), `POST /transactions/:txId/dispute` (marks DISPUTED + **dispute feedback loop** applying −25 trust penalty via shared `trust-scoring/service.ts`).
+- **D — Tests**: Added `platform/src/tests/transaction-ledger.test.ts` (11 tests: hash determinism/1-cent variance, L2 anchor, dispute+event, score drop, replay 409, pagination, 401/400/404, deterministic receipt). Suite now **81/81 across 16 suites**.
+  - *Proof*: `npm test --prefix platform` → `Test Files 16 passed · Tests 81 passed`.
+  - *Proof*: live `POST /transactions` → `status: COMMITTED_L2`, `l2.txHash`; dispute → `afterScore` drop + `TIER_4_SUSPENDED`.
+
 ## [Module 3, Slice 1: Continuous Behavioral Trust Scoring Engine] - 2026-08-11
 - **A — Schema**: Added `TrustTier` enum (TIER_1_CRITICAL … TIER_4_SUSPENDED) + append-only `TrustScoreSnapshot` model (composite/identity/supplyChain/behavior scores, penaltyDeduction, reasons, indexed on `[vendorId]` & `[calculatedAt]`) in `platform/prisma/schema.prisma`; mirrored in the in-memory `db/client.ts`.
 - **B — Calculator**: `platform/src/lib/trust-scoring/calculator.ts` — `evaluateTrust()` implements the 35/45/20 weighted composite `C = clamp(0.35I + 0.45S + 0.20B − Penalties, 0, 100)` with identity age decay (−5/180d), unsigned-supply-chain cap (40), and the **Law of Asymmetric Trust** hard override (FLAGGED/BLOCKED/BLOCK → C ≤ 30, TIER_4_SUSPENDED). Plus tier definitions + remediation guidance.

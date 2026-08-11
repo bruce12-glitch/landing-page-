@@ -38,6 +38,14 @@ enum TrustTier {
   TIER_4_SUSPENDED
 }
 
+enum TransactionStatus {
+  RECORDED
+  COMMITTED_L2
+  SETTLED
+  DISPUTED
+  RESOLVED
+}
+
 model Vendor {
   id           String              @id @default(cuid())
   legalName    String
@@ -49,8 +57,34 @@ model Vendor {
   documents    Document[]
   events       VerificationEvent[]
   trustScores  TrustScoreSnapshot[]
+  transactions VendorTransaction[]
 
   @@index([gstNumber])
+  @@index([status])
+}
+
+// Commercial transaction with a cryptographic L2 state commitment.
+// COMMERCIAL CONFIDENTIALITY INVARIANT: only the SHA-256 `stateHash` (a
+// one-way commitment) and non-sensitive references are ever exposed to the
+// ledger — proprietary invoice amounts, unit pricing, and terms remain
+// stored privately and locally, never written to the Polygon L2 chain.
+model VendorTransaction {
+  id            String            @id @default(cuid())
+  vendorId      String
+  vendor        Vendor            @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  invoiceRef    String            // e.g. "INV-2026-104"
+  amountCents   Int               // stored locally/privately only — never anchored
+  currency      String            // "USD" | "EUR" | "INR"
+  stateHash     String            // SHA-256 cryptographic commitment
+  l2TxHash      String?           // Polygon L2 transaction receipt
+  l2BlockNumber Int?
+  status        TransactionStatus @default(RECORDED)
+  disputeReason String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([vendorId])
+  @@index([stateHash])
   @@index([status])
 }
 
