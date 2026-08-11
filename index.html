@@ -70,7 +70,7 @@
           <a href="#cta" class="hero-btn primary" id="launchPortalBtn">Request Early Access →</a>
           <a href="#quickVerify" class="hero-btn secondary">Try Demo Verifier</a>
         </div>
-        <div class="l2-ticker-wrap reveal in" id="l2LiveTicker" aria-label="Live Polygon L2 commitment stream">
+        <div class="l2-live-ticker l2-ticker-wrap reveal in" id="l2LiveTicker" aria-label="Polygon L2 Proof Stream">
           <span class="l2-ticker-label"><span class="l2-live-dot" aria-hidden="true"></span>LIVE L2</span>
           <div class="l2-ticker-viewport" id="l2TickerViewport">
             <div class="l2-ticker-track" id="l2TickerTrack" aria-hidden="false"></div>
@@ -88,7 +88,7 @@
             <span class="quick-verify-demo-badge"><span class="demo-dot" aria-hidden="true"></span>DEMO</span>
             <span class="quick-verify-demo-title">Zero-Trust Proof Console</span>
           </div>
-          <div class="qv-console">
+          <div class="proof-console-grid qv-console">
             <div class="qv-console-left">
               <div class="quick-verify-inner">
                 <svg class="qv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA0C5" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -101,18 +101,18 @@
               </div>
               <div class="qv-verify-note" id="qvVerifyNote" role="status" aria-live="polite"></div>
             </div>
-            <div class="qv-console-right">
-              <div class="qv-tabs" role="tablist" aria-label="Proof inspector">
-                <button type="button" class="qv-tab active" data-tab="cosign" role="tab" aria-selected="true">Cosign</button>
-                <button type="button" class="qv-tab" data-tab="sbom" role="tab" aria-selected="false">SBOM</button>
-                <button type="button" class="qv-tab" data-tab="gstin" role="tab" aria-selected="false">GSTIN</button>
-                <button type="button" class="qv-tab" data-tab="ledger" role="tab" aria-selected="false">Ledger</button>
+            <div class="proof-inspector qv-console-right" id="proofInspector">
+              <div class="proof-tab-bar qv-tabs" role="tablist" aria-label="Proof inspector">
+                <button type="button" class="proof-tab-btn qv-tab active" id="tabCosign" data-tab="cosign" role="tab" aria-controls="paneCosign" aria-selected="true">Cosign</button>
+                <button type="button" class="proof-tab-btn qv-tab" id="tabSbom" data-tab="sbom" role="tab" aria-controls="paneSbom" aria-selected="false">SBOM</button>
+                <button type="button" class="proof-tab-btn qv-tab" id="tabGstin" data-tab="gstin" role="tab" aria-controls="paneGstin" aria-selected="false">GSTIN</button>
+                <button type="button" class="proof-tab-btn qv-tab" id="tabLedger" data-tab="ledger" role="tab" aria-controls="paneLedger" aria-selected="false">Ledger</button>
               </div>
               <div class="qv-panels">
-                <div class="qv-panel active" data-panel="cosign" role="tabpanel"></div>
-                <div class="qv-panel" data-panel="sbom" role="tabpanel"></div>
-                <div class="qv-panel" data-panel="gstin" role="tabpanel"></div>
-                <div class="qv-panel" data-panel="ledger" role="tabpanel"></div>
+                <div class="proof-pane qv-panel active" id="paneCosign" data-panel="cosign" role="tabpanel" aria-labelledby="tabCosign"></div>
+                <div class="proof-pane qv-panel" id="paneSbom" data-panel="sbom" role="tabpanel" aria-labelledby="tabSbom"></div>
+                <div class="proof-pane qv-panel" id="paneGstin" data-panel="gstin" role="tabpanel" aria-labelledby="tabGstin"></div>
+                <div class="proof-pane qv-panel" id="paneLedger" data-panel="ledger" role="tabpanel" aria-labelledby="tabLedger"></div>
               </div>
             </div>
           </div>
@@ -648,9 +648,9 @@
 </div>
 
 <!-- Session 1: Interactive WebCrypto SHA-256 Commitment Validator Drawer -->
-<div class="hash-drawer" id="hashDrawer" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="SHA-256 commitment validator">
+<div class="hash-drawer" id="hashValidatorDrawer" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="SHA-256 commitment validator">
   <div class="hash-drawer-backdrop" id="hashDrawerBackdrop"></div>
-  <div class="hash-drawer-card">
+  <div class="hash-drawer-inner hash-drawer-card">
     <button type="button" class="hash-drawer-close" id="hashDrawerClose" aria-label="Close validator">×</button>
     <h4 class="hash-drawer-title">SHA-256 Commitment Validator</h4>
     <p class="hash-drawer-sub">Recomputing digest in-browser via <code>crypto.subtle.digest('SHA-256')</code></p>

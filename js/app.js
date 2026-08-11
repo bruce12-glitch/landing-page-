@@ -1160,7 +1160,7 @@
   };
 
   const LEDGER_BLOCK = 46139253;
-  const LEDGER_TX = '0xb199d5689f08aca88baa50aab5bd3bdccb62223108c57775ced26f8de8b413f3';
+  const LEDGER_TX = '0xb199d5689f08aca88baa50aab5bd3bdccb62223108c57775ced26f8de8b413e2';
 
   const quickInput = document.getElementById('quickVerifyInput');
   const quickBtn = document.getElementById('quickVerifyBtn');
@@ -1168,8 +1168,8 @@
   const useSampleBtn = document.getElementById('useSampleBtn');
   const sampleHashShortEl = document.getElementById('sampleHashShort');
   const qvVerifyNote = document.getElementById('qvVerifyNote');
-  const qvTabs = Array.prototype.slice.call(document.querySelectorAll('.qv-tab'));
-  const qvPanels = Array.prototype.slice.call(document.querySelectorAll('.qv-panel'));
+  const qvTabs = Array.prototype.slice.call(document.querySelectorAll('.proof-tab-btn'));
+  const qvPanels = Array.prototype.slice.call(document.querySelectorAll('.proof-pane'));
 
   // ---- WebCrypto helpers (browser-side SHA-256) ----
   function hexFromBuffer(buf) {
@@ -1204,23 +1204,23 @@
         { label: 'Signature Status', value: cosignStatus, cls: verified ? 'pass' : 'flag' },
         { label: 'Algorithm', value: 'Ed25519' },
         { label: 'Signer Issuer', value: 'https://github.com/bruce12-glitch/landing-page-/.github/workflows' },
-        { label: 'Signature', value: shortHash(hash, 12, 6), linkHash: hash },
+        { label: 'Key Fingerprint', value: shortHash(hash, 12, 6), linkHash: hash },
       ],
       sbom: [
-        { label: 'CycloneDX', value: 'AST Parsed' },
+        { label: 'CycloneDX', value: 'v1.5 JSON AST' },
         { label: 'Package Count', value: pkgCount },
         { label: 'Risk Score', value: (o.riskScore != null ? o.riskScore : 0) + '/100' },
         { label: 'Policy Verdict', value: verdictTxt, cls: verdict === 'PASS' ? 'pass' : 'flag' },
       ],
       gstin: [
         { label: 'GSTIN', value: '27AAPFU0939F1ZV' },
-        { label: 'Mod-36 Checksum', value: 'Validated ✓', cls: 'pass' },
-        { label: 'PAN Match', value: 'AAPFU0939F ✓', cls: 'pass' },
+        { label: 'ISO/IEC 7064 Mod-36', value: 'Checksum Validated ✓', cls: 'pass' },
+        { label: 'PAN Embedding', value: 'AAPFU0939F Match ✓', cls: 'pass' },
         { label: 'State Code', value: '27 · Maharashtra' },
       ],
       ledger: [
         { label: 'Polygon L2 Block', value: '#' + LEDGER_BLOCK },
-        { label: 'Transaction Hash', value: shortHash(LEDGER_TX, 6, 2) },
+        { label: 'Transaction Hash', value: shortHash(LEDGER_TX, 6, 2), linkHash: hash },
         { label: 'State Root', value: shortHash(hash), linkHash: hash, cls: 'link' },
         { label: 'Anchored', value: 'Verified ✓', cls: 'pass' },
       ],
@@ -1273,7 +1273,7 @@
   ];
 
   function tickItemHTML(seed) {
-    return `<button type="button" class="l2-tick hash-open" data-tick="${encodeURIComponent(JSON.stringify(seed.preimage))}" aria-label="Open SHA-256 validator for ${seed.preimage.invoiceRef}">
+    return `<button type="button" class="l2-ticker-item l2-tick hash-open" data-tick="${encodeURIComponent(JSON.stringify(seed.preimage))}" data-anchor="${seed.commitment || ''}" aria-label="Open SHA-256 validator for ${seed.preimage.invoiceRef}">
       <span class="l2-tick-hash">[${seed.tx}…]</span>
       <span class="l2-tick-block">Block #${seed.block}</span>
       <span class="l2-tick-inv">• ${seed.preimage.invoiceRef}</span>
@@ -1290,7 +1290,7 @@
   }
 
   // ---- Interactive WebCrypto Hash Validator Drawer ----
-  const hashDrawer = document.getElementById('hashDrawer');
+  const hashDrawer = document.getElementById('hashValidatorDrawer');
   const drawerBackdrop = document.getElementById('hashDrawerBackdrop');
   const drawerClose = document.getElementById('hashDrawerClose');
   const drawerFields = document.getElementById('hashDrawerFields');
@@ -1300,15 +1300,15 @@
     if (hashDrawer) {
       hashDrawer.hidden = true;
       hashDrawer.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
+      document.body.classList.remove('hash-drawer-open');
     }
   }
 
-  async function openDrawer(preimage) {
+  async function openDrawer(preimage, anchoredCommitment) {
     if (!hashDrawer) return;
     hashDrawer.hidden = false;
     hashDrawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('hash-drawer-open');
 
     drawerFields.innerHTML = [
       ['vendorId', preimage.vendorId],
@@ -1325,13 +1325,12 @@
     const t0 = performance.now();
     const computed = await commitmentHash(preimage);
     const elapsed = (performance.now() - t0);
-    const expected = await commitmentHash(preimage); // deterministic
-    const match = computed === expected && (preimage === currentPreimage || computed === latestStateHash || preimage.invoiceRef === SAMPLE_PREIMAGE.invoiceRef);
+    const match = Boolean(anchoredCommitment) && computed === anchoredCommitment;
 
     drawerResult.className = 'hash-drawer-result show ' + (match ? 'match' : 'mismatch');
     if (match) {
       drawerResult.innerHTML = `
-        <div class="hd-seal"><span class="hd-check">✓</span>100% Cryptographic Match</div>
+        <div class="hd-seal match-badge"><span class="hd-check">✓</span>100% Cryptographic Match</div>
         <div class="hd-computed">SHA-256 → ${computed.slice(0, 24)}…${computed.slice(-8)}</div>
         <div class="hd-computed">recomputed in ${elapsed.toFixed(1)}ms</div>`;
     } else {
@@ -1347,10 +1346,10 @@
       if (tick) {
         e.preventDefault();
         const p = JSON.parse(decodeURIComponent(tick));
-        openDrawer(p);
+        openDrawer(p, open.getAttribute('data-anchor'));
       } else if (pre) {
         e.preventDefault();
-        openDrawer(currentPreimage);
+        openDrawer(currentPreimage, pre);
       }
     }
   });
@@ -1373,10 +1372,8 @@
       const val = quickInput.value.trim();
       if (!val) {
         quickInput.focus();
-        quickWrap.style.animation = 'none';
-        quickWrap.offsetHeight;
-        quickWrap.style.animation = 'shake 0.32s ease';
-        setTimeout(() => { quickWrap.style.animation = ''; }, 400);
+        quickWrap.classList.add('qv-needs-input');
+        setTimeout(() => quickWrap.classList.remove('qv-needs-input'), 400);
         return;
       }
       quickBtn.textContent = 'Verifying…';
@@ -1426,27 +1423,13 @@
       if (e.key === 'Enter') doVerify();
     });
 
-    // focus glow
-    quickInput.addEventListener('focus', () => {
-      const inner = quickWrap.querySelector('.quick-verify-inner');
-      if (inner) {
-        inner.style.borderColor = 'rgba(0,229,255,.22)';
-        inner.style.boxShadow = '0 0 0 3px rgba(0,229,255,.12), 0 22px 56px rgba(0,0,0,.52)';
-      }
-    });
-    quickInput.addEventListener('blur', () => {
-      const inner = quickWrap.querySelector('.quick-verify-inner');
-      if (inner) {
-        inner.style.borderColor = '';
-        inner.style.boxShadow = '';
-      }
-    });
   }
 
   // ---- Init: compute sample commitment hash, fill short label + ticker ----
   (async function initConsole() {
     SAMPLE_ARTIFACT_HASH = await commitmentHash(SAMPLE_PREIMAGE);
     latestStateHash = SAMPLE_ARTIFACT_HASH;
+    await Promise.all(TICKER_SEEDS.map(async (seed) => { seed.commitment = await commitmentHash(seed.preimage); }));
     if (sampleHashShortEl) sampleHashShortEl.textContent = shortHash(SAMPLE_ARTIFACT_HASH);
     if (quickInput && !quickInput.value) quickInput.value = SAMPLE_ARTIFACT_HASH;
     renderTicker();

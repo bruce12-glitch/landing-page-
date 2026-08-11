@@ -2094,3 +2094,22 @@ footer{margin-top:32px; border-top:1px solid var(--border); padding:20px 0; disp
 .hd-computed{ font-family:var(--font-mono); font-size:11px; color:#9AA0C5; word-break:break-all; }
 .hash-drawer-result.mismatch .hd-seal{ color:#F87171; }
 .hash-drawer-result.mismatch .hd-seal .hd-check{ background:#F87171; color:#1a0505; }
+
+/* Hero Verifier 2.0 contract selectors */
+.proof-console-grid{grid-template-columns:300px minmax(0,1fr)}
+.proof-tab-bar{gap:2px;padding:4px 6px;background:rgba(30,41,59,.42)}
+.proof-tab-btn{border-radius:6px;color:#94A3B8}
+.proof-tab-btn:hover{background:rgba(59,130,246,.12);color:#E2E8F0}
+.proof-tab-btn.active{color:#3B82F6;border-bottom-color:#3B82F6;background:rgba(59,130,246,.1)}
+.proof-pane{font-family:var(--font-mono)}
+.proof-pane.active{display:flex}
+.l2-live-ticker{filter:drop-shadow(0 0 10px rgba(59,130,246,.15))}
+.l2-ticker-item{font-family:var(--font-mono)}
+.hash-drawer-inner{animation:hashDrawerRise .24s ease-out}
+.match-badge{display:inline-flex;align-items:center;justify-content:center;gap:8px;color:#10B981;font-family:var(--font-mono);font-weight:700}
+body.hash-drawer-open{overflow:hidden}
+.quick-verify-inner:focus-within{border-color:rgba(59,130,246,.52);box-shadow:0 0 0 3px rgba(59,130,246,.15),0 22px 56px rgba(0,0,0,.52)}
+@keyframes hashDrawerRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:767px){.proof-console-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.hash-drawer-inner{animation:none}}
+.qv-needs-input{animation:shake .32s ease}
