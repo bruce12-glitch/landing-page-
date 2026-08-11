@@ -217,6 +217,19 @@
           <a href="#telemetry" class="vc-card-link">Learn more →</a>
         </div>
       </div>
+      <section class="trust-sim-container" id="trustSimulator" aria-labelledby="simTitle">
+        <div class="sim-controls">
+          <p class="vc-eyebrow">INTERACTIVE MODEL</p><h3 id="simTitle">Trust score simulator</h3>
+          <label class="sim-slider-group" for="simIdentSlider"><span class="sim-slider-label">Identity &amp; Docs <output id="simIdentValue">Fully Verified · 100pts</output></span><input class="sim-slider-input" id="simIdentSlider" type="range" min="0" max="3" step="1" value="3"><small>Unverified · Pending · In Progress · Fully Verified</small></label>
+          <label class="sim-slider-group" for="simCveSlider"><span class="sim-slider-label">Supply Chain CVE Severity <output class="cve-badge-pill" id="simCveValue">0.0 · Clean</output></span><input class="sim-slider-input" id="simCveSlider" type="range" min="0" max="10" step="0.1" value="0"><small>Severity ≥ 9.0 triggers a zero-trust suspension.</small></label>
+          <label class="sim-toggle-row" for="simDisputeToggle"><input id="simDisputeToggle" type="checkbox"><span>Transaction SLA History</span><output id="simDisputeValue">Clean SLA · 100pts</output></label>
+        </div>
+        <div class="sim-gauge-wrapper" aria-live="polite">
+          <svg class="sim-gauge" id="simGaugeSvg" viewBox="0 0 140 140" role="img" aria-label="Trust score gauge"><circle class="sim-gauge-track" cx="70" cy="70" r="54"></circle><circle class="sim-gauge-value tier-emerald" id="simGaugeValue" cx="70" cy="70" r="54" pathLength="100"></circle></svg>
+          <div class="sim-score"><div id="simScoreValue">100</div><span>/100</span></div><span class="sim-tier-badge tier-emerald" id="simTierBadge">TIER_1_VERIFIED</span>
+          <p class="sim-formula">0.35I + 0.45S + 0.20B - Penalties</p><div class="sim-breakdown-row" id="simBreakdown">I 100 · S 100 · B 100 · No penalties</div>
+        </div>
+      </section>
     </div>
   </section>
 
@@ -334,6 +347,7 @@
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
       </div>
+      <div class="sbom-chip-row" aria-label="Inspect certified SBOM packages"><span>Certified dependencies</span><button class="sbom-chip" type="button" data-pkg="next@14.2.5">next@14.2.5</button><button class="sbom-chip" type="button" data-pkg="bullmq@5.8.7">bullmq@5.8.7</button><button class="sbom-chip" type="button" data-pkg="ioredis@5.4.1">ioredis@5.4.1</button><button class="sbom-chip" type="button" data-pkg="pdf-parse@1.1.1">pdf-parse@1.1.1</button></div>
     </div>
   </section>
 
@@ -657,6 +671,11 @@
     <div class="hash-drawer-fields" id="hashDrawerFields"></div>
     <div class="hash-drawer-result" id="hashDrawerResult"></div>
   </div>
+</div>
+
+
+<div class="sbom-modal" id="sbomModal" hidden role="dialog" aria-modal="true" aria-labelledby="sbomModalTitle">
+  <div class="sbom-modal-backdrop" data-sbom-close></div><section class="sbom-modal-content"><button class="sbom-modal-close" type="button" data-sbom-close aria-label="Close SBOM inspector">×</button><p class="vc-eyebrow">CERTIFIED CYCLONEDX</p><h3 id="sbomModalTitle">SBOM component AST</h3><div class="sbom-tab-bar" role="tablist"><button class="sbom-tab active" type="button" data-sbom-tab="component" role="tab" aria-selected="true">Component</button><button class="sbom-tab" type="button" data-sbom-tab="integrity" role="tab" aria-selected="false">Integrity</button></div><pre class="sbom-json-tree" id="sbomJsonTree" tabindex="0"></pre></section>
 </div>
 
 <script type="module" src="./js/app.js"></script>
