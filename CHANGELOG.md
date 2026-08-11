@@ -2,6 +2,14 @@
 
 All notable changes across the hardening phases of the VendorChain Zero-Trust landing page.
 
+## [Module 3, Slice 1: Continuous Behavioral Trust Scoring Engine] - 2026-08-11
+- **A — Schema**: Added `TrustTier` enum (TIER_1_CRITICAL … TIER_4_SUSPENDED) + append-only `TrustScoreSnapshot` model (composite/identity/supplyChain/behavior scores, penaltyDeduction, reasons, indexed on `[vendorId]` & `[calculatedAt]`) in `platform/prisma/schema.prisma`; mirrored in the in-memory `db/client.ts`.
+- **B — Calculator**: `platform/src/lib/trust-scoring/calculator.ts` — `evaluateTrust()` implements the 35/45/20 weighted composite `C = clamp(0.35I + 0.45S + 0.20B − Penalties, 0, 100)` with identity age decay (−5/180d), unsigned-supply-chain cap (40), and the **Law of Asymmetric Trust** hard override (FLAGGED/BLOCKED/BLOCK → C ≤ 30, TIER_4_SUSPENDED). Plus tier definitions + remediation guidance.
+- **C — API**: `GET /api/vendors/:id/trust-score` (latest snapshot, 30-day trend, tier definitions) and `POST /api/vendors/:id/trust-score/evaluate` (real-time compute → persist snapshot → actor-stamped immutable `VerificationEvent`).
+- **D — Tests**: Added `platform/src/tests/trust-scoring.test.ts` (12 tests: pristine TIER_1, cliff-drop BLOCK, unsigned cap 40, age decay, E2E persist+event, FLAGGED/BLOCKED override, WARN non-override, boundary mapping, E2E GET, 401/404). Suite now **70/70 across 15 suites**.
+  - *Proof*: `npm test --prefix platform` → `Test Files 15 passed · Tests 70 passed`.
+  - *Proof*: `curl http://localhost:3001/api/vendors/<id>/trust-score` → live JSON with breakdown + tier.
+
 ## [Module 2, Slice 2: Vulnerability Policy Engine & Live Landing Wire-Up] - 2026-08-11
 - **A — Protocol Reconciliation**: Replaced all `Hyperledger Fabric` references (hero, telemetry cards, chaincode audit, integrations marquee, FAQ, toast) with the Polygon L2 / Zero-Trust Cryptographic Ledger architecture. CSP stays strict — zero inline `style=` / event handlers.
   - *Proof*: `grep -ri "hyperledger" index.html js/app.js` → `0`

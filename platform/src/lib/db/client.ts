@@ -1,6 +1,21 @@
 import crypto from 'node:crypto';
 import type { VendorStatus, DocumentType, DocumentStatus } from '../validation/vendor';
 
+export type TrustTier = 'TIER_1_CRITICAL' | 'TIER_2_STANDARD' | 'TIER_3_RESTRICTED' | 'TIER_4_SUSPENDED';
+
+export interface TrustScoreSnapshotRecord {
+  id: string;
+  vendorId: string;
+  compositeScore: number;
+  tier: TrustTier;
+  identityScore: number;
+  supplyChainScore: number;
+  behaviorScore: number;
+  penaltyDeduction: number;
+  reasons: string; // JSON array of contributing factors
+  calculatedAt: Date;
+}
+
 export interface VendorRecord {
   id: string;
   legalName: string;
@@ -41,6 +56,7 @@ class DatabaseStore {
   private vendors = new Map<string, VendorRecord>();
   private documents = new Map<string, DocumentRecord>();
   private events: VerificationEventRecord[] = [];
+  private trustScores = new Map<string, TrustScoreSnapshotRecord>();
 
   // Vendor Operations
   public async findVendorById(id: string): Promise<VendorRecord | null> {
@@ -192,11 +208,60 @@ class DatabaseStore {
       .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
 
+  // Append-only Trust Score Snapshots (Module 3)
+  public async createTrustScoreSnapshot(data: {
+    vendorId: string;
+    compositeScore: number;
+    tier: TrustTier;
+    identityScore: number;
+    supplyChainScore: number;
+    behaviorScore: number;
+    penaltyDeduction: number;
+    reasons: string;
+  }): Promise<TrustScoreSnapshotRecord> {
+    const vendor = await this.findVendorById(data.vendorId);
+    if (!vendor) {
+      throw new Error('Foreign key constraint failed on vendorId');
+    }
+
+    const id = `trust_${crypto.randomBytes(12).toString('hex')}`;
+    const record: TrustScoreSnapshotRecord = {
+      id,
+      vendorId: data.vendorId,
+      compositeScore: data.compositeScore,
+      tier: data.tier,
+      identityScore: data.identityScore,
+      supplyChainScore: data.supplyChainScore,
+      behaviorScore: data.behaviorScore,
+      penaltyDeduction: data.penaltyDeduction,
+      reasons: data.reasons,
+      calculatedAt: new Date(),
+    };
+    this.trustScores.set(id, record);
+    return record;
+  }
+
+  public async findTrustSnapshotsByVendorId(vendorId: string): Promise<TrustScoreSnapshotRecord[]> {
+    const results: TrustScoreSnapshotRecord[] = [];
+    for (const snapshot of this.trustScores.values()) {
+      if (snapshot.vendorId === vendorId) results.push(snapshot);
+    }
+    return results.sort((a, b) => b.calculatedAt.getTime() - a.calculatedAt.getTime());
+  }
+
+  public async findLatestTrustSnapshotByVendorId(
+    vendorId: string
+  ): Promise<TrustScoreSnapshotRecord | null> {
+    const all = await this.findTrustSnapshotsByVendorId(vendorId);
+    return all.length && all[0] ? all[0] : null;
+  }
+
   // Testing & Reset Helper
   public async reset(): Promise<void> {
     this.vendors.clear();
     this.documents.clear();
     this.events = [];
+    this.trustScores = new Map();
   }
 }
 

@@ -61,7 +61,8 @@ landing-page-/                  # one repo, two deliverables
 | Landing: labeled demo verifier, zero dead links, CSP, honest form | ✅ Shipped | `index.html`, `js/app.js` |
 | Syft SBOM + Cosign signing (Module 2, Slice 1) | ✅ Shipped | `platform/scripts/sbom.sh`, `sign.sh`, `verify.sh`; `platform/src/app/api/supply-chain/latest/route.ts` |
 | Automated Vulnerability Policy Engine (Module 2, Slice 2) — CycloneDX scan → PASS/WARN/BLOCK | ✅ Shipped | `platform/src/lib/supply-chain/cve-scanner.ts`, `vulnerability-catalog.ts`; `scanResult` in `/api/supply-chain/latest` |
-| Continuous trust scoring (Module 3) | 🔜 Roadmap | — |
+| Continuous Behavioral Trust Scoring (Module 3, Slice 1) — 0-100 composite, TrustTier, snapshots | ✅ Shipped | `platform/src/lib/trust-scoring/calculator.ts`; `GET /api/vendors/:id/trust-score`, `POST .../evaluate` |
+| Continuous trust scoring (Module 3, Slice 1) | ✅ Shipped | `lib/trust-scoring/calculator.ts` + trust-score APIs |
 | Immutable transaction ledger (Module 4) | 🔜 Roadmap | — |
 
 ## Request Lifecycle
@@ -185,7 +186,7 @@ Every phase was executed by AI agents **gated by instructor audits against the c
 
 ## Roadmap
 
-**Slice 4** (Module 1 completion): real GSTN credentials wiring, OIDC provider, image OCR. **Module 2, Slice 2:** vendor artifact SBOM intake (POST upload → syft scan → encrypted storage). **Module 3:** continuous trust scoring. **Module 4:** immutable ledger for transactions & disputation.
+**Slice 4** (Module 1 completion): real GSTN credentials wiring, OIDC provider, image OCR. **Module 2, Slice 2:** vendor artifact SBOM intake (POST upload → syft scan → encrypted storage). **Module 3, Slice 2:** trust scoring expansion (probation curve, SLA telemetry feed). **Module 4:** immutable ledger for transactions & disputation.
 
 ## License & Disclaimer
 
