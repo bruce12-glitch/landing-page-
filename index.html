@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
 <title>VendorChain - The Trust Network for Zero-Trust Supply Chains</title>
 <meta name="description" content="VendorChain is the verification network for zero-trust supply chains. Every vendor, every build, every deploy — proven, not presumed.">
 <meta name="theme-color" content="#050507">
@@ -28,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./css/style.css?v=20">
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -65,16 +64,10 @@
         <div class="hero-cursor-glow" id="heroCursorGlow" aria-hidden="true"></div>
         <div class="badge" id="heroBadge"><i aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></i> NIST SP 800-207 ZERO-TRUST ARCHITECTURE</div>
         <h1 class="h1 reveal in" id="heroTitle">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
-        <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to a Polygon L2 / Zero-Trust Cryptographic Ledger.</p>
+        <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to Polygon L2.</p>
         <div class="hero-ctas reveal in" id="heroCtas">
           <a href="#cta" class="hero-btn primary" id="launchPortalBtn">Request Early Access →</a>
           <a href="#quickVerify" class="hero-btn secondary">Try Demo Verifier</a>
-        </div>
-        <div class="l2-live-ticker l2-ticker-wrap reveal in" id="l2LiveTicker" aria-label="Polygon L2 Proof Stream">
-          <span class="l2-ticker-label"><span class="l2-live-dot" aria-hidden="true"></span>LIVE L2</span>
-          <div class="l2-ticker-viewport" id="l2TickerViewport">
-            <div class="l2-ticker-track" id="l2TickerTrack" aria-hidden="false"></div>
-          </div>
         </div>
         <div class="tech-pills reveal in" id="techPills" aria-label="Core tech stack">
           <div class="tech-pill" data-tech="polygon"><span class="tech-dot ledger"></span> Polygon L2</div>
@@ -83,38 +76,19 @@
           <div class="tech-pill" data-tech="opa"><span class="tech-dot opa"></span> OPA / Rego</div>
           <div class="tech-pill" data-tech="claude"><span class="tech-dot claude"></span> Claude AI</div>
         </div>
-        <div class="quick-verify-wrap reveal in" id="quickVerify" role="search" aria-label="Zero-trust verification proof console">
+        <div class="quick-verify-wrap reveal in" id="quickVerify" role="search" aria-label="Quick verify on-chain demo">
           <div class="quick-verify-header">
             <span class="quick-verify-demo-badge"><span class="demo-dot" aria-hidden="true"></span>DEMO</span>
-            <span class="quick-verify-demo-title">Zero-Trust Proof Console</span>
+            <span class="quick-verify-demo-title">Zero-Trust Artifact Verifier</span>
           </div>
-          <div class="proof-console-grid qv-console">
-            <div class="qv-console-left">
-              <div class="quick-verify-inner">
-                <svg class="qv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA0C5" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
-                <input type="text" class="quick-verify-input" placeholder="Enter SBOM SHA-256 Hash..." aria-label="Enter SBOM SHA-256 Hash" id="quickVerifyInput" autocomplete="off" spellcheck="false">
-                <button class="quick-verify-btn" id="quickVerifyBtn" type="button">Verify On-Chain ↵</button>
-              </div>
-              <div class="quick-verify-hint">
-                <span>Demo artifact: <code id="sampleHashShort">…</code></span>
-                <button type="button" class="quick-verify-sample-btn" id="useSampleBtn">Use sample artifact</button>
-              </div>
-              <div class="qv-verify-note" id="qvVerifyNote" role="status" aria-live="polite"></div>
-            </div>
-            <div class="proof-inspector qv-console-right" id="proofInspector">
-              <div class="proof-tab-bar qv-tabs" role="tablist" aria-label="Proof inspector">
-                <button type="button" class="proof-tab-btn qv-tab active" id="tabCosign" data-tab="cosign" role="tab" aria-controls="paneCosign" aria-selected="true">Cosign</button>
-                <button type="button" class="proof-tab-btn qv-tab" id="tabSbom" data-tab="sbom" role="tab" aria-controls="paneSbom" aria-selected="false">SBOM</button>
-                <button type="button" class="proof-tab-btn qv-tab" id="tabGstin" data-tab="gstin" role="tab" aria-controls="paneGstin" aria-selected="false">GSTIN</button>
-                <button type="button" class="proof-tab-btn qv-tab" id="tabLedger" data-tab="ledger" role="tab" aria-controls="paneLedger" aria-selected="false">Ledger</button>
-              </div>
-              <div class="qv-panels">
-                <div class="proof-pane qv-panel active" id="paneCosign" data-panel="cosign" role="tabpanel" aria-labelledby="tabCosign"></div>
-                <div class="proof-pane qv-panel" id="paneSbom" data-panel="sbom" role="tabpanel" aria-labelledby="tabSbom"></div>
-                <div class="proof-pane qv-panel" id="paneGstin" data-panel="gstin" role="tabpanel" aria-labelledby="tabGstin"></div>
-                <div class="proof-pane qv-panel" id="paneLedger" data-panel="ledger" role="tabpanel" aria-labelledby="tabLedger"></div>
-              </div>
-            </div>
+          <div class="quick-verify-inner">
+            <svg class="qv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA0C5" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" class="quick-verify-input" placeholder="Enter SBOM SHA-256 Hash..." aria-label="Enter SBOM SHA-256 Hash" id="quickVerifyInput" autocomplete="off" spellcheck="false">
+            <button class="quick-verify-btn" id="quickVerifyBtn" type="button">Verify On-Chain ↵</button>
+          </div>
+          <div class="quick-verify-hint">
+            <span>Demo artifact: <code>e3b0c442...b855</code></span>
+            <button type="button" class="quick-verify-sample-btn" id="useSampleBtn">Use sample artifact</button>
           </div>
         </div>
         <div class="horizon" aria-hidden="true"></div>
@@ -198,13 +172,13 @@
           <p>Automatically blocks non-compliant submissions using <strong>Open Policy Agent (OPA)</strong> rules if signatures are missing, certs expire, or risk spikes.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
-        <!-- Row 2 Col 3: Polygon L2 / Zero-Trust Cryptographic Ledger -->
+        <!-- Row 2 Col 3: Polygon L2 Ledger -->
         <div class="vc-card" data-card="blockchain_ledger" id="blockchain-ledger" data-tilt>
           <div class="vc-card-icon icon-blocks">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="9" rx="2"/><path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M7 11h.01"/><path d="M12 11h.01"/><path d="M17 11h.01"/></svg>
           </div>
-          <h4>Immutable Ledger (Polygon L2 / Zero-Trust Cryptographic Ledger)</h4>
-          <p>Commits cryptographic SHA-256 hashes, AI risk scores, and policy verdicts permanently to a Polygon L2 / Zero-Trust Cryptographic Ledger for unalterable dispute records.</p>
+          <h4>Immutable Ledger (Polygon L2)</h4>
+          <p>Commits cryptographic SHA-256 state hashes, AI risk scores, and policy verdicts permanently to Polygon L2 for unalterable dispute records.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
         <!-- Row 3 Col 1: Telemetry -->
@@ -217,19 +191,6 @@
           <a href="#telemetry" class="vc-card-link">Learn more →</a>
         </div>
       </div>
-      <section class="trust-sim-container" id="trustSimulator" aria-labelledby="simTitle">
-        <div class="sim-controls">
-          <p class="vc-eyebrow">INTERACTIVE MODEL</p><h3 id="simTitle">Trust score simulator</h3>
-          <label class="sim-slider-group" for="simIdentSlider"><span class="sim-slider-label">Identity &amp; Docs <output id="simIdentValue">Fully Verified · 100pts</output></span><input class="sim-slider-input" id="simIdentSlider" type="range" min="0" max="3" step="1" value="3"><small>Unverified · Pending · In Progress · Fully Verified</small></label>
-          <label class="sim-slider-group" for="simCveSlider"><span class="sim-slider-label">Supply Chain CVE Severity <output class="cve-badge-pill" id="simCveValue">0.0 · Clean</output></span><input class="sim-slider-input" id="simCveSlider" type="range" min="0" max="10" step="0.1" value="0"><small>Severity ≥ 9.0 triggers a zero-trust suspension.</small></label>
-          <label class="sim-toggle-row" for="simDisputeToggle"><input id="simDisputeToggle" type="checkbox"><span>Transaction SLA History</span><output id="simDisputeValue">Clean SLA · 100pts</output></label>
-        </div>
-        <div class="sim-gauge-wrapper" aria-live="polite">
-          <svg class="sim-gauge" id="simGaugeSvg" viewBox="0 0 140 140" role="img" aria-label="Trust score gauge"><circle class="sim-gauge-track" cx="70" cy="70" r="54"></circle><circle class="sim-gauge-value tier-emerald" id="simGaugeValue" cx="70" cy="70" r="54" pathLength="100"></circle></svg>
-          <div class="sim-score"><div id="simScoreValue">100</div><span>/100</span></div><span class="sim-tier-badge tier-emerald" id="simTierBadge">TIER_1_VERIFIED</span>
-          <p class="sim-formula">0.35I + 0.45S + 0.20B - Penalties</p><div class="sim-breakdown-row" id="simBreakdown">I 100 · S 100 · B 100 · No penalties</div>
-        </div>
-      </section>
     </div>
   </section>
 
@@ -304,7 +265,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="9" rx="2"/><path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M6 11h.01"/><path d="M10 11h.01"/><path d="M14 11h.01"/><path d="M18 11h.01"/></svg>
           </div>
           <h4>Immutable Smart Contract Audit (Polygon L2)</h4>
-          <p>Executes smart contracts on a private Polygon L2 / Zero-Trust Cryptographic Ledger to record unalterable submission hashes, policy verdicts, and timestamps.</p>
+          <p>Executes smart contracts on the Polygon L2 network to record unalterable submission hashes, policy verdicts, and timestamps.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
       </div>
@@ -338,16 +299,15 @@
           <p>Acts as an automated firewall for your CI/CD pipeline. Evaluates Rego policy rules to deny deployments if certs expire or AI risk scores spike.</p>
           <span class="vc-card-badge" aria-disabled="true">Docs soon</span>
         </div>
-        <div class="vc-card" data-card="polygon_ledger_audit_trail" data-tilt>
+        <div class="vc-card" data-card="polygon_audit_trail" data-tilt>
           <div class="vc-card-icon icon-blocks">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M16 3h4v4"/><path d="M4 3h4v4"/><path d="M8 11h8"/><path d="M12 7v10"/></svg>
           </div>
           <h4>Immutable Ledger Audit (Polygon L2)</h4>
-          <p>Permanently registers every transaction attempt, pass/fail verdict, and vendor risk score on a distributed Polygon L2 / Zero-Trust Cryptographic Ledger network.</p>
+          <p>Permanently registers every transaction attempt, pass/fail verdict, and vendor risk score on the Polygon L2 network.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
       </div>
-      <div class="sbom-chip-row" aria-label="Inspect certified SBOM packages"><span>Certified dependencies</span><button class="sbom-chip" type="button" data-pkg="next@14.2.5">next@14.2.5</button><button class="sbom-chip" type="button" data-pkg="bullmq@5.8.7">bullmq@5.8.7</button><button class="sbom-chip" type="button" data-pkg="ioredis@5.4.1">ioredis@5.4.1</button><button class="sbom-chip" type="button" data-pkg="pdf-parse@1.1.1">pdf-parse@1.1.1</button></div>
     </div>
   </section>
 
@@ -414,7 +374,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h4v4"/><path d="M8 3h4v4"/><path d="M3 7h18"/><path d="M7 12h10"/><path d="M7 16h10"/></svg>
           </div>
           <h4>Batch On-Chain Ledgering</h4>
-          <p>Commit multiple vendor submission records, AI risk scores, and OPA compliance verdicts directly to the Polygon L2 / Zero-Trust Cryptographic Ledger in a single batch transaction.</p>
+          <p>Commit multiple vendor submission records, AI risk scores, and OPA compliance verdicts directly to the Polygon L2 ledger in a single batch transaction.</p>
           <a href="#blockchain-ledger" class="vc-card-link">Learn more →</a>
         </div>
         <div class="vc-card" data-tilt>
@@ -482,7 +442,7 @@
   <section class="vc-integrations" id="integrations" aria-labelledby="integrationsTitle">
     <div class="vc-integrations-inner">
       <h3 class="vc-h3" id="integrationsTitle">Integrates seamlessly with your existing CI/CD & DevOps stack</h3>
-      <p>VendorChain plugs directly into GitHub Actions, Supabase, and Polygon L2 / Zero-Trust Cryptographic Ledger. Automatically trigger SBOM generation, Cosign signing, and OPA policy evaluation on every push.</p>
+      <p>VendorChain plugs directly into GitHub Actions, Supabase, and Polygon L2. Automatically trigger SBOM generation, Cosign signing, and OPA policy evaluation on every push.</p>
       <div class="vc-marquee" aria-hidden="true">
         <div class="vc-track">
           <span class="vc-marquee-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> GitHub Actions</span>
@@ -520,11 +480,11 @@
         </div>
         <div class="vc-faq-item">
           <button class="vc-faq-q" aria-expanded="false">How is VendorChain different from traditional vulnerability scanners? <span>+</span></button>
-          <div class="vc-faq-a">Traditional scanners only run static checks. VendorChain enforces continuous Zero-Trust by uniting Syft SBOM extraction, Cosign cryptographic signing, Claude AI risk scoring, OPA policy gates, and permanent Polygon L2 / Zero-Trust Cryptographic Ledger audit trails.</div>
+          <div class="vc-faq-a">Traditional scanners only run static checks. VendorChain enforces continuous Zero-Trust by uniting Syft SBOM extraction, Cosign cryptographic signing, Claude AI risk scoring, OPA policy gates, and permanent Polygon L2 audit trails.</div>
         </div>
         <div class="vc-faq-item">
           <button class="vc-faq-q" aria-expanded="false">How can I verify audit ledger records? <span>+</span></button>
-          <div class="vc-faq-a">Every submission verdict, AI risk score, and cryptographic SHA-256 hash is permanently committed to a private Polygon L2 / Zero-Trust Cryptographic Ledger, offering unalterable, tamper-proof verification for compliance teams and regulators.</div>
+          <div class="vc-faq-a">Every submission verdict, AI risk score, and cryptographic SHA-256 hash is permanently committed to Polygon L2, offering unalterable, tamper-proof verification for compliance teams and regulators.</div>
         </div>
       </div>
     </div>
@@ -659,23 +619,6 @@
 <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <div id="customCursor" class="custom-cursor" aria-hidden="true">
   <div class="cursor-ball"></div>
-</div>
-
-<!-- Session 1: Interactive WebCrypto SHA-256 Commitment Validator Drawer -->
-<div class="hash-drawer" id="hashValidatorDrawer" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="SHA-256 commitment validator">
-  <div class="hash-drawer-backdrop" id="hashDrawerBackdrop"></div>
-  <div class="hash-drawer-inner hash-drawer-card">
-    <button type="button" class="hash-drawer-close" id="hashDrawerClose" aria-label="Close validator">×</button>
-    <h4 class="hash-drawer-title">SHA-256 Commitment Validator</h4>
-    <p class="hash-drawer-sub">Recomputing digest in-browser via <code>crypto.subtle.digest('SHA-256')</code></p>
-    <div class="hash-drawer-fields" id="hashDrawerFields"></div>
-    <div class="hash-drawer-result" id="hashDrawerResult"></div>
-  </div>
-</div>
-
-
-<div class="sbom-modal" id="sbomModal" hidden role="dialog" aria-modal="true" aria-labelledby="sbomModalTitle">
-  <div class="sbom-modal-backdrop" data-sbom-close></div><section class="sbom-modal-content"><button class="sbom-modal-close" type="button" data-sbom-close aria-label="Close SBOM inspector">×</button><p class="vc-eyebrow">CERTIFIED CYCLONEDX</p><h3 id="sbomModalTitle">SBOM component AST</h3><div class="sbom-tab-bar" role="tablist"><button class="sbom-tab active" type="button" data-sbom-tab="component" role="tab" aria-selected="true">Component</button><button class="sbom-tab" type="button" data-sbom-tab="integrity" role="tab" aria-selected="false">Integrity</button></div><pre class="sbom-json-tree" id="sbomJsonTree" tabindex="0"></pre></section>
 </div>
 
 <script type="module" src="./js/app.js"></script>

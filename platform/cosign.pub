@@ -1,6 +1,0 @@
-# DEV-ONLY: Generated for local development signing. CI uses keyless (id-token).
-# Regenerate with: cosign generate-key-pair (cosign.key is gitignored)
------BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEz6M7r3lV5HmYDmUMgdr1Q5IFwIII
-1dyeNmnXp/6iZqHkmifPJFesHAu9xcZrxMgEwNq9tx2LPlOjYRb9TcPUEw==
------END PUBLIC KEY-----
