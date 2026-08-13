@@ -2258,8 +2258,7 @@ body.drawer-open{ overflow:hidden; }
    PHASE 5 — FLUID MOTION + GLITCH-FREE CAROUSELS
    ============================================ */
 
-html{ scroll-behavior:auto; scroll-padding-top:24px; }
-body.js-scrolling{ pointer-events:none; }
+html{ scroll-behavior:smooth; scroll-padding-top:24px; }
 
 /* Nav underline eases instead of popping */
 .nav-links a:after{
@@ -2386,10 +2385,11 @@ body.js-scrolling{ pointer-events:none; }
   to{ transform:translate3d(-50%,0,0); }
 }
 
-/* Snap carousels — mobile / tablet card rows */
+/* Swipe decks — transform-based, drag + spring, no native scroll fight */
 .vc-carousel{
   position:relative;
   margin-top:28px;
+  outline:none;
 }
 .vc-carousel .vc-grid{ margin-top:0; }
 .vc-carousel-nav{
@@ -2400,23 +2400,23 @@ body.js-scrolling{ pointer-events:none; }
   margin-top:14px;
 }
 .vc-carousel-btn{
-  width:36px;
-  height:36px;
+  width:40px;
+  height:40px;
   border-radius:50%;
   border:1px solid rgba(255,255,255,.12);
-  background:rgba(19,19,38,.85);
+  background:rgba(19,19,38,.9);
   color:#E2E8F0;
   display:grid;
   place-items:center;
   cursor:pointer;
-  transition:background .2s, border-color .2s, transform .2s;
+  transition:background .18s, border-color .18s, transform .12s;
 }
 .vc-carousel-btn:hover{
   background:rgba(0,229,255,.12);
   border-color:rgba(0,229,255,.35);
   color:#00E5FF;
 }
-.vc-carousel-btn:active{ transform:scale(.94); }
+.vc-carousel-btn:active{ transform:scale(.96); }
 .vc-carousel-btn:disabled{
   opacity:.35;
   cursor:default;
@@ -2428,54 +2428,86 @@ body.js-scrolling{ pointer-events:none; }
   align-items:center;
 }
 .vc-carousel-dot{
-  width:6px;
-  height:6px;
+  width:7px;
+  height:7px;
   border-radius:50%;
   border:0;
   padding:0;
   background:rgba(255,255,255,.22);
   cursor:pointer;
-  transition:transform .25s cubic-bezier(.16,1,.3,1), background .25s, width .25s;
+  transition:width .22s cubic-bezier(.16,1,.3,1), background .22s;
 }
 .vc-carousel-dot.is-active{
-  width:18px;
+  width:20px;
   border-radius:999px;
   background:#00E5FF;
 }
 
-@media (max-width:720px){
+@media (max-width:1100px){
+  .vc-carousel.is-ready{
+    overflow:hidden;
+    padding-bottom:2px;
+  }
   .vc-carousel.is-ready .vc-grid,
   .vc-carousel.is-ready .vc-carousel-track{
-    display:flex;
-    grid-template-columns:none;
-    gap:14px;
-    overflow-x:auto;
-    overflow-y:hidden;
-    scroll-snap-type:x mandatory;
-    scroll-padding-inline:20px;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    overscroll-behavior-x:contain;
-    padding:6px 4px 12px;
-    touch-action:pan-x;
+    display:flex !important;
+    grid-template-columns:none !important;
+    gap:16px;
+    overflow:visible;
+    width:max-content;
+    touch-action:pan-y;
+    cursor:grab;
+    will-change:transform;
+    padding:4px 2px 8px;
   }
-  .vc-carousel.is-ready .vc-grid::-webkit-scrollbar{ display:none; }
+  .vc-carousel.is-dragging .vc-grid{ cursor:grabbing; }
   .vc-carousel.is-ready .vc-card{
-    flex:0 0 min(82vw, 340px);
-    scroll-snap-align:center;
+    flex:0 0 min(78vw, 360px);
     min-height:260px;
     transform:none !important;
+    animation:none !important;
   }
   .vc-carousel-nav{ display:flex; }
-  .vc-card.is-tilting,
-  .vc-card:hover{
-    transform:none !important;
-  }
+}
+
+/* Flatten cracky 3D so clicks land where they look */
+.vc-card,
+.vc-card:hover,
+.vc-card.is-tilting,
+.vc-card.is-tilting:hover{
+  transform:none !important;
+  animation:none !important;
+  will-change:auto;
+}
+.vc-card:hover{
+  border-color:rgba(0,229,255,.22);
+  box-shadow:0 12px 28px rgba(0,0,0,.32);
+}
+.magnetic,
+.magnetic:hover,
+.hero-btn.primary.magnetic:hover{
+  transform:none !important;
+}
+.hero-btn:active,
+.vc-btn:active,
+.nav-cta:active,
+.quick-verify-btn:active{
+  transform:scale(.98);
+}
+
+.custom-cursor,
+.has-custom-cursor,
+.has-custom-cursor *{
+  cursor:auto !important;
+}
+.custom-cursor{ display:none !important; }
+
+.vc-storage, .vc-pipeline, .vc-defense, .vc-telemetry, .vc-remediation, .vc-trust, .vc-faq{
+  content-visibility:visible;
 }
 
 @media (max-width:860px){
   .scroll-progress{ height:2px; }
-  .hero-btn, .vc-btn, .magnetic{ transform:none !important; }
 }
 @media (max-width:640px){
   .hero{
@@ -2486,5 +2518,5 @@ body.js-scrolling{ pointer-events:none; }
 
 @media (prefers-reduced-motion: reduce){
   .vc-ticker .vc-track{ animation:none !important; transform:none !important; }
-  .vc-carousel.is-ready .vc-grid{ scroll-behavior:auto; }
+  html{ scroll-behavior:auto; }
 }

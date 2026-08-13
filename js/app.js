@@ -296,46 +296,14 @@
     });
   }
 
-  // ---------- 7. Smooth in-page navigation ----------
-  let scrollAnim = 0;
-  const scrollToId = (id, focusEl) => {
-    const target = document.getElementById(id);
-    if (!target) return;
-    if (prefersReducedMotion) {
-      target.scrollIntoView({ behavior: 'auto', block: 'start' });
-      if (focusEl) setTimeout(() => focusEl.focus({ preventScroll: true }), 40);
-      return;
-    }
-    const start = window.scrollY || window.pageYOffset;
-    const dest = target.getBoundingClientRect().top + start - 22;
-    const dist = dest - start;
-    const dur = Math.min(920, Math.max(380, Math.abs(dist) * 0.42));
-    const t0 = performance.now();
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
-    if (scrollAnim) cancelAnimationFrame(scrollAnim);
-    document.body.classList.add('js-scrolling');
-    const step = (now) => {
-      const p = Math.min(1, (now - t0) / dur);
-      window.scrollTo(0, start + dist * ease(p));
-      if (p < 1) {
-        scrollAnim = requestAnimationFrame(step);
-      } else {
-        scrollAnim = 0;
-        document.body.classList.remove('js-scrolling');
-        if (focusEl) focusEl.focus({ preventScroll: true });
-      }
-    };
-    scrollAnim = requestAnimationFrame(step);
-  };
-
+  // ---------- 7. In-page navigation (native smooth scroll — no click lock) ----------
   document.querySelectorAll('a[href^="#"]').forEach((link) => {
     const href = link.getAttribute('href');
     if (!href || href === '#') return;
     const id = href.slice(1);
     if (!document.getElementById(id)) return;
 
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
+    link.addEventListener('click', () => {
       if (mobileDrawer?.classList.contains('open')) {
         mobileDrawer.classList.remove('open');
         hamburger?.setAttribute('aria-expanded', 'false');
@@ -343,83 +311,13 @@
         mobileDrawer.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('drawer-open');
       }
-      const focusTarget =
-        id === 'cta' ? nameInput :
-        id === 'quickVerify' ? document.getElementById('quickVerifyInput') :
-        null;
-      scrollToId(id, focusTarget);
-      if (history.replaceState) history.replaceState(null, '', href);
+      if (id === 'cta') {
+        setTimeout(() => nameInput?.focus({ preventScroll: true }), 450);
+      } else if (id === 'quickVerify') {
+        setTimeout(() => document.getElementById('quickVerifyInput')?.focus({ preventScroll: true }), 450);
+      }
     });
   });
-
-  // ---------- 8. Card tilt + specular light ----------
-  if (isHoverCapable && !prefersReducedMotion) {
-    document.querySelectorAll('[data-tilt], .vc-card').forEach((card) => {
-      let bounds = null;
-      let frame = 0;
-
-      const onEnter = () => {
-        bounds = card.getBoundingClientRect();
-        card.classList.add('is-tilting');
-      };
-
-      const onMove = (e) => {
-        if (!bounds) bounds = card.getBoundingClientRect();
-        if (frame) return;
-        frame = requestAnimationFrame(() => {
-          frame = 0;
-          if (!bounds || pageHidden) return;
-          const x = e.clientX - bounds.left;
-          const y = e.clientY - bounds.top;
-          const px = x / bounds.width;
-          const py = y / bounds.height;
-          card.style.setProperty('--rx', ((py - 0.5) * -10).toFixed(2));
-          card.style.setProperty('--ry', ((px - 0.5) * 12).toFixed(2));
-          card.style.setProperty('--mx', `${(px * 100).toFixed(1)}%`);
-          card.style.setProperty('--my', `${(py * 100).toFixed(1)}%`);
-        });
-      };
-
-      const onLeave = () => {
-        if (frame) cancelAnimationFrame(frame);
-        frame = 0;
-        bounds = null;
-        card.classList.remove('is-tilting');
-        card.style.removeProperty('--rx');
-        card.style.removeProperty('--ry');
-        card.style.removeProperty('--mx');
-        card.style.removeProperty('--my');
-      };
-
-      card.addEventListener('mouseenter', onEnter, { passive: true });
-      card.addEventListener('mousemove', onMove, { passive: true });
-      card.addEventListener('mouseleave', onLeave, { passive: true });
-    });
-  }
-
-  // ---------- 9. Magnetic buttons ----------
-  if (isHoverCapable && !prefersReducedMotion) {
-    document.querySelectorAll('.magnetic').forEach((btn) => {
-      let frame = 0;
-      btn.addEventListener('mousemove', (e) => {
-        if (frame) return;
-        frame = requestAnimationFrame(() => {
-          frame = 0;
-          const r = btn.getBoundingClientRect();
-          const x = (e.clientX - r.left - r.width / 2) * 0.28;
-          const y = (e.clientY - r.top - r.height / 2) * 0.32;
-          btn.style.setProperty('--mx', `${x.toFixed(1)}px`);
-          btn.style.setProperty('--my', `${y.toFixed(1)}px`);
-          btn.style.setProperty('--bx', `${((e.clientX - r.left) / r.width) * 100}%`);
-          btn.style.setProperty('--by', `${((e.clientY - r.top) / r.height) * 100}%`);
-        });
-      }, { passive: true });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.setProperty('--mx', '0px');
-        btn.style.setProperty('--my', '0px');
-      }, { passive: true });
-    });
-  }
 
   // ---------- 10. Unified motion loop (hero + cursor + scroll + particles) ----------
   const heroShell = document.getElementById('heroShell');
@@ -442,32 +340,7 @@
   let heroBounds = null;
   let scrollY = window.scrollY || 0;
   let ticking = false;
-  let cursorEnabled = false;
-  let overTextField = false;
-
-  if (customCursor && !prefersReducedMotion && isHoverCapable) {
-    cursorEnabled = true;
-    document.body.classList.add('has-custom-cursor');
-    customCursor.classList.add('ready');
-
-    document.querySelectorAll('a, button, .vc-card, .tech-pill, .vc-faq-q, [data-tilt], .nav-cta').forEach((el) => {
-      el.addEventListener('mouseenter', () => customCursor.classList.add('hover'), { passive: true });
-      el.addEventListener('mouseleave', () => customCursor.classList.remove('hover'), { passive: true });
-    });
-
-    document.querySelectorAll('input, textarea, select').forEach((el) => {
-      el.addEventListener('mouseenter', () => {
-        overTextField = true;
-        document.body.classList.add('cursor-text-mode');
-        customCursor.classList.add('hidden');
-      }, { passive: true });
-      el.addEventListener('mouseleave', () => {
-        overTextField = false;
-        document.body.classList.remove('cursor-text-mode');
-        customCursor.classList.remove('hidden');
-      }, { passive: true });
-    });
-  }
+  if (customCursor) customCursor.remove();
 
   window.addEventListener('mousemove', (e) => {
     pointer.x = e.clientX;
@@ -496,11 +369,6 @@
     pointer.active = false;
     heroPointer.inside = false;
     heroGlow?.classList.remove('active');
-    if (customCursor) customCursor.style.opacity = '0';
-  });
-
-  document.addEventListener('mouseenter', () => {
-    if (customCursor && cursorEnabled) customCursor.style.opacity = '1';
   });
 
   window.addEventListener('scroll', () => {
@@ -659,6 +527,7 @@
         speed: 0.42,
         targetSpeed: 0.42,
         hovering: false,
+        dragging: false,
         visible: true,
       };
       const measure = () => {
@@ -671,9 +540,39 @@
         }
       };
       measure();
-      const root = row.closest('[data-ticker]') || row;
-      root.addEventListener('mouseenter', () => { state.hovering = true; }, { passive: true });
-      root.addEventListener('mouseleave', () => { state.hovering = false; }, { passive: true });
+      const host = row.closest('[data-ticker]') || row;
+      host.addEventListener('mouseenter', () => { state.hovering = true; }, { passive: true });
+      host.addEventListener('mouseleave', () => { state.hovering = false; }, { passive: true });
+
+      let drag = null;
+      row.style.touchAction = 'pan-y';
+      row.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        drag = { id: e.pointerId, x: e.clientX, last: e.clientX, t: performance.now() };
+        state.dragging = true;
+        state.hovering = true;
+        try { row.setPointerCapture(e.pointerId); } catch { /* noop */ }
+      });
+      row.addEventListener('pointermove', (e) => {
+        if (!drag || e.pointerId !== drag.id) return;
+        const dx = e.clientX - drag.last;
+        drag.last = e.clientX;
+        state.offset += dx;
+        if (state.width) {
+          while (state.offset <= -state.width) state.offset += state.width;
+          while (state.offset > 0) state.offset -= state.width;
+        }
+        state.track.style.transform = `translate3d(${state.offset.toFixed(2)}px,0,0)`;
+      });
+      const endDrag = (e) => {
+        if (!drag || (e && e.pointerId !== drag.id)) return;
+        drag = null;
+        state.dragging = false;
+        state.hovering = false;
+      };
+      row.addEventListener('pointerup', endDrag);
+      row.addEventListener('pointercancel', endDrag);
+
       window.addEventListener('resize', measure, { passive: true });
       if ('IntersectionObserver' in window) {
         const obs = new IntersectionObserver((entries) => {
@@ -692,7 +591,7 @@
   const stepTickers = () => {
     if (prefersReducedMotion) return;
     tickers.forEach((t) => {
-      if (!t.visible || pageHidden) return;
+      if (!t.visible || pageHidden || t.dragging) return;
       if (!t.width) t.width = t.set.getBoundingClientRect().width;
       if (!t.width) return;
       t.targetSpeed = t.hovering ? 0.08 : 0.42;
@@ -704,16 +603,20 @@
     });
   };
 
-  // ---------- 10c. Snap carousels for card grids on small screens ----------
-  const initSnapCarousels = () => {
-    const mq = window.matchMedia('(max-width: 720px)');
+  // ---------- 10c. Pointer-drag swipe decks (spring snap, no native-scroll fight) ----------
+  const decks = [];
+  const swipeMq = window.matchMedia('(max-width: 1100px)');
+
+  const initSwipeDecks = () => {
     document.querySelectorAll('.vc-grid').forEach((grid) => {
       if (grid.closest('.vc-carousel')) return;
-      const cards = grid.querySelectorAll('.vc-card');
+      const cards = Array.from(grid.querySelectorAll('.vc-card'));
       if (cards.length < 2) return;
 
       const wrap = document.createElement('div');
       wrap.className = 'vc-carousel';
+      wrap.setAttribute('tabindex', '0');
+      wrap.setAttribute('aria-roledescription', 'carousel');
       grid.parentNode.insertBefore(wrap, grid);
       wrap.appendChild(grid);
       grid.classList.add('vc-carousel-track');
@@ -721,83 +624,207 @@
       const nav = document.createElement('div');
       nav.className = 'vc-carousel-nav';
       nav.innerHTML = `
-        <button type="button" class="vc-carousel-btn" data-dir="-1" aria-label="Previous cards">
+        <button type="button" class="vc-carousel-btn" data-dir="-1" aria-label="Previous slide">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <div class="vc-carousel-dots" role="tablist" aria-label="Card slides"></div>
-        <button type="button" class="vc-carousel-btn" data-dir="1" aria-label="Next cards">
+        <div class="vc-carousel-dots" role="tablist" aria-label="Slides"></div>
+        <button type="button" class="vc-carousel-btn" data-dir="1" aria-label="Next slide">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       `;
       wrap.appendChild(nav);
-      const dots = nav.querySelector('.vc-carousel-dots');
+      const dotsBox = nav.querySelector('.vc-carousel-dots');
+      const prevBtn = nav.querySelector('[data-dir="-1"]');
+      const nextBtn = nav.querySelector('[data-dir="1"]');
+
       cards.forEach((_, i) => {
         const dot = document.createElement('button');
         dot.type = 'button';
         dot.className = 'vc-carousel-dot' + (i === 0 ? ' is-active' : '');
-        dot.setAttribute('aria-label', `Go to card ${i + 1}`);
-        dot.addEventListener('click', () => {
-          const left = cards[i].offsetLeft - (grid.clientWidth - cards[i].offsetWidth) / 2;
-          grid.scrollTo({ left, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-        });
-        dots.appendChild(dot);
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dotsBox.appendChild(dot);
       });
+      const dots = Array.from(dotsBox.querySelectorAll('.vc-carousel-dot'));
 
-      const sync = () => {
-        if (!mq.matches) {
-          wrap.classList.remove('is-ready');
-          return;
-        }
-        wrap.classList.add('is-ready');
-        const mid = grid.scrollLeft + grid.clientWidth / 2;
-        let best = 0;
-        let bestDist = Infinity;
-        cards.forEach((card, i) => {
-          const c = card.offsetLeft + card.offsetWidth / 2;
-          const d = Math.abs(c - mid);
-          if (d < bestDist) { bestDist = d; best = i; }
-        });
-        dots.querySelectorAll('.vc-carousel-dot').forEach((dot, i) => {
-          dot.classList.toggle('is-active', i === best);
-        });
-        const prev = nav.querySelector('[data-dir="-1"]');
-        const next = nav.querySelector('[data-dir="1"]');
-        if (prev) prev.disabled = best === 0;
-        if (next) next.disabled = best === cards.length - 1;
+      const deck = {
+        wrap,
+        grid,
+        cards,
+        dots,
+        prevBtn,
+        nextBtn,
+        index: 0,
+        x: 0,
+        target: 0,
+        vx: 0,
+        dragging: false,
+        moved: false,
+        gap: 16,
+        enabled: false,
       };
 
-      nav.querySelectorAll('.vc-carousel-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const dir = Number(btn.dataset.dir);
-          const cardW = cards[0].getBoundingClientRect().width + 14;
-          grid.scrollBy({ left: dir * cardW, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-        });
+      const stepW = () => {
+        const w = cards[0].getBoundingClientRect().width;
+        const styles = getComputedStyle(grid);
+        const g = parseFloat(styles.columnGap || styles.gap || '16') || 16;
+        deck.gap = g;
+        return w + g;
+      };
+      const minX = () => -(cards.length - 1) * stepW();
+      const apply = () => {
+        grid.style.transform = deck.enabled ? `translate3d(${deck.x.toFixed(2)}px,0,0)` : '';
+      };
+      const paintDots = () => {
+        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === deck.index));
+        if (prevBtn) prevBtn.disabled = deck.index <= 0;
+        if (nextBtn) nextBtn.disabled = deck.index >= cards.length - 1;
+      };
+      const goTo = (i) => {
+        deck.index = Math.max(0, Math.min(cards.length - 1, i));
+        deck.target = -deck.index * stepW();
+        if (prefersReducedMotion) {
+          deck.x = deck.target;
+          deck.vx = 0;
+          apply();
+        }
+        paintDots();
+      };
+      const enable = (on) => {
+        deck.enabled = on;
+        wrap.classList.toggle('is-ready', on);
+        if (!on) {
+          deck.x = 0;
+          deck.target = 0;
+          deck.vx = 0;
+          deck.index = 0;
+          grid.style.transform = '';
+          paintDots();
+        } else {
+          goTo(deck.index);
+          apply();
+        }
+      };
+
+      let pid = 0;
+      let sx = 0;
+      let sy = 0;
+      let lx = 0;
+      let lt = 0;
+      let ox = 0;
+      let axis = '';
+
+      const onDown = (e) => {
+        if (!deck.enabled) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        if (e.target.closest('a, button')) return;
+        deck.dragging = true;
+        deck.moved = false;
+        deck.vx = 0;
+        pid = e.pointerId;
+        sx = lx = e.clientX;
+        sy = e.clientY;
+        lt = performance.now();
+        ox = deck.x;
+        axis = '';
+        wrap.classList.add('is-dragging');
+        try { grid.setPointerCapture(pid); } catch { /* noop */ }
+      };
+      const onMove = (e) => {
+        if (!deck.dragging || e.pointerId !== pid) return;
+        const dx = e.clientX - sx;
+        const dy = e.clientY - sy;
+        if (!axis) {
+          if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+          axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          if (axis === 'y') {
+            deck.dragging = false;
+            wrap.classList.remove('is-dragging');
+            return;
+          }
+        }
+        if (axis !== 'x') return;
+        e.preventDefault();
+        deck.moved = Math.abs(dx) > 8;
+        const now = performance.now();
+        const dt = Math.max(8, now - lt);
+        deck.vx = (e.clientX - lx) / dt;
+        lx = e.clientX;
+        lt = now;
+        let next = ox + dx;
+        const lo = minX();
+        if (next > 0) next *= 0.35;
+        if (next < lo) next = lo + (next - lo) * 0.35;
+        deck.x = next;
+        apply();
+      };
+      const onUp = (e) => {
+        if (!deck.dragging || (e && e.pointerId !== pid)) {
+          wrap.classList.remove('is-dragging');
+          return;
+        }
+        deck.dragging = false;
+        wrap.classList.remove('is-dragging');
+        const w = stepW();
+        let next = Math.round(-deck.x / w);
+        if (deck.vx < -0.35) next += 1;
+        else if (deck.vx > 0.35) next -= 1;
+        goTo(next);
+      };
+
+      grid.addEventListener('pointerdown', onDown);
+      grid.addEventListener('pointermove', onMove, { passive: false });
+      grid.addEventListener('pointerup', onUp);
+      grid.addEventListener('pointercancel', onUp);
+      grid.addEventListener('click', (e) => {
+        if (deck.moved) {
+          e.preventDefault();
+          e.stopPropagation();
+          deck.moved = false;
+        }
+      }, true);
+
+      prevBtn.addEventListener('click', () => goTo(deck.index - 1));
+      nextBtn.addEventListener('click', () => goTo(deck.index + 1));
+      dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+      wrap.addEventListener('keydown', (e) => {
+        if (!deck.enabled) return;
+        if (e.key === 'ArrowRight') { e.preventDefault(); goTo(deck.index + 1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(deck.index - 1); }
       });
 
-      let scrollT = 0;
-      grid.addEventListener('scroll', () => {
-        if (scrollT) return;
-        scrollT = requestAnimationFrame(() => { scrollT = 0; sync(); });
-      }, { passive: true });
+      deck.step = () => {
+        if (!deck.enabled || deck.dragging || prefersReducedMotion) return;
+        const dist = deck.target - deck.x;
+        if (Math.abs(dist) < 0.2 && Math.abs(deck.vx) < 0.02) {
+          if (deck.x !== deck.target) {
+            deck.x = deck.target;
+            apply();
+          }
+          return;
+        }
+        deck.vx = deck.vx * 0.78 + dist * 0.16;
+        deck.x += deck.vx;
+        apply();
+      };
 
-      if (mq.addEventListener) mq.addEventListener('change', sync);
-      else mq.addListener(sync);
-      sync();
+      const syncMode = () => enable(swipeMq.matches && !prefersReducedMotion);
+      if (swipeMq.addEventListener) swipeMq.addEventListener('change', syncMode);
+      else swipeMq.addListener(syncMode);
+      window.addEventListener('resize', () => {
+        if (deck.enabled) goTo(deck.index);
+      }, { passive: true });
+      syncMode();
+      decks.push(deck);
     });
   };
-  initSnapCarousels();
+  initSwipeDecks();
 
   let lastSpy = 0;
   const motionLoop = (now) => {
     if (!pageHidden && !prefersReducedMotion) {
-      if (cursorEnabled && customCursor && pointer.active && !overTextField) {
-        cursor.x = lerp(cursor.x, pointer.x, 0.22);
-        cursor.y = lerp(cursor.y, pointer.y, 0.22);
-        customCursor.style.opacity = '1';
-        customCursor.style.transform = `translate(-50%, -50%) translate3d(${cursor.x.toFixed(1)}px, ${cursor.y.toFixed(1)}px, 0)`;
-      }
       applyHeroParallax();
       stepTickers();
+      decks.forEach((d) => d.step && d.step());
       drawParticles(particleState.hero, '139, 92, 246', '0, 229, 255');
       drawParticles(particleState.global, '0, 229, 255', '138, 43, 226');
     }
