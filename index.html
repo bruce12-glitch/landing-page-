@@ -31,6 +31,7 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 <div class="page">
   <div class="wrap">
     <div class="hero-shell" id="heroShell">
@@ -41,15 +42,15 @@
           <div class="nav-brand-tag">Zero-Trust OS</div>
         </div>
         <div class="nav-links" role="list">
-          <a class="active" href="#main" aria-current="page">Home</a>
-          <a href="#engine-spec">Platform</a>
-          <a href="#verify">Proof</a>
-          <a href="#integrations">Ecosystem</a>
-          <a href="#faq">About</a>
+          <a class="active" href="#main" data-nav="main" aria-current="page">Home</a>
+          <a href="#engine-spec" data-nav="engine-spec">Platform</a>
+          <a href="#verify" data-nav="verify">Proof</a>
+          <a href="#integrations" data-nav="integrations">Ecosystem</a>
+          <a href="#faq" data-nav="faq">About</a>
         </div>
         <div class="nav-actions">
-          <a href="#cta" class="nav-cta">Request Early Access <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
-          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer"><span></span></button>
+          <a href="#cta" class="nav-cta magnetic">Request Early Access <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+          <button type="button" class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer"><span></span></button>
         </div>
         <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-label="Mobile menu">
           <a href="#main">Home <span>↗</span></a>
@@ -66,7 +67,7 @@
         <h1 class="h1 reveal in" id="heroTitle">The Premier Trust Network<br>for Zero-Trust Supply Chains.</h1>
         <p class="hero-subheadline reveal in" id="heroSub">Eliminate assumed, static vendor trust. VendorChain continuously authenticates business credentials, scans CycloneDX SBOMs via Claude AI, and commits tamper-proof audit trails to Polygon L2.</p>
         <div class="hero-ctas reveal in" id="heroCtas">
-          <a href="#cta" class="hero-btn primary" id="launchPortalBtn">Request Early Access →</a>
+          <a href="#cta" class="hero-btn primary magnetic" id="launchPortalBtn">Request Early Access →</a>
           <a href="#quickVerify" class="hero-btn secondary">Try Demo Verifier</a>
         </div>
         <div class="tech-pills reveal in" id="techPills" aria-label="Core tech stack">
@@ -90,8 +91,19 @@
             <span>Demo artifact: <code>e3b0c442...b855</code></span>
             <button type="button" class="quick-verify-sample-btn" id="useSampleBtn">Use sample artifact</button>
           </div>
+          <div class="verify-result" id="verifyResult" hidden role="status" aria-live="polite"></div>
         </div>
         <div class="horizon" aria-hidden="true"></div>
+        <div class="hero-stage" id="heroStage" aria-hidden="true">
+          <div class="hero-floor"></div>
+          <div class="orbit-ring r1"></div>
+          <div class="orbit-ring r2"></div>
+          <div class="orbit-ring r3"></div>
+          <span class="orbit-node on1"></span>
+          <span class="orbit-node on2"></span>
+          <span class="orbit-node on3"></span>
+          <span class="orbit-node on4"></span>
+        </div>
         <div class="orbs" aria-hidden="true">
           <div class="orb-3d orb1"></div>
           <div class="orb-3d orb2"></div>
@@ -122,7 +134,7 @@
       <div class="vc-header">
         <h2 class="vc-h2" id="vcEngineTitle">Continuous Zero-Trust Verification <span>for B2B Supply Chains</span></h2>
         <div class="vc-actions">
-          <a href="#engine-spec" class="vc-btn primary">Explore Verification Pipeline →</a>
+          <a href="#pipeline" class="vc-btn primary magnetic">Explore Verification Pipeline →</a>
           <a href="#blockchain-ledger" class="vc-btn ghost">View On-Chain Specs</a>
         </div>
       </div>
@@ -200,11 +212,11 @@
       <div class="vc-section-head">
         <h3 class="vc-h3" id="storageTitle">Secure vendor artifacts <span>inside your /storage</span></h3>
         <div class="vc-actions">
-          <a href="#storage" class="vc-btn primary">Explore Artifact Storage →</a>
-          <a href="#storage" class="vc-btn ghost">View Storage Specs</a>
+          <a href="#storage-grid" class="vc-btn primary magnetic">Explore Artifact Storage →</a>
+          <a href="#pipeline" class="vc-btn ghost">View Storage Specs</a>
         </div>
       </div>
-      <div class="vc-grid three">
+      <div class="vc-grid three" id="storage-grid">
         <div class="vc-card" data-card="supabase_storage" data-tilt>
           <div class="vc-card-icon icon-db">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
@@ -239,11 +251,11 @@
       <div class="vc-section-head">
         <h3 class="vc-h3" id="pipelineTitle">Enforce Zero-Trust rules continuously with <span>/pipeline</span></h3>
         <div class="vc-actions">
-          <a href="#pipeline" class="vc-btn primary">Explore CI/CD Pipeline →</a>
-          <a href="#pipeline" class="vc-btn ghost">View Policy Specs</a>
+          <a href="#pipeline-grid" class="vc-btn primary magnetic">Explore CI/CD Pipeline →</a>
+          <a href="#verify" class="vc-btn ghost">View Policy Specs</a>
         </div>
       </div>
-      <div class="vc-grid three">
+      <div class="vc-grid three" id="pipeline-grid">
         <div class="vc-card" data-card="ai_vulnerability_scoring" data-tilt>
           <div class="vc-card-icon icon-spark">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2 11 5.5 14.5 7 11 8.5 9.5 12 8 8.5 4.5 7 8 5.5 9.5 2Z"/><path d="M19 8l1.5 2.5L23 12l-2.5 1.5L19 16l-1.5-2.5L15 12l2.5-1.5L19 8Z"/></svg>
@@ -278,11 +290,11 @@
       <div class="vc-section-head">
         <h3 class="vc-h3" id="verifyTitle">Block non-compliant software across your supply chain with <span>/verify</span></h3>
         <div class="vc-actions">
-          <a href="#verify" class="vc-btn primary">Explore Verification Engine →</a>
+          <a href="#verify-grid" class="vc-btn primary magnetic">Explore Verification Engine →</a>
           <a href="#blockchain-ledger" class="vc-btn ghost">View Ledger Specs</a>
         </div>
       </div>
-      <div class="vc-grid three">
+      <div class="vc-grid three" id="verify-grid">
         <div class="vc-card" data-card="cosign_signature_seals" data-tilt>
           <div class="vc-card-icon icon-shield">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/><path d="M14 8h2"/><path d="M12 2v2"/></svg>
@@ -443,21 +455,60 @@
     <div class="vc-integrations-inner">
       <h3 class="vc-h3" id="integrationsTitle">Integrates seamlessly with your existing CI/CD & DevOps stack</h3>
       <p>VendorChain plugs directly into GitHub Actions, Supabase, and Polygon L2. Automatically trigger SBOM generation, Cosign signing, and OPA policy evaluation on every push.</p>
-      <div class="vc-marquee" aria-hidden="true">
-        <div class="vc-track">
-          <span class="vc-marquee-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> GitHub Actions</span>
-          <span class="vc-marquee-item">Supabase</span>
-          <span class="vc-marquee-item">Polygon L2</span>
-          <span class="vc-marquee-item">Cosign</span>
-          <span class="vc-marquee-item">Syft</span>
-          <span class="vc-marquee-item">OPA Rego</span>
-          <span class="vc-marquee-item">Claude AI</span>
-          <span class="vc-marquee-item">Grafana</span>
-          <span class="vc-marquee-item">Docker</span>
-          <span class="vc-marquee-item">GitHub Actions</span>
+      <div class="vc-ticker" id="ecoTicker" data-ticker>
+        <div class="vc-ticker-row" data-dir="-1">
+          <div class="vc-track js-ticker-track">
+            <div class="vc-track-set">
+              <span class="vc-marquee-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> GitHub Actions</span>
+              <span class="vc-marquee-item">Supabase</span>
+              <span class="vc-marquee-item">Polygon L2</span>
+              <span class="vc-marquee-item">Cosign</span>
+              <span class="vc-marquee-item">Syft</span>
+              <span class="vc-marquee-item">OPA Rego</span>
+              <span class="vc-marquee-item">Claude AI</span>
+              <span class="vc-marquee-item">Grafana</span>
+              <span class="vc-marquee-item">Docker</span>
+            </div>
+            <div class="vc-track-set" aria-hidden="true">
+              <span class="vc-marquee-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> GitHub Actions</span>
+              <span class="vc-marquee-item">Supabase</span>
+              <span class="vc-marquee-item">Polygon L2</span>
+              <span class="vc-marquee-item">Cosign</span>
+              <span class="vc-marquee-item">Syft</span>
+              <span class="vc-marquee-item">OPA Rego</span>
+              <span class="vc-marquee-item">Claude AI</span>
+              <span class="vc-marquee-item">Grafana</span>
+              <span class="vc-marquee-item">Docker</span>
+            </div>
+          </div>
+        </div>
+        <div class="vc-ticker-row" data-dir="1">
+          <div class="vc-track js-ticker-track">
+            <div class="vc-track-set">
+              <span class="vc-marquee-item">Prometheus</span>
+              <span class="vc-marquee-item">CycloneDX</span>
+              <span class="vc-marquee-item">OIDC</span>
+              <span class="vc-marquee-item">GitHub Secrets</span>
+              <span class="vc-marquee-item">Rego</span>
+              <span class="vc-marquee-item">Cosign.pub</span>
+              <span class="vc-marquee-item">SBOM JSON</span>
+              <span class="vc-marquee-item">Polygon PoS</span>
+            </div>
+            <div class="vc-track-set" aria-hidden="true">
+              <span class="vc-marquee-item">Prometheus</span>
+              <span class="vc-marquee-item">CycloneDX</span>
+              <span class="vc-marquee-item">OIDC</span>
+              <span class="vc-marquee-item">GitHub Secrets</span>
+              <span class="vc-marquee-item">Rego</span>
+              <span class="vc-marquee-item">Cosign.pub</span>
+              <span class="vc-marquee-item">SBOM JSON</span>
+              <span class="vc-marquee-item">Polygon PoS</span>
+            </div>
+          </div>
         </div>
       </div>
-      <a href="#integrations" class="vc-btn ghost">Explore Integrations →</a>
+      <div class="vc-ticker-hint">Drag the strip · swipe the cards</div>
+      <a href="#cta" class="vc-btn ghost">Request a stack walkthrough →</a>
     </div>
   </section>
 
@@ -467,24 +518,24 @@
       <h3 class="vc-h3" id="faqTitle">Frequently Asked Questions</h3>
       <div class="vc-faq-list">
         <div class="vc-faq-item open">
-          <button class="vc-faq-q" aria-expanded="true">How does VendorChain evaluate vendor risk? <span>+</span></button>
-          <div class="vc-faq-a">We combine Claude AI vulnerability scoring (1–10) with custom Open Policy Agent (OPA) Rego policies to contextualize CVEs, filter out unexploitable dependency noise, and block non-compliant builds automatically.</div>
+          <button type="button" class="vc-faq-q" id="faq-q-1" aria-expanded="true" aria-controls="faq-a-1">How does VendorChain evaluate vendor risk? <span aria-hidden="true">+</span></button>
+          <div class="vc-faq-a" id="faq-a-1" role="region" aria-labelledby="faq-q-1"><div class="vc-faq-a-inner">We combine Claude AI vulnerability scoring (1–10) with custom Open Policy Agent (OPA) Rego policies to contextualize CVEs, filter out unexploitable dependency noise, and block non-compliant builds automatically.</div></div>
         </div>
         <div class="vc-faq-item">
-          <button class="vc-faq-q" aria-expanded="false">What happens to my submitted vendor data? <span>+</span></button>
-          <div class="vc-faq-a">Submitted SBOM JSON files and signatures are stored in private Supabase Storage buckets, while analysis runs inside isolated, ephemeral Docker containers and GitHub Actions runners that are disposed of after evaluation.</div>
+          <button type="button" class="vc-faq-q" id="faq-q-2" aria-expanded="false" aria-controls="faq-a-2">What happens to my submitted vendor data? <span aria-hidden="true">+</span></button>
+          <div class="vc-faq-a" id="faq-a-2" role="region" aria-labelledby="faq-q-2"><div class="vc-faq-a-inner">Submitted SBOM JSON files and signatures are stored in private Supabase Storage buckets, while analysis runs inside isolated, ephemeral Docker containers and GitHub Actions runners that are disposed of after evaluation.</div></div>
         </div>
         <div class="vc-faq-item">
-          <button class="vc-faq-q" aria-expanded="false">Does VendorChain require access to vendor source code? <span>+</span></button>
-          <div class="vc-faq-a">No. VendorChain operates strictly on compiled artifacts, binary packages, and generated CycloneDX SBOM files. We require zero write access to vendor source code repositories.</div>
+          <button type="button" class="vc-faq-q" id="faq-q-3" aria-expanded="false" aria-controls="faq-a-3">Does VendorChain require access to vendor source code? <span aria-hidden="true">+</span></button>
+          <div class="vc-faq-a" id="faq-a-3" role="region" aria-labelledby="faq-q-3"><div class="vc-faq-a-inner">No. VendorChain operates strictly on compiled artifacts, binary packages, and generated CycloneDX SBOM files. We require zero write access to vendor source code repositories.</div></div>
         </div>
         <div class="vc-faq-item">
-          <button class="vc-faq-q" aria-expanded="false">How is VendorChain different from traditional vulnerability scanners? <span>+</span></button>
-          <div class="vc-faq-a">Traditional scanners only run static checks. VendorChain enforces continuous Zero-Trust by uniting Syft SBOM extraction, Cosign cryptographic signing, Claude AI risk scoring, OPA policy gates, and permanent Polygon L2 audit trails.</div>
+          <button type="button" class="vc-faq-q" id="faq-q-4" aria-expanded="false" aria-controls="faq-a-4">How is VendorChain different from traditional vulnerability scanners? <span aria-hidden="true">+</span></button>
+          <div class="vc-faq-a" id="faq-a-4" role="region" aria-labelledby="faq-q-4"><div class="vc-faq-a-inner">Traditional scanners only run static checks. VendorChain enforces continuous Zero-Trust by uniting Syft SBOM extraction, Cosign cryptographic signing, Claude AI risk scoring, OPA policy gates, and permanent Polygon L2 audit trails.</div></div>
         </div>
         <div class="vc-faq-item">
-          <button class="vc-faq-q" aria-expanded="false">How can I verify audit ledger records? <span>+</span></button>
-          <div class="vc-faq-a">Every submission verdict, AI risk score, and cryptographic SHA-256 hash is permanently committed to Polygon L2, offering unalterable, tamper-proof verification for compliance teams and regulators.</div>
+          <button type="button" class="vc-faq-q" id="faq-q-5" aria-expanded="false" aria-controls="faq-a-5">How can I verify audit ledger records? <span aria-hidden="true">+</span></button>
+          <div class="vc-faq-a" id="faq-a-5" role="region" aria-labelledby="faq-q-5"><div class="vc-faq-a-inner">Every submission verdict, AI risk score, and cryptographic SHA-256 hash is permanently committed to Polygon L2, offering unalterable, tamper-proof verification for compliance teams and regulators.</div></div>
         </div>
       </div>
     </div>

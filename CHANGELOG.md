@@ -2,6 +2,16 @@
 
 All notable changes across the hardening phases of the VendorChain Zero-Trust landing page.
 
+## [Phase 5: Fluid carousels] - 2026-08-13
+- Rebuilt the integrations ticker as two equal track-sets driven in JS (`translate3d` + wrap at measured width) so the loop no longer jumps on the flex-gap `-50%` seam. Hover eases speed instead of hard-pausing.
+- Card grids become snap carousels under 720px with prev/next, dots, and touch swipe.
+- Hero parallax now lerps CSS variables on wrappers so orb float animations are no longer overwritten each frame. In-page scroll uses a single cubic ease.
+
+## [Phase 4: Frontend Debug + 3D Motion] - 2026-08-13
+- **Bugs fixed**: Hero cursor glow now follows the pointer (`--mx`/`--my` inheritance). Removed leaked `x-admin-key` from the demo verifier. Initialized the unused `#globalParticles` canvas. Made the integrations marquee loop seamlessly. Stopped perpetual card-float animations that fought hover tilt and burned GPU. Restored native text cursors inside form fields. FAQ answers animate instead of `display:none` and expose `aria-controls`.
+- **Interactions**: Nav scroll-spy, focus-visible rings, mobile drawer focus trap + Escape/outside click, magnetic primary CTAs, honest local SHA-256 verifier with inline result panel, and section links that actually land on content grids.
+- **3D motion**: Perspective floor + orbital rings in the hero, unified rAF loop (cursor, parallax, particles, scroll progress), staggered card entrance, specular card tilt. All respect `prefers-reduced-motion` and pause when the tab is hidden.
+
 ## [Phase 3: Launch Hardening] - 2026-08-09
 - **F0 Carry-over Control**: Implemented 3-second minimum submit guard with active focus on `#formErrorSummary` and moved error list styling into CSS.
   - *Proof*: `grep -A 4 "formInitTime < 3000" js/app.js`

@@ -36,9 +36,10 @@ landing-page-/
 ## ⚡ Performance & Zero-Trust Invariants
 
 1. **60FPS Hardware Acceleration:**
-   - Single-pass, throttled `requestAnimationFrame` motion engine with cached geometry bounds.
-   - GPU-composited 3D perspective tilt (`--rx`, `--ry`) and dynamic specular lighting aura (`--mx`, `--my`).
-   - Zero layout thrashing, zero memory leaks.
+   - Unified `requestAnimationFrame` loop for cursor, hero parallax, particles, and scroll progress.
+   - GPU-composited 3D card tilt (`--rx`, `--ry`), specular lighting (`--mx`, `--my`), and a perspective hero stage (floor + orbital rings).
+   - Continuous card-float animations are disabled in favor of hover-only tilt and staggered entrance — less GPU, same depth.
+   - Zero layout thrashing; motion pauses when the tab is hidden and when `prefers-reduced-motion` is set.
 2. **Strict Content Security Policy:**
    - 100% compliant with `<meta http-equiv="Content-Security-Policy">`.
    - Exactly **0 inline styles** (`grep -c 'style="' index.html js/app.js` → `0`).
