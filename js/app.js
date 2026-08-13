@@ -297,13 +297,35 @@
   }
 
   // ---------- 7. Smooth in-page navigation ----------
+  let scrollAnim = 0;
   const scrollToId = (id, focusEl) => {
     const target = document.getElementById(id);
     if (!target) return;
-    target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
-    if (focusEl) {
-      setTimeout(() => focusEl.focus({ preventScroll: true }), prefersReducedMotion ? 50 : 380);
+    if (prefersReducedMotion) {
+      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      if (focusEl) setTimeout(() => focusEl.focus({ preventScroll: true }), 40);
+      return;
     }
+    const start = window.scrollY || window.pageYOffset;
+    const dest = target.getBoundingClientRect().top + start - 22;
+    const dist = dest - start;
+    const dur = Math.min(920, Math.max(380, Math.abs(dist) * 0.42));
+    const t0 = performance.now();
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    if (scrollAnim) cancelAnimationFrame(scrollAnim);
+    document.body.classList.add('js-scrolling');
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      window.scrollTo(0, start + dist * ease(p));
+      if (p < 1) {
+        scrollAnim = requestAnimationFrame(step);
+      } else {
+        scrollAnim = 0;
+        document.body.classList.remove('js-scrolling');
+        if (focusEl) focusEl.focus({ preventScroll: true });
+      }
+    };
+    scrollAnim = requestAnimationFrame(step);
   };
 
   document.querySelectorAll('a[href^="#"]').forEach((link) => {
@@ -512,30 +534,19 @@
     scrollProgress.dataset.progress = String(Math.round(pct * 100));
   };
 
+  const heroEase = { x: 0, y: 0, mx: 50, my: 38 };
   const applyHeroParallax = () => {
     if (!heroShell || prefersReducedMotion || !isHoverCapable) return;
-    const hx = heroPointer.inside ? heroPointer.x : 0;
-    const hy = heroPointer.inside ? heroPointer.y : 0;
-
-    heroShell.style.setProperty('--mx', `${heroPointer.mx.toFixed(1)}%`);
-    heroShell.style.setProperty('--my', `${heroPointer.my.toFixed(1)}%`);
-
-    if (horizon) {
-      horizon.style.transform = `translateX(-50%) rotateX(${(hy * 2.4).toFixed(2)}deg) rotateY(${(hx * 3.2).toFixed(2)}deg) translate3d(${(hx * 6).toFixed(1)}px, ${(hy * 4).toFixed(1)}px, 0)`;
-    }
-    if (heroStage) {
-      heroStage.style.transform = `rotateX(${(8 + hy * 4).toFixed(2)}deg) rotateY(${(hx * 8).toFixed(2)}deg)`;
-    }
-    if (badge) {
-      badge.style.transform = `translate3d(${(hx * 10).toFixed(1)}px, ${(hy * 6).toFixed(1)}px, 20px)`;
-    }
-    if (h1) {
-      h1.style.transform = `translate3d(${(hx * 6).toFixed(1)}px, ${(hy * 4).toFixed(1)}px, 14px)`;
-    }
-    orbs.forEach((orb, i) => {
-      const depth = (i + 1) * 0.4;
-      orb.style.transform = `translate3d(${(hx * 16 * depth).toFixed(1)}px, ${(hy * 10 * depth).toFixed(1)}px, 0)`;
-    });
+    const tx = heroPointer.inside ? heroPointer.x : 0;
+    const ty = heroPointer.inside ? heroPointer.y : 0;
+    heroEase.x = lerp(heroEase.x, tx, 0.08);
+    heroEase.y = lerp(heroEase.y, ty, 0.08);
+    heroEase.mx = lerp(heroEase.mx, heroPointer.inside ? heroPointer.mx : 50, 0.1);
+    heroEase.my = lerp(heroEase.my, heroPointer.inside ? heroPointer.my : 38, 0.1);
+    heroShell.style.setProperty('--hx', heroEase.x.toFixed(3));
+    heroShell.style.setProperty('--hy', heroEase.y.toFixed(3));
+    heroShell.style.setProperty('--mx', `${heroEase.mx.toFixed(1)}%`);
+    heroShell.style.setProperty('--my', `${heroEase.my.toFixed(1)}%`);
   };
 
   // Hero particles
@@ -630,16 +641,163 @@
     }
   };
 
+  // ---------- 10b. Seamless JS ticker (pixel-perfect loop, hover slowdown) ----------
+  const tickers = [];
+  const initTicker = (root) => {
+    if (!root) return;
+    const rows = root.querySelectorAll('.vc-ticker-row');
+    rows.forEach((row) => {
+      const track = row.querySelector('.js-ticker-track');
+      const set = track?.querySelector('.vc-track-set');
+      if (!track || !set) return;
+      const state = {
+        track,
+        set,
+        dir: Number(row.dataset.dir || -1),
+        offset: 0,
+        width: 0,
+        speed: 0.42,
+        targetSpeed: 0.42,
+        hovering: false,
+        visible: true,
+      };
+      const measure = () => {
+        const next = set.getBoundingClientRect().width;
+        if (next > 0) {
+          if (state.dir > 0 && (state.width === 0 || state.offset === 0)) {
+            state.offset = -next;
+          }
+          state.width = next;
+        }
+      };
+      measure();
+      const root = row.closest('[data-ticker]') || row;
+      root.addEventListener('mouseenter', () => { state.hovering = true; }, { passive: true });
+      root.addEventListener('mouseleave', () => { state.hovering = false; }, { passive: true });
+      window.addEventListener('resize', measure, { passive: true });
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach((en) => {
+            state.visible = en.isIntersecting;
+            if (en.isIntersecting) measure();
+          });
+        }, { threshold: 0 });
+        obs.observe(row);
+      }
+      tickers.push(state);
+    });
+  };
+  initTicker(document.getElementById('ecoTicker'));
+
+  const stepTickers = () => {
+    if (prefersReducedMotion) return;
+    tickers.forEach((t) => {
+      if (!t.visible || pageHidden) return;
+      if (!t.width) t.width = t.set.getBoundingClientRect().width;
+      if (!t.width) return;
+      t.targetSpeed = t.hovering ? 0.08 : 0.42;
+      t.speed = lerp(t.speed, t.targetSpeed, 0.06);
+      t.offset += t.speed * t.dir;
+      if (t.dir < 0 && t.offset <= -t.width) t.offset += t.width;
+      if (t.dir > 0 && t.offset >= 0) t.offset -= t.width;
+      t.track.style.transform = `translate3d(${t.offset.toFixed(2)}px,0,0)`;
+    });
+  };
+
+  // ---------- 10c. Snap carousels for card grids on small screens ----------
+  const initSnapCarousels = () => {
+    const mq = window.matchMedia('(max-width: 720px)');
+    document.querySelectorAll('.vc-grid').forEach((grid) => {
+      if (grid.closest('.vc-carousel')) return;
+      const cards = grid.querySelectorAll('.vc-card');
+      if (cards.length < 2) return;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'vc-carousel';
+      grid.parentNode.insertBefore(wrap, grid);
+      wrap.appendChild(grid);
+      grid.classList.add('vc-carousel-track');
+
+      const nav = document.createElement('div');
+      nav.className = 'vc-carousel-nav';
+      nav.innerHTML = `
+        <button type="button" class="vc-carousel-btn" data-dir="-1" aria-label="Previous cards">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="vc-carousel-dots" role="tablist" aria-label="Card slides"></div>
+        <button type="button" class="vc-carousel-btn" data-dir="1" aria-label="Next cards">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      `;
+      wrap.appendChild(nav);
+      const dots = nav.querySelector('.vc-carousel-dots');
+      cards.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'vc-carousel-dot' + (i === 0 ? ' is-active' : '');
+        dot.setAttribute('aria-label', `Go to card ${i + 1}`);
+        dot.addEventListener('click', () => {
+          const left = cards[i].offsetLeft - (grid.clientWidth - cards[i].offsetWidth) / 2;
+          grid.scrollTo({ left, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        });
+        dots.appendChild(dot);
+      });
+
+      const sync = () => {
+        if (!mq.matches) {
+          wrap.classList.remove('is-ready');
+          return;
+        }
+        wrap.classList.add('is-ready');
+        const mid = grid.scrollLeft + grid.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        cards.forEach((card, i) => {
+          const c = card.offsetLeft + card.offsetWidth / 2;
+          const d = Math.abs(c - mid);
+          if (d < bestDist) { bestDist = d; best = i; }
+        });
+        dots.querySelectorAll('.vc-carousel-dot').forEach((dot, i) => {
+          dot.classList.toggle('is-active', i === best);
+        });
+        const prev = nav.querySelector('[data-dir="-1"]');
+        const next = nav.querySelector('[data-dir="1"]');
+        if (prev) prev.disabled = best === 0;
+        if (next) next.disabled = best === cards.length - 1;
+      };
+
+      nav.querySelectorAll('.vc-carousel-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const dir = Number(btn.dataset.dir);
+          const cardW = cards[0].getBoundingClientRect().width + 14;
+          grid.scrollBy({ left: dir * cardW, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        });
+      });
+
+      let scrollT = 0;
+      grid.addEventListener('scroll', () => {
+        if (scrollT) return;
+        scrollT = requestAnimationFrame(() => { scrollT = 0; sync(); });
+      }, { passive: true });
+
+      if (mq.addEventListener) mq.addEventListener('change', sync);
+      else mq.addListener(sync);
+      sync();
+    });
+  };
+  initSnapCarousels();
+
   let lastSpy = 0;
   const motionLoop = (now) => {
     if (!pageHidden && !prefersReducedMotion) {
       if (cursorEnabled && customCursor && pointer.active && !overTextField) {
-        cursor.x = lerp(cursor.x, pointer.x, 0.28);
-        cursor.y = lerp(cursor.y, pointer.y, 0.28);
+        cursor.x = lerp(cursor.x, pointer.x, 0.22);
+        cursor.y = lerp(cursor.y, pointer.y, 0.22);
         customCursor.style.opacity = '1';
         customCursor.style.transform = `translate(-50%, -50%) translate3d(${cursor.x.toFixed(1)}px, ${cursor.y.toFixed(1)}px, 0)`;
       }
       applyHeroParallax();
+      stepTickers();
       drawParticles(particleState.hero, '139, 92, 246', '0, 229, 255');
       drawParticles(particleState.global, '0, 229, 255', '138, 43, 226');
     }
@@ -647,7 +805,7 @@
     if (!ticking) {
       ticking = true;
       updateScrollProgress();
-      if (!lastSpy || now - lastSpy > 120) {
+      if (!lastSpy || now - lastSpy > 140) {
         updateNavSpy();
         lastSpy = now;
       }

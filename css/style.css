@@ -2254,9 +2254,224 @@ body.drawer-open{ overflow:hidden; }
   contain-intrinsic-size:auto 880px;
 }
 
-/* Marquee items should not independently bounce — track already moves */
-.vc-marquee-item{ animation:none; }
-.vc-marquee:hover .vc-track{ animation-play-state:paused; }
+/* ============================================
+   PHASE 5 — FLUID MOTION + GLITCH-FREE CAROUSELS
+   ============================================ */
+
+html{ scroll-behavior:auto; scroll-padding-top:24px; }
+body.js-scrolling{ pointer-events:none; }
+
+/* Nav underline eases instead of popping */
+.nav-links a:after{
+  content:"";
+  position:absolute;
+  left:12%; right:12%; bottom:-7px;
+  height:2px;
+  border-radius:2px;
+  background:#00E5FF;
+  box-shadow:0 0 8px rgba(0,229,255,.7);
+  transform:scaleX(0);
+  transform-origin:center;
+  transition:transform .32s cubic-bezier(.16,1,.3,1);
+}
+.nav-links a.active:after{ transform:scaleX(1); }
+
+/* Hero parallax via inherited vars — children keep CSS float */
+.orbs{
+  transform:translate3d(calc(var(--hx, 0) * 14px), calc(var(--hy, 0) * 9px), 0);
+  will-change:transform;
+}
+.horizon{
+  transform:translateX(-50%) translate3d(calc(var(--hx, 0) * 6px), calc(var(--hy, 0) * 4px), 0);
+}
+.hero-stage{
+  transform:rotateX(calc(8deg + (var(--hy, 0) * 4deg))) rotateY(calc(var(--hx, 0) * 8deg));
+}
+.hero .badge{
+  transform:translate3d(calc(var(--hx, 0) * 10px), calc(var(--hy, 0) * 6px), 20px);
+}
+.hero .h1{
+  transform:translate3d(calc(var(--hx, 0) * 6px), calc(var(--hy, 0) * 4px), 14px);
+}
+
+/* Card tilt: no transform transition while following the pointer */
+.vc-card{
+  transition:border-color .28s, box-shadow .28s, background .28s, transform .5s cubic-bezier(.16,1,.3,1);
+}
+.vc-card.is-tilting,
+.vc-card.is-tilting:hover{
+  transition:border-color .28s, box-shadow .28s, background .28s;
+}
+.vc-card.card-enter{
+  animation:cardEnter .6s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes cardEnter{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+/* Tech pills: hover only, no perpetual float */
+.tech-pill{
+  animation:none;
+  will-change:auto;
+  transition:transform .28s cubic-bezier(.16,1,.3,1), border-color .28s, background .28s, color .28s;
+}
+.tech-pill:nth-child(n){ transform:none; }
+.tech-pill:hover{
+  animation:none;
+  transform:translateY(-3px);
+}
+
+/* Dual-row seamless ticker (replaces broken -50% marquee) */
+.vc-integrations{ overflow:hidden; content-visibility:visible; }
+.vc-integrations-inner{ max-width:1100px; }
+.vc-ticker{
+  margin:28px 0 10px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.vc-ticker-row{
+  overflow:hidden;
+  width:100%;
+}
+.vc-ticker .vc-track,
+.vc-track.js-ticker-track{
+  display:flex;
+  width:max-content;
+  gap:0;
+  animation:none;
+  will-change:transform;
+  transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+}
+.vc-track-set{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding-right:14px;
+  flex-shrink:0;
+}
+.vc-marquee-item{
+  animation:none;
+  transform:none;
+  transform-style:flat;
+  transition:border-color .2s, background .2s, color .2s;
+}
+.vc-marquee-item:hover{
+  transform:none;
+  border-color:rgba(0,229,255,.28);
+  background:rgba(22,24,48,.92);
+  color:#fff;
+}
+.vc-ticker.is-paused .vc-track{ /* speed handled in JS */ }
+.vc-ticker-hint{
+  font-size:11px;
+  color:#64748B;
+  margin:4px 0 18px;
+  letter-spacing:.02em;
+}
+
+/* Fallback if JS is late: exact 50% loop via equal sets */
+@media (prefers-reduced-motion: no-preference){
+  .no-js .vc-ticker .vc-track{
+    animation:vcTickerFallback 36s linear infinite;
+  }
+}
+@keyframes vcTickerFallback{
+  from{ transform:translate3d(0,0,0); }
+  to{ transform:translate3d(-50%,0,0); }
+}
+
+/* Snap carousels — mobile / tablet card rows */
+.vc-carousel{
+  position:relative;
+  margin-top:28px;
+}
+.vc-carousel .vc-grid{ margin-top:0; }
+.vc-carousel-nav{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:14px;
+}
+.vc-carousel-btn{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(19,19,38,.85);
+  color:#E2E8F0;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:background .2s, border-color .2s, transform .2s;
+}
+.vc-carousel-btn:hover{
+  background:rgba(0,229,255,.12);
+  border-color:rgba(0,229,255,.35);
+  color:#00E5FF;
+}
+.vc-carousel-btn:active{ transform:scale(.94); }
+.vc-carousel-btn:disabled{
+  opacity:.35;
+  cursor:default;
+  transform:none;
+}
+.vc-carousel-dots{
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+.vc-carousel-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  border:0;
+  padding:0;
+  background:rgba(255,255,255,.22);
+  cursor:pointer;
+  transition:transform .25s cubic-bezier(.16,1,.3,1), background .25s, width .25s;
+}
+.vc-carousel-dot.is-active{
+  width:18px;
+  border-radius:999px;
+  background:#00E5FF;
+}
+
+@media (max-width:720px){
+  .vc-carousel.is-ready .vc-grid,
+  .vc-carousel.is-ready .vc-carousel-track{
+    display:flex;
+    grid-template-columns:none;
+    gap:14px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    scroll-padding-inline:20px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    overscroll-behavior-x:contain;
+    padding:6px 4px 12px;
+    touch-action:pan-x;
+  }
+  .vc-carousel.is-ready .vc-grid::-webkit-scrollbar{ display:none; }
+  .vc-carousel.is-ready .vc-card{
+    flex:0 0 min(82vw, 340px);
+    scroll-snap-align:center;
+    min-height:260px;
+    transform:none !important;
+  }
+  .vc-carousel-nav{ display:flex; }
+  .vc-card.is-tilting,
+  .vc-card:hover{
+    transform:none !important;
+  }
+}
 
 @media (max-width:860px){
   .scroll-progress{ height:2px; }
@@ -2267,4 +2482,9 @@ body.drawer-open{ overflow:hidden; }
     min-height:auto;
     padding:28px 16px 96px;
   }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .vc-ticker .vc-track{ animation:none !important; transform:none !important; }
+  .vc-carousel.is-ready .vc-grid{ scroll-behavior:auto; }
 }
